@@ -88,47 +88,58 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="openWarehouseModal()" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg text-slate-700 text-xs font-bold flex items-center gap-1" title="Quản lý kho">
-          <i class="fa-solid fa-warehouse text-aba"></i> Kho Bãi
+        <!-- Nút Kho bãi: Bỏ chữ trên Mobile, chỉ hiện icon -->
+        <button onclick="openWarehouseModal()" class="p-2 sm:px-2.5 sm:py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg text-slate-700 text-xs font-bold flex items-center gap-1" title="Quản lý kho">
+          <i class="fa-solid fa-warehouse text-aba text-sm sm:text-xs"></i> 
+          <span class="hidden sm:inline">Kho Bãi</span>
         </button>
 
-        <button onclick="openGameManagerModal()" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg text-slate-700 text-xs font-bold flex items-center gap-1" title="Cài đặt định mức Game">
-          <i class="fa-solid fa-dice text-emerald-600"></i> Mẫu Game
+        <!-- Nút Mẫu Game: Bỏ chữ trên Mobile, chỉ hiện icon -->
+        <button onclick="openGameManagerModal()" class="p-2 sm:px-2.5 sm:py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg text-slate-700 text-xs font-bold flex items-center gap-1" title="Cài đặt định mức Game">
+          <i class="fa-solid fa-dice text-emerald-600 text-sm sm:text-xs"></i> 
+          <span class="hidden sm:inline">Mẫu Game</span>
         </button>
 
-        <div id="userHeaderBadge" class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-2 py-1 rounded-full text-xs cursor-pointer" onclick="openSwitchAccountModal()">
+        <!-- Tài khoản: Mobile chỉ hiện Avatar -->
+        <div id="userHeaderBadge" class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 p-1 sm:px-2 sm:py-1 rounded-full text-xs cursor-pointer" onclick="openSwitchAccountModal()">
           <img id="userHeaderAvatar" src="https://via.placeholder.com/32" class="w-6 h-6 rounded-full object-cover border border-slate-300" alt="Avatar">
-          <span id="userHeaderName" class="font-semibold text-slate-700 max-w-[120px] sm:max-w-[160px] truncate">Chưa đăng nhập</span>
+          <span id="userHeaderName" class="hidden sm:inline font-semibold text-slate-700 max-w-[120px] sm:max-w-[160px] truncate">Chưa đăng nhập</span>
         </div>
 
-        <button onclick="openSwitchAccountModal()" title="Đổi tài khoản" class="p-2 text-slate-500 hover:text-aba hover:bg-slate-100 rounded-lg text-sm">
+        <button onclick="openSwitchAccountModal()" title="Đổi tài khoản" class="p-1.5 text-slate-500 hover:text-aba hover:bg-slate-100 rounded-lg text-sm">
           <i class="fa-solid fa-arrow-right-from-bracket"></i>
         </button>
-        <button onclick="fetchInitialData()" title="Làm mới dữ liệu từ Sheet" class="p-2 text-slate-500 hover:text-aba hover:bg-slate-100 rounded-lg text-sm">
+        <button onclick="fetchInitialData()" title="Làm mới dữ liệu từ Sheet" class="p-1.5 text-slate-500 hover:text-aba hover:bg-slate-100 rounded-lg text-sm">
           <i class="fa-solid fa-rotate"></i>
         </button>
       </div>
     </div>
 
-    <!-- TABS NAVIGATION -->
-    <nav class="max-w-7xl mx-auto px-3 flex gap-1 overflow-x-auto no-scrollbar border-t border-slate-100 text-xs font-medium">
-      <button onclick="switchTab('master')" id="tab-btn-master" class="tab-btn py-2 px-3 border-b-2 border-aba text-aba font-bold flex items-center gap-1.5 whitespace-nowrap">
-        <i class="fa-solid fa-boxes-stacked"></i> Danh Mục Kho
+    <!-- TABS NAVIGATION: 6 TAB DÀN ĐỀU VỪA KHÍT MÀN HÌNH ĐIỆN THOẠI, KHÔNG CẦN VUỐT -->
+    <nav class="max-w-7xl mx-auto px-1 sm:px-3 grid grid-cols-6 sm:flex sm:gap-1 border-t border-slate-100 text-xs font-medium bg-white">
+      <button onclick="switchTab('master')" id="tab-btn-master" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-aba text-aba font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
+        <i class="fa-solid fa-boxes-stacked text-xs"></i>
+        <span class="text-[9px] sm:text-xs whitespace-nowrap">Kho</span>
       </button>
-      <button onclick="switchTab('new-prop')" id="tab-btn-new-prop" class="tab-btn py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex items-center gap-1.5 whitespace-nowrap">
-        <i class="fa-solid fa-circle-plus"></i> Nhập Lần Đầu
+      <button onclick="switchTab('new-prop')" id="tab-btn-new-prop" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
+        <i class="fa-solid fa-circle-plus text-xs"></i>
+        <span class="text-[9px] sm:text-xs whitespace-nowrap">Nhập mới</span>
       </button>
-      <button onclick="switchTab('export')" id="tab-btn-export" class="tab-btn py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex items-center gap-1.5 whitespace-nowrap">
-        <i class="fa-solid fa-dolly"></i> Phiếu Xuất Kho
+      <button onclick="switchTab('export')" id="tab-btn-export" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
+        <i class="fa-solid fa-dolly text-xs"></i>
+        <span class="text-[9px] sm:text-xs whitespace-nowrap">Xuất kho</span>
       </button>
-      <button onclick="switchTab('import')" id="tab-btn-import" class="tab-btn py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex items-center gap-1.5 whitespace-nowrap">
-        <i class="fa-solid fa-truck-ramp-box"></i> Phiếu Nhập Kho
+      <button onclick="switchTab('import')" id="tab-btn-import" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
+        <i class="fa-solid fa-truck-ramp-box text-xs"></i>
+        <span class="text-[9px] sm:text-xs whitespace-nowrap">Nhập kho</span>
       </button>
-      <button onclick="switchTab('liquidation')" id="tab-btn-liquidation" class="tab-btn py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex items-center gap-1.5 whitespace-nowrap">
-        <i class="fa-solid fa-dumpster-fire"></i> Phiếu Thanh Lý
+      <button onclick="switchTab('liquidation')" id="tab-btn-liquidation" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
+        <i class="fa-solid fa-dumpster-fire text-xs"></i>
+        <span class="text-[9px] sm:text-xs whitespace-nowrap">Thanh lý</span>
       </button>
-      <button onclick="switchTab('archive')" id="tab-btn-archive" class="tab-btn py-2 px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex items-center gap-1.5 whitespace-nowrap">
-        <i class="fa-solid fa-box-archive"></i> Thư Viện Chứng Từ
+      <button onclick="switchTab('archive')" id="tab-btn-archive" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
+        <i class="fa-solid fa-box-archive text-xs"></i>
+        <span class="text-[9px] sm:text-xs whitespace-nowrap">Chứng từ</span>
       </button>
     </nav>
   </header>
@@ -195,26 +206,25 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-bold">
-              <tr>
-                <th class="p-2 text-center w-14">Ảnh</th>
-                  <th class="p-2 text-left">Đạo cụ (Bấm xem chi tiết)</th>
-                  <th class="p-2 text-center">Phân loại</th>
-                  <th class="p-2 text-left">Vị trí lưu cất</th>
-                  <!-- THỨ TỰ 5 CỘT MỚI -->
-                  <th class="p-2 text-center text-emerald-700">Dùng được</th>
-                  <th class="p-2 text-center text-amber-700">Đang dùng</th>
-                  <th class="p-2 text-center text-red-600">Hỏng</th>
-                  <th class="p-2 text-center text-blue-700">Tại kho</th>
-                  <th class="p-2 text-center">Tổng</th>
-              </tr>
-            </thead>
-            <tbody id="masterPropsTableBody" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
+      <!-- BẢNG DANH MỤC KHO: TỰ ĐỘNG CHUYỂN THÀNH CARD TRÊN MOBILE -->
+      <div class="bg-transparent sm:bg-white sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm overflow-visible">
+        <table class="w-full text-left border-collapse text-xs block sm:table">
+          <!-- ẨN TIÊU ĐỀ TRÊN DI ĐỘNG (hidden), CHỈ HIỆN TRÊN MÁY TÍNH (sm:table-header-group) -->
+          <thead class="hidden sm:table-header-group bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-bold">
+            <tr>
+              <th class="p-2 text-center w-14">Ảnh</th>
+              <th class="p-2 text-left">Đạo cụ (Bấm xem chi tiết)</th>
+              <th class="p-2 text-center">Phân loại</th>
+              <th class="p-2 text-left">Vị trí lưu cất</th>
+              <th class="p-2 text-center text-emerald-700">Dùng được</th>
+              <th class="p-2 text-center text-amber-700">Đang dùng</th>
+              <th class="p-2 text-center text-red-600">Hỏng</th>
+              <th class="p-2 text-center text-blue-700">Tại kho</th>
+              <th class="p-2 text-center">Tổng</th>
+            </tr>
+          </thead>
+          <tbody id="masterPropsTableBody" class="block sm:table-row-group space-y-2 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
+        </table>
       </div>
     </section>
 
@@ -223,11 +233,11 @@
       <form id="newPropForm" onsubmit="submitNewProp(event)" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4 text-xs">
         <div class="border-b border-slate-100 pb-2 flex items-center justify-between">
           <div>
-            <h2 class="text-sm font-bold text-aba uppercase">Phiếu Khai Báo Nhập Kho Lần Đầu</h2>
-            <span class="text-[11px] text-slate-500">Tự động sinh chứng từ lưu Thư Viện</span>
+            <h2 class="text-sm font-bold text-aba uppercase">Phiếu Nhập kho đạo cụ</h2>
+            <span class="text-[11px] text-slate-500">Dùng cho đồ mới mua (đã có/chưa có) 1 phiếu cho 1 loại đạo cụ, tại 1 kho</span>
           </div>
           <button type="button" onclick="resetNewPropForm()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 font-bold rounded-lg text-xs flex items-center gap-1.5 transition shadow-sm">
-            <i class="fa-solid fa-arrows-rotate text-aba"></i> Nhập lại từ đầu
+            <i class="fa-solid fa-arrows-rotate text-aba"></i> Nhập lại
           </button>
         </div>
 
@@ -239,14 +249,14 @@
                 <i class="fa-solid fa-sparkles text-xl text-aba"></i>
                 <div>
                   <div class="font-black text-xs text-aba">✨ ĐỒ MỚI</div>
-                  <div class="text-[10px] text-slate-500">Mua sắm mới hoàn toàn</div>
+                  <div class="text-[10px] text-slate-500">Mua mới hoàn toàn</div>
                 </div>
               </div>
               <div onclick="selectPropMode('existing')" id="boxModeExisting" class="cursor-pointer p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex items-center gap-2.5 transition">
                 <i class="fa-solid fa-boxes-stacked text-xl text-slate-400"></i>
                 <div>
                   <div class="font-bold text-xs text-slate-700">📦 ĐỒ ĐÃ CÓ</div>
-                  <div class="text-[10px] text-slate-400">Mua bổ sung số lượng</div>
+                  <div class="text-[10px] text-slate-400">Mua bổ sung</div>
                 </div>
               </div>
             </div>
@@ -259,45 +269,53 @@
                 <i class="fa-solid fa-shield-halved text-xl text-emerald-600"></i>
                 <div>
                   <div class="font-black text-xs text-emerald-800">KHẤU HAO</div>
-                  <div class="text-[10px] text-emerald-600">Tái sử dụng nhiều lần</div>
+                  <div class="text-[10px] text-emerald-600">Đồ dùng nhiều lần</div>
                 </div>
               </div>
               <div onclick="selectPropType('Tiêu hao')" id="boxTypeConsumable" class="cursor-pointer p-3 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex items-center gap-2.5 transition">
                 <i class="fa-solid fa-box-tissue text-xl text-slate-400"></i>
                 <div>
                   <div class="font-bold text-xs text-slate-700">TIÊU HAO</div>
-                  <div class="text-[10px] text-slate-400">Dùng 1 lần hoặc hao hụt</div>
+                  <div class="text-[10px] text-slate-400">Đồ hao hụt</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-          <div class="sm:col-span-3">
-            <label class="block font-semibold mb-0.5">Mã đạo cụ</label>
-            <input type="text" id="propCode" readonly placeholder="Tự tạo A0001..." class="w-full p-2 bg-slate-200 border border-slate-300 rounded font-mono font-bold text-slate-700">
-          </div>
-          <div class="sm:col-span-5 relative">
-            <label class="block font-semibold mb-0.5">Tên đạo cụ <span class="text-red-500">*</span></label>
-            <input type="text" id="propName" required oninput="handleNewPropNameInput(event)" onfocus="handleNewPropNameInput(event)" placeholder="Gõ tên để tìm hoặc nhập mới..." class="w-full p-2 border border-slate-300 rounded font-bold">
+        <!-- ĐÃ ẨN MÃ ĐẠO CỤ VÀ GOM THÀNH 2 TRƯỜNG / 1 HÀNG -->
+        <input type="hidden" id="propCode">
+
+        <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
+          <!-- Hàng 1: Tên đạo cụ chiếm trọn 2 cột -->
+          <div class="col-span-2 relative">
+            <label class="block font-semibold mb-0.5 text-slate-700">Tên đạo cụ <span class="text-red-500">*</span></label>
+            <input type="text" id="propName" required oninput="handleNewPropNameInput(event)" onfocus="handleNewPropNameInput(event)" placeholder="Gõ tên để tìm hoặc nhập mới..." class="w-full p-2 border border-slate-300 rounded font-bold text-xs bg-white">
             <div id="newPropSuggestBox" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
           </div>
-          <div class="sm:col-span-2">
-            <label class="block font-semibold mb-0.5">Đơn vị <span class="text-red-500">*</span></label>
-            <input type="text" id="propUnit" required placeholder="cái, bộ..." class="w-full p-2 border border-slate-300 rounded font-semibold text-slate-700">
+
+          <!-- Hàng 2 - Cột 1: Đơn vị tính -->
+          <div>
+            <label class="block font-semibold mb-0.5 text-slate-700">Đơn vị tính <span class="text-red-500">*</span></label>
+            <input type="text" id="propUnit" required placeholder="cái, bộ..." class="w-full p-2 border border-slate-300 rounded font-semibold text-slate-700 text-xs bg-white">
           </div>
-          <div class="sm:col-span-2">
-            <label class="block font-semibold mb-0.5">Số lượng <span class="text-red-500">*</span></label>
-            <input type="number" id="propQty" required min="1" value="1" class="w-full p-2 border border-slate-300 rounded font-bold text-aba text-base">
+
+          <!-- Hàng 2 - Cột 2: Số lượng nhập -->
+          <div>
+            <label class="block font-semibold mb-0.5 text-slate-700">Số lượng <span class="text-red-500">*</span></label>
+            <input type="number" id="propQty" required min="1" value="1" class="w-full p-2 border border-slate-300 rounded font-black text-aba text-xs bg-white">
           </div>
-          <div class="sm:col-span-8">
-            <label class="block font-semibold mb-0.5">Thông số kỹ thuật / Ghi chú</label>
-            <input type="text" id="propSpecs" placeholder="Quy cách, kích thước, màu sắc..." class="w-full p-2 border border-slate-300 rounded">
+
+          <!-- Hàng 3 - Cột 1: Thông số kỹ thuật -->
+          <div>
+            <label class="block font-semibold mb-0.5 text-slate-700">Thông số kỹ thuật / Quy cách</label>
+            <input type="text" id="propSpecs" placeholder="Quy cách, màu sắc..." class="w-full p-2 border border-slate-300 rounded text-xs bg-white">
           </div>
-          <div class="sm:col-span-4">
-            <label class="block font-semibold mb-0.5">Định mức tồn tối thiểu (Tiêu hao)</label>
-            <input type="number" id="propMinStock" value="0" min="0" class="w-full p-2 border border-slate-300 rounded bg-white font-mono">
+
+          <!-- Hàng 3 - Cột 2: Định mức tồn tối thiểu -->
+          <div>
+            <label class="block font-semibold mb-0.5 text-slate-700">Định mức tồn tối thiểu</label>
+            <input type="number" id="propMinStock" value="0" min="0" class="w-full p-2 border border-slate-300 rounded bg-white text-xs font-mono">
           </div>
         </div>
 
@@ -403,253 +421,231 @@
     </section>
 
     <!-- ==================== TAB 3: PHIẾU XUẤT KHO ==================== -->
-    <section id="tab-export" class="tab-content hidden space-y-3">
-      <!-- Banner Nạp đồ chuẩn bị & NÚT THOÁT PHIẾU CHUẨN BỊ -->
-      <div id="stagingNotificationBanner" class="hidden bg-purple-50 border border-purple-300 p-3 rounded-xl flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-box-open text-purple-600 text-xl"></i>
+    <section id="tab-export" class="tab-content hidden space-y-2">
+      <!-- Banner Nạp đồ chuẩn bị -->
+      <div id="stagingNotificationBanner" class="hidden bg-purple-50 border border-purple-300 p-2 rounded-xl flex items-center justify-between">
+        <div class="flex items-center gap-1.5">
+          <i class="fa-solid fa-box-open text-purple-600 text-sm"></i>
           <div>
-            <p class="text-xs font-bold text-purple-900" id="stagingBannerText">Chương trình này đã có phiếu chuẩn bị trước!</p>
-            <p class="text-[10px] text-purple-700">Bấm để nạp danh sách và xem ảnh hiện trường ca trước.</p>
+            <p class="text-[11px] font-bold text-purple-900" id="stagingBannerText">Có phiếu chuẩn bị trước!</p>
+            <p class="text-[9px] text-purple-700">Bấm nạp đồ ca trước.</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="loadStagingToExport()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-lg shadow">
-            Nạp phiếu chuẩn bị
-          </button>
-          <button type="button" onclick="exitStagingMode()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-lg">
-            Thoát phiếu
-          </button>
+        <div class="flex items-center gap-1">
+          <button type="button" onclick="loadStagingToExport()" class="px-2 py-1 bg-purple-600 text-white font-bold text-[10px] rounded shadow">Nạp đồ</button>
+          <button type="button" onclick="exitStagingMode()" class="px-2 py-1 bg-slate-200 text-slate-700 font-bold text-[10px] rounded">Thoát</button>
         </div>
       </div>
 
-      <!-- Banner thông báo đang nạp đồ chuẩn bị + nút Thoát -->
-      <div id="stagingActiveBar" class="hidden bg-purple-100 border border-purple-300 p-2.5 rounded-xl flex items-center justify-between">
-        <span class="text-xs font-bold text-purple-900 flex items-center gap-1.5">
-          <i class="fa-solid fa-boxes-packing text-purple-700"></i>
-          Đang xuất kho theo Phiếu chuẩn bị của: <b id="stagingPreparerText">---</b>
+      <div id="stagingActiveBar" class="hidden bg-purple-100 border border-purple-300 p-1.5 rounded-xl flex items-center justify-between">
+        <span class="text-[11px] font-bold text-purple-900 flex items-center gap-1 truncate">
+          <i class="fa-solid fa-boxes-packing text-purple-700"></i> Đang soạn: <b id="stagingPreparerText">---</b>
         </span>
-        <button type="button" onclick="exitStagingMode()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg shadow flex items-center gap-1">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i> Thoát phiếu chuẩn bị
-        </button>
+        <button type="button" onclick="exitStagingMode()" class="px-2 py-0.5 bg-red-600 text-white font-bold text-[10px] rounded shadow">Thoát</button>
       </div>
 
-      <div id="stagingPhotosBar" class="hidden bg-white p-3 rounded-xl border border-purple-200">
-        <span class="block text-xs font-bold text-purple-900 mb-2">Ảnh hiện trường ca trước gom đồ:</span>
-        <div id="stagingThumbnailsContainer" class="flex gap-2 overflow-x-auto no-scrollbar"></div>
+      <div id="stagingPhotosBar" class="hidden bg-white p-2 rounded-xl border border-purple-200">
+        <span class="block text-[11px] font-bold text-purple-900 mb-1">Ảnh gom đồ ca trước:</span>
+        <div id="stagingThumbnailsContainer" class="flex gap-1.5 overflow-x-auto no-scrollbar"></div>
       </div>
 
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
-        <!-- Ô TÌM KIẾM DỰ ÁN (CHỈ HIỂN THỊ CÁC CHƯƠNG TRÌNH ĐÃ CÓ PHIẾU CHUẨN BỊ) -->
+      <!-- 1. FORM THÔNG TIN: ĐÚNG 2 TRƯỜNG / 1 HÀNG TRÊN MỌI THIẾT BỊ -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm grid grid-cols-2 gap-2 text-xs">
+        <!-- Hàng 1 - Cột 1: Dự án -->
         <div class="relative">
-          <label class="block font-semibold mb-0.5">Dự án <span class="text-red-500"> </span></label>
-          <input type="text" id="exportProject" required oninput="handleExportProjectInput(event)" onfocus="handleExportProjectInput(event)" placeholder="Gõ tìm dự án đã chuẩn bị..." class="w-full p-2 border border-slate-300 rounded font-bold text-slate-800 bg-white">
+          <label class="block font-semibold mb-0.5 text-[11px] text-slate-700">Dự án <span class="text-red-500">*</span></label>
+          <input type="text" id="exportProject" required oninput="handleExportProjectInput(event)" onfocus="handleExportProjectInput(event)" placeholder="Tên dự án..." class="w-full p-1.5 border border-slate-300 rounded font-bold text-slate-800 bg-white text-xs">
           <div id="stagingProjectsSuggestBox" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-purple-300 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-purple-100"></div>
         </div>
 
+        <!-- Hàng 1 - Cột 2: Kho xuất -->
         <div>
-          <label class="block font-semibold mb-0.5">Địa điểm thực hiện</label>
-          <input type="text" id="exportLocation" placeholder="[Địa điểm thực hiện...]" class="w-full p-2 border border-slate-300 rounded">
+          <label class="block font-semibold mb-0.5 text-[11px] text-slate-700">Kho xuất <span class="text-red-500">*</span></label>
+          <select id="exportWarehouse" onchange="onExportWarehouseChange()" class="w-full p-1.5 border border-slate-300 rounded font-bold text-aba bg-white text-xs"></select>
         </div>
 
-        <!-- Ô THỜI GIAN THỰC HIỆN: ĐÃ BỎ HÔM NAY/NGÀY MAI/NGÀY KIA -->
+        <!-- Hàng 2 - Cột 1: Địa điểm -->
         <div>
-          <label class="block font-semibold mb-0.5">Thời gian thực hiện</label>
-          <input type="date" id="exportTime" class="w-full p-2 border border-slate-300 rounded bg-white font-semibold">
+          <label class="block font-semibold mb-0.5 text-[11px] text-slate-700">Địa điểm thực hiện</label>
+          <input type="text" id="exportLocation" placeholder="Địa điểm..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white">
         </div>
 
+        <!-- Hàng 2 - Cột 2: Thời gian -->
         <div>
-          <label class="block font-semibold mb-0.5">Kho xuất hàng <span class="text-red-500">* (1 kho 1 phiếu)</span></label>
-          <select id="exportWarehouse" onchange="onExportWarehouseChange()" class="w-full p-2 border border-slate-300 rounded font-bold text-aba bg-white"></select>
+          <label class="block font-semibold mb-0.5 text-[11px] text-slate-700">Thời gian thực hiện</label>
+          <input type="date" id="exportTime" class="w-full p-1.5 border border-slate-300 rounded bg-white font-semibold text-xs">
         </div>
       </div>
 
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-2 text-xs">
-        <div class="flex items-center gap-1.5">
-          <select id="comboGameSelect" class="p-2 border border-slate-300 rounded bg-slate-50 font-semibold"></select>
-          <input type="number" id="comboGameQty" value="1" min="1" class="w-14 p-2 border border-slate-300 rounded text-center font-bold" title="Số bộ">
-          <button onclick="addGameComboToExport()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold flex items-center gap-1">
-            <i class="fa-solid fa-dice"></i> + Thêm Bộ Game
+      <!-- 2. BỘ GAME & CÁC NÚT EXCEL: THU GỌN TỐI ĐA -->
+      <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between gap-1.5 text-xs">
+        <div class="flex items-center gap-1 flex-1 min-w-0">
+          <select id="comboGameSelect" class="flex-1 min-w-0 p-1.5 border border-slate-300 rounded bg-slate-50 font-semibold text-xs"></select>
+          <input type="number" id="comboGameQty" value="1" min="1" class="w-10 p-1.5 border border-slate-300 rounded text-center font-bold text-xs" title="Số bộ">
+          <button onclick="addGameComboToExport()" class="px-2 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold text-xs flex-shrink-0" title="Thêm Game">
+            <i class="fa-solid fa-plus"></i> Game
           </button>
         </div>
 
-        <div class="flex items-center gap-2">
-          <label class="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded font-bold cursor-pointer flex items-center gap-1.5 shadow-sm">
-            <i class="fa-solid fa-file-excel"></i> Nhập file Excel
+        <div class="flex items-center gap-1 flex-shrink-0">
+          <label class="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded font-bold cursor-pointer text-xs" title="Nhập Excel">
+            <i class="fa-solid fa-file-excel"></i>
             <input type="file" id="excelExportInput" accept=".xlsx, .xls" class="hidden" onchange="handleExcelImport(event, 'export')">
           </label>
-          <button onclick="exportCurrentChecklistToExcel('export')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded text-slate-700 font-semibold flex items-center gap-1">
-            <i class="fa-solid fa-download"></i> Tải Mẫu Excel
+          <button onclick="exportCurrentChecklistToExcel('export')" class="p-1.5 bg-slate-100 border border-slate-300 rounded text-slate-700 font-semibold text-xs" title="Tải mẫu Excel">
+            <i class="fa-solid fa-download text-aba"></i>
           </button>
-          <button type="button" onclick="resetExportForm()" class="px-2.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded text-slate-700 font-bold flex items-center gap-1">
-            <i class="fa-solid fa-arrows-rotate"></i> Nhập lại từ đầu
+          <button type="button" onclick="resetExportForm()" class="p-1.5 bg-slate-100 border border-slate-300 rounded text-slate-700 font-bold text-xs" title="Nhập lại">
+            <i class="fa-solid fa-arrows-rotate text-red-500"></i>
           </button>
         </div>
       </div>
 
-      <div id="exportValidationAlert" class="hidden bg-red-100 border border-red-300 p-2.5 rounded-lg text-xs text-red-800 flex items-center justify-between">
-        <span class="font-bold flex items-center gap-1.5">
-          <i class="fa-solid fa-triangle-exclamation text-red-600 text-sm"></i>
-          <span>Có đạo cụ không tồn tại trong hệ thống! Vui lòng sửa lại các dòng màu đỏ trước khi lưu.</span>
+      <div id="exportValidationAlert" class="hidden bg-red-100 border border-red-300 p-1.5 rounded-lg text-xs text-red-800">
+        <span class="font-bold flex items-center gap-1 text-[11px]">
+          <i class="fa-solid fa-triangle-exclamation text-red-600"></i> Có đạo cụ sai tên trong kho! Vui lòng chọn lại.
         </span>
       </div>
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-visible">
-        <div class="overflow-x-auto overflow-y-visible">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase">
-              <tr>
-                <th class="p-2 w-10 text-center">STT</th>
-                <th class="p-2 min-w-[240px]">Hạng mục (Tên đạo cụ)</th>
-                <th class="p-2 w-24 text-center">Đơn vị tính</th>
-                <th class="p-2 w-24 text-center">Số lượng</th>
-                <th class="p-2 min-w-[200px]">Vị trí lưu kho</th>
-                <th class="p-2 w-28 text-center">Tình trạng kho</th>
-                <th class="p-2 min-w-[150px]">Ghi chú</th>
-                <th class="p-2 w-10 text-center">Xóa</th>
-              </tr>
-            </thead>
-            <tbody id="exportChecklistTableBody" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
+
+      <!-- 3. DANH SÁCH ĐẠO CỤ: SIÊU GỌN (50px/dòng - BAO QUÁT ĐƯỢC 7-9 DÒNG TRÊN ĐIỆN THOẠI) -->
+      <div class="bg-transparent sm:bg-white sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm overflow-visible">
+        <table class="w-full text-left border-collapse text-xs block sm:table">
+          <thead class="hidden sm:table-header-group bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase">
+            <tr>
+              <th class="p-2 w-10 text-center">STT</th>
+              <th class="p-2 min-w-[240px]">Hạng mục (Tên đạo cụ)</th>
+              <th class="p-2 w-20 text-center">ĐVT</th>
+              <th class="p-2 w-20 text-center">Số lượng</th>
+              <th class="p-2 min-w-[180px]">Vị trí lưu kho</th>
+              <th class="p-2 w-28 text-center">Tình trạng kho</th>
+              <th class="p-2 min-w-[140px]">Ghi chú</th>
+              <th class="p-2 w-10 text-center">Xóa</th>
+            </tr>
+          </thead>
+          <tbody id="exportChecklistTableBody" class="block sm:table-row-group space-y-1 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
+        </table>
       </div>
 
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div class="flex items-center gap-3">
-          <button type="button" onclick="triggerCamera('exportTeam')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded font-semibold flex items-center gap-1.5">
-            <i class="fa-solid fa-users-viewfinder text-aba"></i> Chụp ảnh cả đội xuất đồ
+      <!-- 4. KHUNG CHỤP ẢNH & XÁC NHẬN -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 text-xs">
+        <div class="flex items-center justify-between sm:justify-start gap-2">
+          <button type="button" onclick="triggerCamera('exportTeam')" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-lg font-semibold flex items-center gap-1 text-xs">
+            <i class="fa-solid fa-users-viewfinder text-aba"></i> Chụp ảnh cả đội
           </button>
-          <span id="exportTeamPhotoStatus" class="text-[11px] text-slate-500 font-medium">Chưa có ảnh đội</span>
+          <span id="exportTeamPhotoStatus" class="text-[11px] text-slate-500 font-medium">Chưa có ảnh</span>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="startStagingWorkflow()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow flex items-center gap-1.5">
-            <i class="fa-solid fa-boxes-packing"></i> CHUYỂN THÀNH PHIẾU CHUẨN BỊ ĐỒ
+        <div class="grid grid-cols-2 sm:flex items-center gap-1.5">
+          <button type="button" onclick="startStagingWorkflow()" class="py-2 px-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl shadow flex items-center justify-center gap-1 text-[11px] text-center">
+            <i class="fa-solid fa-boxes-packing"></i> Phiếu chuẩn bị
           </button>
-          <button type="button" id="btnConfirmExportTake" onclick="startExportWorkflow()" class="px-5 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed">
-            <i class="fa-solid fa-truck-moving"></i> TÔI XÁC NHẬN LẤY DANH SÁCH ĐỒ TRÊN
+          <button type="button" id="btnConfirmExportTake" onclick="startExportWorkflow()" class="py-2 px-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow flex items-center justify-center gap-1 disabled:opacity-50 text-[11px] text-center">
+            <i class="fa-solid fa-truck-moving"></i> Xác nhận lấy đồ
           </button>
         </div>
       </div>
     </section>
 
-    <!-- TAB 4: PHIẾU NHẬP KHO -->
     <!-- ==================== TAB 4: PHIẾU NHẬP KHO ==================== -->
-    <section id="tab-import" class="tab-content hidden space-y-3">
-      <!-- KHỐI THÔNG TIN DỰ ÁN, TRẠNG THÁI TRẢ, KHO NHẬP VỀ -->
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm space-y-3">
-        <!-- HÀNG 1: Chia 3 cột đều nhau (Dự án thu ngắn từ 50% xuống 33.3%) -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <!-- 1. Chọn Dự Án (Độ rộng gọn gàng) -->
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">
-              Dự án hoàn trả từ Tour <span class="text-red-500">*</span>
-            </label>
-            <select id="importProjectSelect" onchange="handleSelectImportProject(this.value)" class="w-full p-2 border border-slate-300 rounded-lg bg-white font-bold text-aba text-xs truncate">
-              <option value="">-- Chọn dự án hoàn trả --</option>
-            </select>
-          </div>
+    <section id="tab-import" class="tab-content hidden space-y-2">
+      <!-- KHỐI THÔNG TIN: ĐÚNG 2 TRƯỜNG / 1 HÀNG TRÊN MỌI THIẾT BỊ -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm grid grid-cols-2 gap-2 text-xs">
+        <!-- Hàng 1 - Cột 1: Dự án hoàn trả -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Dự án hoàn trả <span class="text-red-500">*</span></label>
+          <select id="importProjectSelect" onchange="handleSelectImportProject(this.value)" class="w-full p-1.5 border border-slate-300 rounded font-bold text-aba text-xs truncate">
+            <option value="">-- Chọn dự án --</option>
+          </select>
+        </div>
 
-          <!-- 2. Trạng thái trả đồ (Tích chọn bắt buộc, không chọn sẵn để tránh nhầm lẫn) -->
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">
-              Chương trình đã trả đủ đồ chưa? <span class="text-red-500">*</span>
-            </label>
-            <div class="flex items-center gap-2 pt-0.5">
-              <!-- Nút tích Đã đủ -->
-              <label class="flex-1 flex items-center justify-center gap-1.5 cursor-pointer font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 p-2 rounded-lg text-xs transition shadow-xs">
-                <input type="radio" name="importReturnStatusRadio" value="Đã đủ" class="w-4 h-4 text-emerald-600 accent-emerald-600 cursor-pointer">
-                <span>✅ Đã đủ</span>
-              </label>
-              <!-- Nút tích Chưa đủ -->
-              <label class="flex-1 flex items-center justify-center gap-1.5 cursor-pointer font-bold text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 p-2 rounded-lg text-xs transition shadow-xs">
-                <input type="radio" name="importReturnStatusRadio" value="Chưa đủ" class="w-4 h-4 text-amber-600 accent-amber-600 cursor-pointer">
-                <span>⏳ Chưa đủ</span>
-              </label>
-            </div>
-          </div>
+        <!-- Hàng 1 - Cột 2: Kho nhập về -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Kho nhập về <span class="text-red-500">*</span></label>
+          <select id="importWarehouseSelect" class="w-full p-1.5 border border-slate-300 rounded font-semibold text-xs text-slate-800"></select>
+        </div>
 
-          <!-- 3. Người xuất ban đầu -->
-          <div>
-            <label class="block font-bold text-slate-700 mb-1">Người xuất ban đầu</label>
-            <input type="text" id="importOriginalExporter" readonly placeholder="---" class="w-full p-2 border border-slate-200 bg-slate-100 rounded-lg text-slate-600 font-semibold text-xs cursor-not-allowed">
+        <!-- Hàng 2 - Cột 1: Người xuất ban đầu -->
+        <div>
+          <label class="block font-semibold text-slate-600 mb-0.5 text-[11px]">Người xuất ban đầu</label>
+          <input type="text" id="importOriginalExporter" readonly placeholder="---" class="w-full p-1.5 border border-slate-200 bg-slate-100 rounded text-slate-600 font-semibold text-xs cursor-not-allowed">
+        </div>
+
+        <!-- Hàng 2 - Cột 2: Người nhận bàn giao -->
+        <div>
+          <label class="block font-semibold text-slate-600 mb-0.5 text-[11px]">Người nhận bàn giao</label>
+          <input type="text" id="importReceiverName" readonly class="w-full p-1.5 border border-slate-200 bg-slate-100 rounded text-slate-700 font-bold text-xs cursor-not-allowed">
+        </div>
+
+        <!-- Hàng 3 - Cột 1: Trạng thái trả đồ (2 ô radio gọn) -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Đã trả đủ đồ chưa? <span class="text-red-500">*</span></label>
+          <div class="flex items-center gap-1">
+            <label class="flex-1 flex items-center justify-center gap-1 cursor-pointer font-bold text-emerald-800 bg-emerald-50 border border-emerald-300 p-1 rounded text-[11px]">
+              <input type="radio" name="importReturnStatusRadio" value="Đã đủ" class="w-3.5 h-3.5 accent-emerald-600"> Đủ
+            </label>
+            <label class="flex-1 flex items-center justify-center gap-1 cursor-pointer font-bold text-amber-900 bg-amber-50 border border-amber-300 p-1 rounded text-[11px]">
+              <input type="radio" name="importReturnStatusRadio" value="Chưa đủ" class="w-3.5 h-3.5 accent-amber-600"> Chưa
+            </label>
           </div>
         </div>
 
-        <!-- HÀNG 2: Kho nhập thu ngắn còn 25%, Ghi chú mở rộng thành 50% -->
-        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs pt-1 border-t border-slate-100">
-          <!-- Kho nhập hàng về (Thu hẹp gọn gàng = 25%) -->
-          <div class="sm:col-span-3">
-            <label class="block font-semibold text-slate-600 mb-1">
-              Kho nhập hàng về <span class="text-red-500">*</span>
-            </label>
-            <select id="importWarehouseSelect" class="w-full p-2 border border-slate-300 rounded-lg bg-white font-semibold text-xs text-slate-800"></select>
-          </div>
-
-          <!-- Người nhận bàn giao (= 25%) -->
-          <div class="sm:col-span-3">
-            <label class="block font-semibold text-slate-600 mb-1">Người nhập (Người gửi phiếu)</label>
-            <input type="text" id="importReceiverName" readonly class="w-full p-2 border border-slate-200 bg-slate-100 rounded-lg text-slate-700 font-bold text-xs cursor-not-allowed">
-          </div>
-
-          <!-- Ghi chú chung đợt nhập (Mở rộng thoải mái = 50%) -->
-          <div class="sm:col-span-6">
-            <label class="block font-semibold text-slate-600 mb-1">Ghi chú chung đợt nhập</label>
-            <input type="text" id="importGeneralNote" placeholder="Ghi chú thêm về chuyến xe, tình trạng bàn giao..." class="w-full p-2 border border-slate-300 rounded-lg text-xs bg-white">
-          </div>
+        <!-- Hàng 3 - Cột 2: Ghi chú chung -->
+        <div>
+          <label class="block font-semibold text-slate-600 mb-0.5 text-[11px]">Ghi chú chuyến xe</label>
+          <input type="text" id="importGeneralNote" placeholder="Tình trạng xe, bàn giao..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white">
         </div>
-      </div>  
+      </div> 
 
       <!-- BẢNG 1: CHECKLIST HOÀN TRẢ ĐẠO CỤ TOUR -->
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-visible">
-        <div class="overflow-x-auto overflow-y-visible">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
-              <tr>
-                <th class="p-2.5 text-center w-10">STT</th>
-                <th class="p-2.5 text-left min-w-[220px]">Hạng mục (Tên đạo cụ)</th>
-                <th class="p-2.5 text-center w-16">ĐVT</th>
-                <th class="p-2.5 text-center w-20">Đã mang đi</th>
-                <th class="p-2.5 text-center w-24 bg-emerald-50/60 text-emerald-800">SL Còn tốt</th>
-                <th class="p-2.5 text-center w-24 bg-blue-50/60 text-blue-800">Số nhận về</th>
-                <th class="p-2.5 text-center w-24 text-red-600">Mất / Thiếu</th>
-                <th class="p-2.5 text-left min-w-[280px]">Vị trí lưu cất khi về (Đồ còn tốt)</th>
-                <th class="p-2.5 text-center w-10">Xóa</th>
-              </tr>
-            </thead>
-            <tbody id="importChecklistTbody" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
+      <div class="bg-transparent sm:bg-white sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm overflow-visible">
+        <table class="w-full text-left border-collapse text-xs block sm:table">
+          <!-- TIÊU ĐỀ: ẨN HOÀN TOÀN TRÊN ĐIỆN THOẠI (hidden), CHỈ HIỆN TRÊN MÁY TÍNH (sm:table-header-group) -->
+          <thead class="hidden sm:table-header-group bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+            <tr>
+              <th class="p-2.5 text-center w-10">STT</th>
+              <th class="p-2.5 text-left min-w-[220px]">Hạng mục (Tên đạo cụ)</th>
+              <th class="p-2.5 text-center w-16">ĐVT</th>
+              <th class="p-2.5 text-center w-20">Đã mang đi</th>
+              <th class="p-2.5 text-center w-24 bg-emerald-50/60 text-emerald-800">SL Còn tốt</th>
+              <th class="p-2.5 text-center w-24 bg-blue-50/60 text-blue-800">Số nhận về</th>
+              <th class="p-2.5 text-center w-24 text-red-600">Mất / Thiếu</th>
+              <th class="p-2.5 text-left min-w-[280px]">Vị trí lưu cất khi về (Đồ còn tốt)</th>
+              <th class="p-2.5 text-center w-10">Xóa</th>
+            </tr>
+          </thead>
+          <tbody id="importChecklistTbody" class="block sm:table-row-group space-y-1 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
+        </table>
       </div>
 
       <!-- BẢNG 2: DANH SÁCH ĐẠO CỤ BỊ HỎNG / CẦN SỬA CHỮA -->
-      <div class="bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden space-y-2 p-3 bg-red-50/10">
+      <div class="bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden space-y-2 p-2.5 sm:p-3 bg-red-50/10">
         <div class="flex items-center justify-between border-b border-red-100 pb-2">
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
-            <span class="font-bold text-red-800 uppercase text-xs flex items-center gap-1.5">
-              <i class="fa-solid fa-triangle-exclamation"></i> Danh Sách Đạo Cụ Bị Hỏng / Sự Cố
+            <span class="font-bold text-red-800 uppercase text-xs flex items-center gap-1">
+              <i class="fa-solid fa-triangle-exclamation"></i> Báo Sự Cố / Đồ Hỏng
             </span>
           </div>
-          <button type="button" onclick="appendBrokenItemRow()" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-xs flex items-center gap-1 shadow-sm transition">
-            <i class="fa-solid fa-plus"></i> Báo thêm đồ hỏng
+          <button type="button" onclick="appendBrokenItemRow()" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-xs flex items-center gap-1 shadow-sm transition">
+            <i class="fa-solid fa-plus"></i> + Báo đồ hỏng
           </button>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-red-50 text-red-900 font-bold border-b border-red-200 uppercase text-[11px]">
+        <div class="overflow-visible">
+          <table class="w-full text-left border-collapse text-xs block sm:table">
+            <thead class="hidden sm:table-header-group bg-red-50 text-red-900 font-bold border-b border-red-200 uppercase text-[11px]">
               <tr>
                 <th class="p-2 text-center w-10">STT</th>
-                <th class="p-2 text-left min-w-[180px]">Tên đạo cụ hỏng <span class="text-red-500">*</span></th>
+                <th class="p-2 text-left min-w-[180px]">Tên đạo cụ hỏng</th>
                 <th class="p-2 text-center w-16">ĐVT</th>
-                <th class="p-2 text-center w-20">SL Hỏng <span class="text-red-500">*</span></th>
-                <th class="p-2 text-left min-w-[170px]">Vị trí cất đồ hỏng <span class="text-red-500">*</span></th>
-                <th class="p-2 text-left min-w-[180px]">Ghi chú hiện trạng hư hại <span class="text-red-500">*</span></th>
-                <th class="p-2 text-left min-w-[260px]">Ảnh chụp hiện trạng & Ghi chú ảnh <span class="text-red-500">*</span></th>
+                <th class="p-2 text-center w-20">SL Hỏng</th>
+                <th class="p-2 text-left min-w-[170px]">Vị trí cất đồ hỏng</th>
+                <th class="p-2 text-left min-w-[180px]">Ghi chú hư hại</th>
+                <th class="p-2 text-left min-w-[240px]">Ảnh chụp hiện trạng & Ghi chú</th>
                 <th class="p-2 text-center w-12">Xóa</th>
               </tr>
             </thead>
-            <tbody id="importBrokenTbody" class="divide-y divide-red-100 bg-white"></tbody>
+            <tbody id="importBrokenTbody" class="block sm:table-row-group space-y-2 sm:space-y-0 sm:divide-y sm:divide-red-100 bg-white"></tbody>
           </table>
         </div>
       </div>
@@ -667,7 +663,7 @@
 
         <div class="flex items-center gap-2">
           <button type="button" onclick="resetImportForm()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-slate-700 font-bold flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-arrows-rotate"></i> Nhập lại từ đầu
+            <i class="fa-solid fa-arrows-rotate"></i> Nhập lại
           </button>
           <button onclick="exportCurrentChecklistToExcel('import')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl font-semibold">
             <i class="fa-solid fa-file-excel text-emerald-600"></i> Xuất File Hoàn Trả
@@ -680,106 +676,98 @@
     </section>
 
     <!-- TAB 5: PHIẾU THANH LÝ -->
-    <section id="tab-liquidation" class="tab-content hidden space-y-3">
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
+    <section id="tab-liquidation" class="tab-content hidden space-y-2.5">
+      <!-- THÔNG TIN THANH LÝ: CHIA ĐÚNG 2 TRƯỜNG / 1 HÀNG TRÊN MỌI THIẾT BỊ -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
         <div>
-          <label class="block font-semibold mb-0.5">Ngày thực hiện thanh lý <span class="text-red-500">*</span></label>
-          <input type="date" id="liqDate" class="w-full p-2 border border-slate-300 rounded font-bold text-slate-800 bg-white">
+       <label class="block font-semibold mb-0.5 text-[11px]">Ngày thanh lý <span class="text-slate-400 font-normal"></span></label>
+       <input type="date" id="liqDate" readonly class="w-full p-1.5 bg-slate-100 border border-slate-200 rounded font-bold text-slate-600 text-xs cursor-not-allowed">
+     </div>
+        <div>
+          <label class="block font-semibold mb-0.5 text-[11px]">Kho thanh lý <span class="text-red-500">*</span></label>
+          <select id="liqWarehouse" onchange="buildLiquidationTableRows()" class="w-full p-1.5 border border-slate-300 rounded font-bold text-aba bg-white text-xs"></select>
         </div>
         <div>
-          <label class="block font-semibold mb-0.5">Kho thanh lý đồ <span class="text-red-500">* (1 kho 1 phiếu)</span></label>
-          <select id="liqWarehouse" onchange="buildLiquidationTableRows()" class="w-full p-2 border border-slate-300 rounded font-bold text-aba bg-white"></select>
+          <label class="block font-semibold mb-0.5 text-[11px]">Người thực hiện</label>
+          <input type="text" id="liqProposer" readonly class="w-full p-1.5 bg-slate-100 border border-slate-300 rounded text-slate-700 font-bold text-xs cursor-not-allowed">
         </div>
         <div>
-          <label class="block font-semibold mb-0.5">Người thực hiện thanh lý</label>
-          <input type="text" id="liqProposer" readonly class="w-full p-2 bg-slate-100 border border-slate-300 rounded text-slate-700 font-bold">
-        </div>
-        <div>
-          <label class="block font-semibold mb-0.5">Lý do thanh lý đợt này <span class="text-red-500">*</span></label>
-          <input type="text" id="liqReason" placeholder="Hỏng nát không thể sửa chữa..." class="w-full p-2 border border-slate-300 rounded font-semibold text-slate-800">
+          <label class="block font-semibold mb-0.5 text-[11px]">Lý do đợt này <span class="text-red-500">*</span></label>
+          <input type="text" id="liqReason" placeholder="Thanh lý đồ team rách, thủng..." class="w-full p-1.5 border border-slate-300 rounded font-semibold text-slate-800 text-xs bg-white">
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-visible">
-        <div class="overflow-x-auto overflow-y-visible">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase">
-              <tr>
-                <th class="p-2 w-10 text-center">STT</th>
-                <th class="p-2 min-w-[200px]">Hạng mục (Tên đạo cụ)</th>
-                <th class="p-2 w-20 text-center">ĐVT</th>
-                <th class="p-2 w-36">Nguồn trừ tồn kho</th>
-                <th class="p-2 w-24 text-center">Số lượng</th>
-                <th class="p-2 min-w-[130px]">Ảnh tình trạng riêng</th>
-                <th class="p-2 min-w-[150px]">Lý do thanh lý chi tiết</th>
-                <th class="p-2 w-10 text-center">Xóa</th>
-              </tr>
-            </thead>
-            <tbody id="liquidationChecklistTableBody" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
+      <!-- BẢNG THANH LÝ: DẠNG CARD TRÊN MOBILE -->
+      <div class="bg-transparent sm:bg-white sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm overflow-visible">
+        <table class="w-full text-left border-collapse text-xs block sm:table">
+          <thead class="hidden sm:table-header-group bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase">
+            <tr>
+              <th class="p-2 w-10 text-center">STT</th>
+              <th class="p-2 min-w-[200px]">Hạng mục (Tên đạo cụ)</th>
+              <th class="p-2 w-20 text-center">ĐVT</th>
+              <th class="p-2 w-36">Nguồn trừ tồn kho</th>
+              <th class="p-2 w-24 text-center">Số lượng</th>
+              <th class="p-2 min-w-[130px]">Ảnh tình trạng</th>
+              <th class="p-2 min-w-[150px]">Lý do thanh lý chi tiết</th>
+              <th class="p-2 w-10 text-center">Xóa</th>
+            </tr>
+          </thead>
+          <tbody id="liquidationChecklistTableBody" class="block sm:table-row-group space-y-1 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
+        </table>
       </div>
 
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div>
-          <span class="text-slate-500 italic">* Lưu ý: Đạo cụ sau khi thanh lý sẽ tự động giảm trừ vào tổng tồn kho và vị trí lưu trữ.</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="resetLiquidationForm()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 font-bold rounded-xl flex items-center gap-1.5 text-xs">
-            <i class="fa-solid fa-arrows-rotate"></i> Nhập lại từ đầu
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 text-xs">
+        <span class="text-[11px] text-slate-500 italic">* Lưu ý: Đạo cụ sau khi thanh lý sẽ tự động giảm trừ vào tổng tồn kho.</span>
+        <div class="grid grid-cols-2 sm:flex items-center gap-1.5">
+          <button type="button" onclick="resetLiquidationForm()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 font-bold rounded-xl text-xs flex items-center justify-center gap-1">
+            <i class="fa-solid fa-arrows-rotate text-red-500"></i> Nhập lại
           </button>
-          <button onclick="submitLiquidationTicket()" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg flex items-center gap-1.5 text-xs">
-            <i class="fa-solid fa-trash-can"></i> XÁC NHẬN THANH LÝ ĐẠO CỤ
+          <button onclick="submitLiquidationTicket()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow text-xs flex items-center justify-center gap-1">
+            <i class="fa-solid fa-trash-can"></i> Xác nhận thanh lý
           </button>
         </div>
       </div>
     </section>
 
     <!-- ==================== TAB 6: THƯ VIỆN CHỨNG TỪ (DẠNG BẢNG DANH SÁCH) ==================== -->
-    <section id="tab-archive" class="tab-content hidden space-y-3">
-      <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-        <div>
-          <label class="block font-semibold mb-0.5">Loại chứng từ</label>
-          <select id="archiveFilterType" onchange="renderArchiveTickets()" class="w-full p-2 border border-slate-300 rounded bg-slate-50">
-            <option value="">Tất cả phiếu</option>
-            <option value="NHAP_LAN_DAU">Phiếu Nhập Lần Đầu</option>
-            <option value="XUAT_KHO">Phiếu Xuất Kho</option>
-            <option value="NHAP_KHO">Phiếu Nhập Kho</option>
-            <option value="CHUAN_BI">Phiếu Chuẩn Bị</option>
-            <option value="THANH_LY">Phiếu Thanh Lý</option>
+    <section id="tab-archive" class="tab-content hidden space-y-2">
+      <!-- BỘ LỌC CHỨNG TỪ SIÊU GỌN: TÌM KIẾM TRÊN + 2 SELECT DƯỚI (TIẾT KIỆM 60% DIỆN TÍCH) -->
+      <div class="bg-white p-2 rounded-xl border border-slate-200 shadow-sm space-y-1.5 text-xs">
+        <div class="relative">
+          <input type="text" id="archiveSearchInput" oninput="renderArchiveTickets()" placeholder="Tìm tên dự án, người lập, mã phiếu..." class="w-full pl-7 pr-2 py-1.5 border border-slate-300 rounded-lg bg-slate-50 text-xs">
+          <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
+        </div>
+        <div class="grid grid-cols-2 gap-1.5">
+          <select id="archiveFilterType" onchange="renderArchiveTickets()" class="w-full p-1.5 border border-slate-300 rounded-lg bg-slate-50 text-[11px] font-semibold">
+            <option value="">Tất cả loại phiếu</option>
+            <option value="NHAP_LAN_DAU">Nhập Lần Đầu</option>
+            <option value="XUAT_KHO">Xuất Kho</option>
+            <option value="NHAP_KHO">Nhập Về</option>
+            <option value="CHUAN_BI">Chuẩn Bị</option>
+            <option value="THANH_LY">Thanh Lý</option>
           </select>
-        </div>
-        <div>
-          <label class="block font-semibold mb-0.5">Kho thực hiện</label>
-          <select id="archiveFilterWarehouse" onchange="renderArchiveTickets()" class="w-full p-2 border border-slate-300 rounded bg-slate-50"></select>
-        </div>
-        <div class="col-span-2">
-          <label class="block font-semibold mb-0.5">Tìm kiếm</label>
-          <input type="text" id="archiveSearchInput" oninput="renderArchiveTickets()" placeholder="Tên dự án, nhân sự, mã phiếu..." class="w-full p-2 border border-slate-300 rounded bg-slate-50">
+          <select id="archiveFilterWarehouse" onchange="renderArchiveTickets()" class="w-full p-1.5 border border-slate-300 rounded-lg bg-slate-50 text-[11px] font-semibold"></select>
         </div>
       </div>
 
-      <!-- BẢNG DANH SÁCH CHỨNG TỪ CHUYÊN NGHIỆP -->
-      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase text-xs">
-           <tr>
-             <th class="py-3 px-2 w-12 text-center whitespace-nowrap">STT</th>
-             <th class="py-3 px-3 min-w-[220px]">TÊN DỰ ÁN / NỘI DUNG</th>
-             <th class="py-3 px-2 w-32 text-center whitespace-nowrap">LOẠI PHIẾU</th>
-             <th class="py-3 px-3 w-36 whitespace-nowrap">KHO THỰC HIỆN</th>
-             <th class="py-3 px-3 w-44 whitespace-nowrap">NGƯỜI THỰC HIỆN</th>
-             <th class="py-3 px-2 w-36 text-center whitespace-nowrap">THỜI GIAN</th>
-             <th class="py-3 px-2 w-28 text-center whitespace-nowrap">THAO TÁC</th>
-           </tr>
-         </thead>
-            <tbody id="archiveTableBody" class="divide-y divide-slate-100"></tbody>
-          </table>
-        </div>
+      <!-- DANH SÁCH CHỨNG TỪ: THẺ CARD SIÊU GỌN MOBILE / BẢNG CHUYÊN NGHIỆP DESKTOP -->
+      <div class="bg-transparent sm:bg-white sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm overflow-visible">
+        <table class="w-full text-left border-collapse text-xs block sm:table">
+          <thead class="hidden sm:table-header-group bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase text-xs">
+            <tr>
+              <th class="py-2.5 px-2 w-10 text-center">STT</th>
+              <th class="py-2.5 px-3 min-w-[200px]">TÊN DỰ ÁN / NỘI DUNG</th>
+              <th class="py-2.5 px-2 w-28 text-center">LOẠI PHIẾU</th>
+              <th class="py-2.5 px-3 w-32">KHO THỰC HIỆN</th>
+              <th class="py-2.5 px-3 w-40">NGƯỜI THỰC HIỆN</th>
+              <th class="py-2.5 px-2 w-32 text-center">THỜI GIAN</th>
+              <th class="py-2.5 px-2 w-24 text-center">THAO TÁC</th>
+            </tr>
+          </thead>
+          <tbody id="archiveTableBody" class="block sm:table-row-group space-y-1.5 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
+        </table>
       </div>
     </section>
-  </main>
 
   <!-- ==================== MODAL: XEM CHI TIẾT PHIẾU & TẢI PDF (READ-ONLY) ==================== -->
   <div id="ticketDetailModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-3 hidden">
@@ -1659,42 +1647,83 @@
       filtered.forEach(p => {
         const badgeColor = p.type === 'Khấu hao' ? 'badge-depreciable' : 'badge-consumable';
         const locationsHtml = (p.locations || []).map(l => {
-          const warn = (!l.shelf || !l.tier) ? '<span class="text-amber-600 font-bold ml-1">[⚠️ Chưa xếp giá kệ]</span>' : '';
-          return `<div><span class="font-bold text-slate-700">[${l.warehouse}]</span> ${l.shelf || 'Chưa xếp giá'} / Tầng ${l.tier || '---'} (${l.qty})${warn}</div>`;
+          const warn = (!l.shelf || !l.tier) ? '<span class="text-amber-600 font-bold ml-1">[⚠️ Chưa kệ]</span>' : '';
+          return `<div><span class="font-bold text-slate-700">[${l.warehouse}]</span> ${l.shelf || 'Chưa xếp'} / T${l.tier || '---'} (${l.qty})${warn}</div>`;
         }).join('');
 
+        const usableVal = p.usable !== undefined ? p.usable : (p.usableQty || 0);
+        const inUseVal = p.inUse !== undefined ? p.inUse : (p.inUseQty || 0);
+        const brokenVal = p.broken !== undefined ? p.broken : (p.brokenQty || 0);
+        const inStockVal = p.inStock !== undefined ? p.inStock : (p.inStockQty || 0);
+        const totalVal = p.total !== undefined ? p.total : (p.totalQty || 0);
+
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-            <td class="p-2 text-center">
-              <img src="${p.image || 'https://via.placeholder.com/40'}" class="w-10 h-10 object-cover rounded border border-slate-200 cursor-pointer mx-auto" onclick="openLightbox(${JSON.stringify(p.images || [p.image]).replace(/"/g, '&quot;')}, 0)">
-            </td>
-            <td class="p-2 group">
-              <div class="flex items-center justify-between gap-1">
-                <span class="font-bold text-aba cursor-pointer hover:underline flex items-center gap-1.5" onclick="openPropDetailModal('${p.code}')">
-                  ${p.name} <i class="fa-solid fa-circle-info text-[11px] text-slate-400"></i>
-                </span>
-                <button type="button" onclick="openEditPropModal('${p.code}')" class="px-2 py-0.5 bg-slate-100 hover:bg-amber-100 border border-slate-200 hover:border-amber-300 text-slate-600 hover:text-amber-800 rounded font-bold text-[10px] flex items-center gap-1 transition" title="Sửa thông tin đạo cụ">
-                  <i class="fa-solid fa-pen-to-square text-amber-600"></i> Sửa
-                </button>
+          <tr class="block sm:table-row bg-white p-2.5 sm:p-2 rounded-xl sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition">
+            
+            <!-- HÀNG 1 MOBILE: ẢNH + TÊN + MÃ/ĐVT + PHÂN LOẠI + NÚT SỬA -->
+            <td class="block sm:table-cell p-0 sm:p-2 sm:text-center">
+              <div class="flex items-center gap-2">
+                <img src="${p.image || 'https://via.placeholder.com/40'}" class="w-12 h-12 sm:w-10 sm:h-10 object-cover rounded-lg border border-slate-200 cursor-pointer flex-shrink-0" onclick="openLightbox(${JSON.stringify(p.images || [p.image]).replace(/"/g, '&quot;')}, 0)">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between gap-1">
+                    <span class="font-bold text-aba cursor-pointer hover:underline text-xs sm:text-sm truncate" onclick="openPropDetailModal('${p.code}')">
+                      ${p.name}
+                    </span>
+                    <button type="button" onclick="openEditPropModal('${p.code}')" class="px-2 py-0.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 rounded font-bold text-[10px] flex items-center gap-1 flex-shrink-0">
+                      <i class="fa-solid fa-pen-to-square text-amber-600"></i> Sửa
+                    </button>
+                  </div>
+                  <div class="text-[10px] text-slate-500 font-mono mt-0.5">
+                    ${p.code} | ĐVT: <b>${p.unit}</b> | <span class="font-bold ${p.type === 'Khấu hao' ? 'text-emerald-700' : 'text-red-600'}">${p.type}</span>
+                  </div>
+                  ${p.specs ? `<div class="text-[10px] text-slate-400 truncate">${p.specs}</div>` : ''}
+                </div>
               </div>
-              <div class="text-[10px] text-slate-500 font-mono">${p.code} | ĐVT: ${p.unit}</div>
-              <div class="text-[10px] text-slate-400 truncate max-w-xs">${p.specs || ''}</div>
             </td>
-            <td class="p-2">
+
+            <!-- CỘT DESKTOP: PHÂN LOẠI -->
+            <td class="hidden sm:table-cell p-2 text-center">
               <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${p.type}</span>
               <div class="text-[10px] text-slate-500 mt-0.5">${p.categories.join(', ')}</div>
             </td>
-            <td class="p-2 text-[11px] leading-relaxed">${locationsHtml || 'Chưa định vị'}</td>
-            <!-- 1. DÙNG ĐƯỢC -->
-            <td class="p-2 text-center font-bold text-emerald-600 bg-emerald-50/40">${p.usable !== undefined ? p.usable : (p.usableQty || 0)}</td>
-            <!-- 2. ĐANG DÙNG -->
-            <td class="p-2 text-center font-bold text-amber-600">${p.inUse !== undefined ? p.inUse : (p.inUseQty || 0)}</td>
-            <!-- 3. HỎNG -->
-            <td class="p-2 text-center font-bold text-red-600">${p.broken !== undefined ? p.broken : (p.brokenQty || 0)}</td>
-            <!-- 4. TẠI KHO -->
-            <td class="p-2 text-center font-bold text-blue-700">${p.inStock !== undefined ? p.inStock : (p.inStockQty || 0)}</td>
-            <!-- 5. TỔNG -->
-            <td class="p-2 text-center font-bold text-slate-700">${p.total !== undefined ? p.total : (p.totalQty || 0)}</td>
+
+            <!-- VỊ TRÍ LƯU KHO -->
+            <td class="block sm:table-cell p-1.5 sm:p-2 text-[10px] sm:text-[11px] bg-slate-50 sm:bg-transparent rounded-lg sm:rounded-none mt-1.5 sm:mt-0 leading-relaxed">
+              <span class="sm:hidden font-bold text-slate-500 mr-1">📍 Vị trí:</span>${locationsHtml || 'Chưa định vị'}
+            </td>
+
+            <!-- 5 CHỈ SỐ TỒN KHO: TRÊN MOBILE HIỂN THỊ DẠNG 5 Ô MINI THẲNG HÀNG -->
+            <td colspan="5" class="block sm:hidden mt-1.5 pt-1.5 border-t border-slate-100">
+              <div class="grid grid-cols-5 gap-1 text-center">
+                <div class="bg-emerald-50 p-1 rounded border border-emerald-100">
+                  <div class="text-[8px] font-bold text-emerald-800 uppercase">Dùng</div>
+                  <div class="text-xs font-black text-emerald-700">${usableVal}</div>
+                </div>
+                <div class="bg-amber-50 p-1 rounded border border-amber-100">
+                  <div class="text-[8px] font-bold text-amber-800 uppercase">Đang đi</div>
+                  <div class="text-xs font-bold text-amber-700">${inUseVal}</div>
+                </div>
+                <div class="bg-red-50 p-1 rounded border border-red-100">
+                  <div class="text-[8px] font-bold text-red-700 uppercase">Hỏng</div>
+                  <div class="text-xs font-bold text-red-600">${brokenVal}</div>
+                </div>
+                <div class="bg-blue-50 p-1 rounded border border-blue-100">
+                  <div class="text-[8px] font-bold text-blue-800 uppercase">Tại kho</div>
+                  <div class="text-xs font-bold text-blue-700">${inStockVal}</div>
+                </div>
+                <div class="bg-slate-100 p-1 rounded border border-slate-200">
+                  <div class="text-[8px] font-bold text-slate-600 uppercase">Tổng</div>
+                  <div class="text-xs font-black text-slate-800">${totalVal}</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- CÁC CỘT DESKTOP RIÊNG BIỆT -->
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-emerald-600 bg-emerald-50/40">${usableVal}</td>
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-amber-600">${inUseVal}</td>
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-red-600">${brokenVal}</td>
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-blue-700">${inStockVal}</td>
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-slate-700">${totalVal}</td>
           </tr>
         `;
       });
@@ -2189,7 +2218,7 @@
 
       if (locSum === totalQty) {
         badge.className = "text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
-        badge.innerHTML = `✅ Khớp số lượng: ${locSum} / ${totalQty}`;
+        badge.innerHTML = `✅ Số lượng: ${locSum} / ${totalQty}`;
         if (alertBox) alertBox.classList.add('hidden');
         return true;
       } else {
@@ -2399,42 +2428,90 @@
     function createExportRowElement(item, idx) {
       const tr = document.createElement('tr');
       tr.id = `export-row-${idx}`;
-      tr.className = 'border-b border-slate-100 transition';
+      // Mobile: 1 hàng ngang chỉ cao ~48px; Desktop: table-row như cũ
+      tr.className = 'block sm:table-row bg-white p-1.5 sm:p-0 rounded-lg sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition';
 
       const selWarehouse = document.getElementById('exportWarehouse').value;
       const prop = rawProps.find(p => p.name.toLowerCase() === (item.name || '').trim().toLowerCase());
       const info = getPropWarehouseInfo(prop, selWarehouse);
 
       tr.innerHTML = `
-        <td class="p-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
-        <td class="p-2 relative">
-          <input type="text" id="export-input-name-${idx}" value="${item.name || ''}" 
-            oninput="handleChecklistTyping(event, ${idx}, 'export')" 
-            onfocus="handleChecklistTyping(event, ${idx}, 'export')" 
-            placeholder="Gõ tên đạo cụ để gợi ý..." 
-            class="w-full p-1.5 border border-slate-300 rounded font-semibold text-xs bg-white">
-          <div id="export-suggest-${idx}" class="hidden absolute left-2 right-2 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
-          <div id="export-err-text-${idx}" class="hidden text-[10px] text-red-600 font-bold mt-0.5">⚠️ Tên đồ không có trong kho! Hãy chọn gợi ý.</div>
+        <!-- STT (Desktop hiện cột riêng) -->
+        <td class="hidden sm:table-cell p-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
+        
+        <!-- HÀNG 1 TRÊN MOBILE: [STT] [TÊN ĐẠO CỤ] [ĐVT] [SỐ LƯỢNG] [KHO CÓ] [XÓA] -->
+        <td class="block sm:table-cell p-0 sm:p-2 relative">
+          <div class="flex items-center gap-1">
+            <span class="sm:hidden w-4 h-4 rounded bg-slate-100 flex items-center justify-center font-mono font-bold text-slate-500 text-[9px] flex-shrink-0">${idx + 1}</span>
+            <div class="flex-1 min-w-0 relative">
+              <input type="text" id="export-input-name-${idx}" value="${item.name || ''}" 
+                oninput="handleChecklistTyping(event, ${idx}, 'export')" 
+                onfocus="handleChecklistTyping(event, ${idx}, 'export')" 
+                placeholder="Tên đạo cụ..." 
+                class="w-full p-1 border border-slate-300 rounded font-bold text-xs bg-white text-slate-800">
+              <div id="export-suggest-${idx}" class="hidden absolute left-0 right-0 top-full mt-0.5 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-52 overflow-y-auto divide-y divide-slate-100"></div>
+              <div id="export-err-text-${idx}" class="hidden text-[9px] text-red-600 font-bold">⚠️ Sai tên kho!</div>
+            </div>
+
+            <!-- ĐVT trên mobile -->
+            <input type="text" readonly id="export-unit-${idx}" value="${item.unit || ''}" placeholder="ĐVT" 
+              class="sm:hidden w-11 p-1 text-center font-bold text-slate-600 bg-slate-100 border border-slate-200 rounded text-[11px] cursor-not-allowed flex-shrink-0">
+
+            <!-- SỐ LƯỢNG trên mobile -->
+            <input type="number" min="1" id="export-qty-${idx}" value="${item.qty || ''}" 
+              oninput="handleExportQtyChange(${idx}, this.value)" placeholder="SL" 
+              class="sm:hidden w-11 p-1 text-center font-black border border-aba rounded text-xs bg-white text-aba flex-shrink-0">
+
+            <!-- TỒN KHO trên mobile -->
+            <div class="sm:hidden flex-shrink-0 text-[10px]">
+              ${renderStockStatusHtml(item, info.usable, !!prop)}
+            </div>
+
+            <!-- Nút xóa trên mobile -->
+            <button type="button" onclick="removeExportRowItem(${idx})" class="sm:hidden p-1 text-slate-300 hover:text-red-500 flex-shrink-0" title="Xóa">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
         </td>
-        <td class="p-2 text-center">
-          <input type="text" readonly id="export-unit-${idx}" value="${item.unit || ''}" placeholder="---" 
-            class="w-20 p-1.5 text-center font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded text-xs cursor-not-allowed">
+
+        <!-- CỘT DESKTOP: ĐƠN VỊ TÍNH -->
+        <td class="hidden sm:table-cell p-2 text-center">
+          <input type="text" readonly value="${item.unit || ''}" placeholder="---" 
+            class="w-16 p-1.5 text-center font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded text-xs cursor-not-allowed">
         </td>
-        <td class="p-2 text-center">
-          <input type="number" min="1" id="export-qty-${idx}" value="${item.qty || ''}" 
+
+        <!-- CỘT DESKTOP: SỐ LƯỢNG -->
+        <td class="hidden sm:table-cell p-2 text-center">
+          <input type="number" min="1" value="${item.qty || ''}" 
             oninput="handleExportQtyChange(${idx}, this.value)" placeholder="0" 
-            class="w-16 p-1.5 text-center font-bold border border-slate-300 rounded text-xs bg-white text-aba">
+            class="w-16 p-1.5 text-center font-black border border-aba rounded text-xs bg-white text-aba">
         </td>
-        <td class="p-2 text-[11px]" id="export-loc-${idx}">${info.text}</td>
-        <td class="p-2 text-center" id="export-status-${idx}">
+
+        <!-- CỘT DESKTOP: VỊ TRÍ (Mobile hiển thị dòng phụ phía dưới) -->
+        <td class="block sm:table-cell p-0 sm:p-2 text-[10px] text-slate-500 mt-0.5 sm:mt-0" id="export-loc-${idx}">
+          <div class="flex items-center justify-between gap-1 pl-5 sm:pl-0">
+            <span class="truncate flex-1">📍 ${info.text}</span>
+            <input type="text" value="${item.note || ''}" oninput="handleExportNoteChange(${idx}, this.value)" placeholder="Ghi chú..." 
+              class="sm:hidden w-28 p-0.5 border border-slate-200 rounded text-[10px] bg-white">
+          </div>
+        </td>
+
+        <!-- CỘT DESKTOP: TÌNH TRẠNG KHO -->
+        <td class="hidden sm:table-cell p-2 text-center" id="export-status-${idx}">
           ${renderStockStatusHtml(item, info.usable, !!prop)}
         </td>
-        <td class="p-2">
+
+        <!-- CỘT DESKTOP: GHI CHÚ -->
+        <td class="hidden sm:table-cell p-2">
           <input type="text" value="${item.note || ''}" oninput="handleExportNoteChange(${idx}, this.value)" placeholder="Ghi chú..." 
             class="w-full p-1.5 border border-slate-200 rounded text-[11px] bg-white">
         </td>
-        <td class="p-2 text-center">
-          <button type="button" onclick="removeExportRowItem(${idx})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+
+        <!-- CỘT DESKTOP: NÚT XÓA -->
+        <td class="hidden sm:table-cell p-2 text-center">
+          <button type="button" onclick="removeExportRowItem(${idx})" class="text-slate-400 hover:text-red-500 transition" title="Xóa dòng">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
         </td>
       `;
 
@@ -2791,7 +2868,7 @@
     function populateImportProjectsSelect() {
       const sel = document.getElementById('importProjectSelect');
       if (!sel) return;
-      sel.innerHTML = '<option value="">-- Chọn dự án hoàn trả --</option>';
+      sel.innerHTML = '<option value="">Chọn dự án hoàn trả</option>';
 
       const eligibleTickets = getEligibleExportTicketsForImport();
       eligibleTickets.forEach(t => {
@@ -2892,97 +2969,121 @@
         const brokenQty = getBrokenQtyForProp(item.name);
         const receivedQty = goodQty + brokenQty;
         
-        // Tính toán chênh lệch thừa / thiếu
         const diffQty = receivedQty - exportQty;
-        const isSurplus = exportQty > 0 && diffQty > 0;  // Nhận thừa
-        const isLost = exportQty > 0 && diffQty < 0;     // Bị mất/thiếu
+        const isSurplus = exportQty > 0 && diffQty > 0;
+        const isLost = exportQty > 0 && diffQty < 0;
 
         if (!item.locations || !item.locations.length) {
           item.locations = [{ shelf: '', tier: '', qty: receivedQty > 0 ? receivedQty : '' }];
         }
 
         const totalLocQty = item.locations.reduce((s, l) => s + (Number(l.qty) || 0), 0);
-        const isLocMismatch = item.name && (totalLocQty !== receivedQty);
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-50 transition border-b border-slate-100 ${isSurplus ? 'bg-amber-50/70' : (isLocMismatch ? 'bg-amber-50/30' : '')}">
-            <td class="p-2 text-center font-bold text-slate-400 font-mono">${idx + 1}</td>
+          <tr class="block sm:table-row bg-white p-1.5 sm:p-0 rounded-lg sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition ${isSurplus ? 'bg-amber-50/70' : ''}">
+            <!-- STT -->
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-slate-400 font-mono">${idx + 1}</td>
             
-            <!-- TÊN ĐẠO CỤ -->
-            <td class="p-2 relative">
-              <input type="text" id="import-input-name-${idx}" value="${item.name || ''}" 
-                oninput="handleImportItemNameTyping(event, ${idx})" 
-                onfocus="handleImportItemNameTyping(event, ${idx})" 
-                placeholder="Gõ tên hoặc chọn từ phiếu..." 
-                class="w-full p-1.5 border border-slate-300 rounded font-bold text-xs bg-white text-slate-800">
-              <div id="import-suggest-${idx}" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-52 overflow-y-auto divide-y divide-slate-100"></div>
+            <!-- HÀNG 1 TRÊN MOBILE: [STT] [TÊN ĐỒ] [MANG] [TỐT] [NHẬN] [THỪA/THIẾU] [XÓA] -->
+            <td class="block sm:table-cell p-0 sm:p-2 relative">
+              <div class="flex items-center gap-1">
+                <span class="sm:hidden w-4 h-4 rounded bg-slate-100 flex items-center justify-center font-mono font-bold text-slate-500 text-[9px] flex-shrink-0">${idx + 1}</span>
+                <div class="flex-1 min-w-0 relative">
+                  <input type="text" id="import-input-name-${idx}" value="${item.name || ''}" 
+                    oninput="handleImportItemNameTyping(event, ${idx})" 
+                    onfocus="handleImportItemNameTyping(event, ${idx})" 
+                    placeholder="Tên đạo cụ..." 
+                    class="w-full p-1 border border-slate-300 rounded font-bold text-xs bg-white text-slate-800">
+                  <div id="import-suggest-${idx}" class="hidden absolute left-0 right-0 top-full mt-0.5 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-52 overflow-y-auto divide-y divide-slate-100"></div>
+                </div>
+
+                <!-- Đã mang đi -->
+                <span class="sm:hidden text-[10px] text-slate-500 font-bold px-1" title="Đã mang đi">Xuất:${exportQty}</span>
+
+                <!-- SL Còn tốt -->
+                <input type="number" min="0" value="${item.goodQty !== undefined ? item.goodQty : ''}" 
+                  oninput="handleGoodQtyChange(${idx}, this.value)" 
+                  placeholder="Tốt" 
+                  title="SL còn tốt"
+                  class="sm:hidden w-11 p-1 text-center border border-emerald-400 rounded text-xs font-bold text-emerald-800 bg-emerald-50/30 flex-shrink-0">
+
+                <!-- Số nhận về -->
+                <span class="sm:hidden text-xs font-black text-blue-700 px-1" title="Số nhận về">Nhận:${receivedQty}</span>
+
+                <!-- Cảnh báo Mất / Thừa -->
+                <div class="sm:hidden flex-shrink-0">
+                  ${isLost ? `<span class="px-1 py-0.5 rounded bg-red-100 text-red-700 font-bold text-[10px]">Mất:${Math.abs(diffQty)}</span>` : 
+                    (isSurplus ? `<span class="px-1 py-0.5 rounded bg-amber-100 text-amber-900 font-black text-[10px]">Thừa:+${diffQty}</span>` : 
+                    `<span class="text-slate-300 text-[10px]">✓</span>`)}
+                </div>
+
+                <button type="button" onclick="removeImportRowItem(${idx})" class="sm:hidden p-1 text-slate-300 hover:text-red-500 flex-shrink-0">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </div>
             </td>
 
-            <!-- ĐƠN VỊ -->
-            <td class="p-2 text-center">
-              <input type="text" readonly id="import-unit-${idx}" value="${item.unit || ''}" placeholder="---" 
+            <!-- CỘT DESKTOP: ĐVT -->
+            <td class="hidden sm:table-cell p-2 text-center">
+              <input type="text" readonly value="${item.unit || ''}" placeholder="---" 
                 class="w-16 p-1.5 text-center font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded text-xs cursor-not-allowed">
             </td>
 
-            <!-- ĐÃ MANG ĐI -->
-            <td class="p-2 text-center font-bold text-slate-700 bg-slate-50">
-              ${exportQty}
-            </td>
+            <!-- CỘT DESKTOP: ĐÃ MANG ĐI -->
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-slate-700 bg-slate-50">${exportQty}</td>
 
-            <!-- SL CÒN TỐT (Nổi bật viền nếu nhập thừa) -->
-            <td class="p-2 text-center ${isSurplus ? 'bg-amber-100/50' : 'bg-emerald-50/40'}">
+            <!-- CỘT DESKTOP: SL CÒN TỐT -->
+            <td class="hidden sm:table-cell p-2 text-center bg-emerald-50/40">
               <input type="number" min="0" value="${item.goodQty !== undefined ? item.goodQty : ''}" 
                 oninput="handleGoodQtyChange(${idx}, this.value)" 
                 placeholder="Điền SL" 
-                class="w-16 p-1.5 text-center border ${isSurplus ? 'border-amber-500 bg-amber-50 text-amber-900 font-black ring-2 ring-amber-300' : 'border-emerald-400 text-emerald-800 bg-white focus:ring-1 focus:ring-emerald-500'} rounded text-xs font-bold">
+                class="w-16 p-1.5 text-center border border-emerald-400 rounded text-xs font-bold text-emerald-800 bg-white">
             </td>
 
-            <!-- SỐ NHẬN VỀ -->
-            <td class="p-2 text-center ${isSurplus ? 'bg-amber-100/60' : 'bg-blue-50/40'}">
-              <div class="font-black ${isSurplus ? 'text-amber-800 text-base' : 'text-blue-700 text-sm'}">${receivedQty}</div>
-              ${brokenQty > 0 ? `<div class="text-[9px] text-red-600 font-bold">(${goodQty} tốt + ${brokenQty} hỏng)</div>` : ''}
+            <!-- CỘT DESKTOP: SỐ NHẬN VỀ -->
+            <td class="hidden sm:table-cell p-2 text-center bg-blue-50/40">
+              <div class="font-black text-blue-700 text-sm">${receivedQty}</div>
             </td>
 
-            <!-- MẤT / THIẾU (CẢNH BÁO THỪA / MẤT) -->
-            <td class="p-2 text-center">
+            <!-- CỘT DESKTOP: MẤT / THIẾU -->
+            <td class="hidden sm:table-cell p-2 text-center">
               ${isLost ? `<span class="px-2 py-0.5 rounded bg-red-100 text-red-700 font-bold text-xs inline-block">Mất: ${Math.abs(diffQty)}</span>` : 
-                (isSurplus ? `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 font-black text-xs inline-block animate-pulse">⚠️ Thừa: +${diffQty}</span>` : 
+                (isSurplus ? `<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-black text-xs inline-block">⚠️ Thừa: +${diffQty}</span>` : 
                 `<span class="text-slate-400 font-semibold">0</span>`)}
             </td>
 
-            <!-- VỊ TRÍ LƯU CẤT KHI VỀ -->
-            <td class="p-2">
-              <div class="space-y-1.5">
+            <!-- VỊ TRÍ LƯU CẤT (Dòng phụ gọn gàng bên dưới) -->
+            <td class="block sm:table-cell p-0 sm:p-2 mt-0.5 sm:mt-0">
+              <div class="space-y-1 pl-5 sm:pl-0">
                 ${item.locations.map((loc, lIdx) => `
                   <div class="flex items-center gap-1">
-                    <input type="text" list="shelfDatalist" placeholder="Giá/Kệ..." value="${loc.shelf || ''}" 
+                    <input type="text" list="shelfDatalist" placeholder="Giá..." value="${loc.shelf || ''}" 
                       oninput="updateImportLocItem(${idx}, ${lIdx}, 'shelf', this.value)" 
-                      class="w-20 p-1 border border-slate-300 rounded text-[11px] bg-white">
+                      class="w-16 sm:w-20 p-0.5 sm:p-1 border border-slate-300 rounded text-[10px] sm:text-[11px] bg-white">
                     <input type="text" list="tierDatalist" placeholder="Tầng..." value="${loc.tier || ''}" 
                       oninput="updateImportLocItem(${idx}, ${lIdx}, 'tier', this.value)" 
-                      class="w-14 p-1 border border-slate-300 rounded text-[11px] bg-white">
+                      class="w-12 sm:w-14 p-0.5 sm:p-1 border border-slate-300 rounded text-[10px] sm:text-[11px] bg-white">
                     <input type="number" min="0" placeholder="Số lượng" value="${loc.qty !== undefined && loc.qty !== '' ? loc.qty : ''}" 
                       oninput="updateImportLocItem(${idx}, ${lIdx}, 'qty', this.value)" 
-                      title="Số lượng lưu tại kệ này"
-                      class="w-16 p-1 border border-slate-300 rounded text-[11px] font-bold text-center text-aba bg-white">
+                      class="w-14 sm:w-16 p-0.5 sm:p-1 border border-slate-300 rounded text-[10px] sm:text-[11px] font-bold text-center text-aba bg-white">
                     ${item.locations.length > 1 ? `
-                      <button type="button" onclick="removeImportLocItem(${idx}, ${lIdx})" class="text-slate-400 hover:text-red-600 p-0.5" title="Xóa kệ này">
+                      <button type="button" onclick="removeImportLocItem(${idx}, ${lIdx})" class="text-slate-400 hover:text-red-600 p-0.5 text-xs">
                         <i class="fa-solid fa-xmark"></i>
                       </button>
                     ` : ''}
+                    <button type="button" onclick="addImportLocItem(${idx})" class="text-[9px] text-aba font-bold ml-1">
+                      +Kệ
+                    </button>
+                    <span class="text-[9px] font-bold ml-auto ${totalLocQty === receivedQty ? 'text-emerald-700' : 'text-red-600'}">
+                      ${totalLocQty}/${receivedQty}
+                    </span>
                   </div>
                 `).join('')}
               </div>
-              <div class="flex items-center justify-between mt-1">
-                <button type="button" onclick="addImportLocItem(${idx})" class="text-[10px] text-aba hover:text-aba-dark font-bold flex items-center gap-1 transition">
-                  <i class="fa-solid fa-plus-circle"></i> Thêm giá kệ</button>
-                <span class="text-[10px] font-bold ${totalLocQty === receivedQty ? 'text-emerald-700' : 'text-red-600'}">
-                  Giá/Kệ: ${totalLocQty}/${receivedQty}
-                </span>
-              </div>
             </td>
 
-            <td class="p-2 text-center">
+            <!-- CỘT DESKTOP: NÚT XÓA -->
+            <td class="hidden sm:table-cell p-2 text-center">
               <button type="button" onclick="removeImportRowItem(${idx})" class="text-slate-300 hover:text-red-500 transition">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
@@ -3110,8 +3211,8 @@
       if (!importBrokenList || !importBrokenList.length) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="8" class="p-3 text-center text-slate-400 italic">
-              Không có đạo cụ hỏng hoặc chưa khai báo sự cố.
+            <td colspan="8" class="p-3 text-center text-slate-400 italic text-xs block sm:table-cell">
+              Chưa có đạo cụ hỏng. Bấm "+ Báo đồ hỏng" nếu có phát sinh sự cố.
             </td>
           </tr>
         `;
@@ -3121,38 +3222,60 @@
       const availableProps = importChecklist.filter(it => it && it.name).map(it => it.name);
 
       importBrokenList.forEach((bItem, bIdx) => {
-        const brokenQty = Number(bItem.brokenQty) || 1;
+        const brokenQty = Number(bItem.brokenQty) || 0;
         const photosCount = (bItem.photos || []).length;
-        const isPhotoEnough = photosCount >= brokenQty;
+        const isPhotoEnough = brokenQty > 0 ? (photosCount >= brokenQty) : true;
 
         tbody.innerHTML += `
-          <tr class="hover:bg-red-50/30 transition border-b border-red-100">
-            <td class="p-2 text-center font-bold text-red-500">${bIdx + 1}</td>
-            <td class="p-2">
-              <select onchange="updateBrokenItemProp(${bIdx}, this.value)" class="w-full p-1.5 border border-red-300 rounded font-bold text-xs bg-white text-slate-800">
-                <option value="">-- Chọn đạo cụ hỏng * --</option>
-                ${availableProps.map(pName => `<option value="${pName}" ${pName === bItem.name ? 'selected' : ''}>${pName}</option>`).join('')}
-              </select>
+          <tr class="block sm:table-row bg-white p-2 sm:p-0 rounded-xl sm:rounded-none border border-red-200 sm:border-0 sm:border-b sm:border-red-100 shadow-xs sm:shadow-none transition">
+            <td class="hidden sm:table-cell p-2 text-center font-bold text-red-500">${bIdx + 1}</td>
+            
+            <!-- HÀNG 1 MOBILE: [STT] [CHỌN ĐẠO CỤ HỎNG] [ĐVT] [NÚT THÙNG RÁC XÓA HẲN] -->
+            <td class="block sm:table-cell p-0.5 sm:p-2">
+              <div class="flex items-center gap-1.5">
+                <span class="sm:hidden w-5 h-5 rounded-full bg-red-100 text-red-700 flex items-center justify-center font-bold text-[10px] flex-shrink-0">${bIdx + 1}</span>
+                <select onchange="updateBrokenItemProp(${bIdx}, this.value)" class="flex-1 min-w-0 p-1.5 border border-red-300 rounded font-bold text-xs bg-white text-slate-800">
+                  <option value="">-- Chọn đạo cụ hỏng --</option>
+                  ${availableProps.map(pName => `<option value="${pName}" ${pName === bItem.name ? 'selected' : ''}>${pName}</option>`).join('')}
+                </select>
+                <input type="text" readonly value="${bItem.unit || ''}" placeholder="ĐVT" 
+                  class="sm:hidden w-12 p-1.5 text-center font-bold text-slate-600 bg-slate-100 border border-slate-200 rounded text-xs cursor-not-allowed flex-shrink-0">
+                <button type="button" onclick="removeBrokenItemRow(${bIdx})" class="sm:hidden w-7 h-7 flex items-center justify-center text-red-500 hover:text-red-700 flex-shrink-0" title="Xóa dòng đồ hỏng này">
+                  <i class="fa-solid fa-trash-can text-sm"></i>
+                </button>
+              </div>
             </td>
-            <td class="p-2 text-center font-semibold text-slate-600">${bItem.unit || '---'}</td>
-            <td class="p-2 text-center">
-              <input type="number" min="1" value="${bItem.brokenQty || 1}" 
+
+            <!-- CỘT ĐVT DESKTOP -->
+            <td class="hidden sm:table-cell p-2 text-center font-semibold text-slate-600">${bItem.unit || '---'}</td>
+
+            <!-- HÀNG 2 MOBILE: SL HỎNG (CHO PHÉP GIẢM VỀ 0) & VỊ TRÍ CẤT -->
+            <td class="inline-block sm:table-cell w-1/3 sm:w-20 p-0.5 sm:p-2 mt-1 sm:mt-0 align-top">
+              <label class="sm:hidden block text-[9px] font-bold text-red-800 uppercase mb-0.5">SL Hỏng (Về 0 để bỏ)</label>
+              <input type="number" min="0" value="${bItem.brokenQty !== undefined ? bItem.brokenQty : 1}" 
                 oninput="updateBrokenItemQty(${bIdx}, this.value)" 
-                class="w-16 p-1.5 text-center border border-red-400 rounded text-xs font-bold text-red-700 bg-white">
+                class="w-full sm:w-16 p-1.5 text-center border border-red-400 rounded text-xs font-bold text-red-700 bg-white">
             </td>
-            <td class="p-2">
+
+            <!-- VỊ TRÍ CẤT ĐỒ HỎNG -->
+            <td class="inline-block sm:table-cell w-2/3 sm:w-auto p-0.5 sm:p-2 mt-1 sm:mt-0 align-top">
+              <label class="sm:hidden block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Vị trí cất đồ hỏng</label>
               <input type="text" value="${bItem.location || ''}" 
                 oninput="importBrokenList[${bIdx}].location = this.value" 
-                placeholder="Vị trí cất đồ hỏng *" 
+                placeholder="Kệ đồ hỏng..." 
                 class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white">
             </td>
-            <td class="p-2">
+
+            <!-- GHI CHÚ HƯ HẠI -->
+            <td class="block sm:table-cell p-0.5 sm:p-2 mt-1 sm:mt-0">
               <input type="text" value="${bItem.note || ''}" 
                 oninput="importBrokenList[${bIdx}].note = this.value" 
-                placeholder="Mô tả rách, gãy, thủng... *" 
+                placeholder="Mô tả rách, gãy, thủng..." 
                 class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white">
             </td>
-            <td class="p-2">
+
+            <!-- ẢNH HIỆN TRẠNG & GHI CHÚ ẢNH -->
+            <td class="block sm:table-cell p-0.5 sm:p-2 mt-1 sm:mt-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <button type="button" onclick="triggerBrokenCamera(${bIdx})" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded font-bold text-[10px] flex items-center gap-1 shadow-sm">
                   <i class="fa-solid fa-camera"></i> Chụp
@@ -3161,24 +3284,28 @@
                   <i class="fa-solid fa-file-arrow-up"></i> Gửi file
                   <input type="file" accept="image/*" multiple class="hidden" onchange="handleBrokenFilesSelect(event, ${bIdx})">
                 </label>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isPhotoEnough ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-red-100 text-red-800 border border-red-300 animate-pulse'}">
-                  ${isPhotoEnough ? `✅ Đủ ảnh (${photosCount}/${brokenQty})` : `⚠️ Thiếu ảnh (${photosCount}/${brokenQty})`}
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isPhotoEnough ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800 animate-pulse'}">
+                  ${brokenQty > 0 ? (isPhotoEnough ? `✅ Đủ (${photosCount}/${brokenQty})` : `⚠️ Thiếu (${photosCount}/${brokenQty})`) : '0 hỏng'}
                 </span>
               </div>
-              <div class="flex flex-wrap gap-1 mt-1 max-h-16 overflow-y-auto">
-                ${(bItem.photos || []).map((ph, pIdx) => `
-                  <div class="relative w-8 h-8 rounded border border-slate-300 overflow-hidden flex-shrink-0">
-                    <img src="${ph}" class="w-full h-full object-cover cursor-pointer" onclick="openSingleLightbox('${ph}')">
-                    <button type="button" onclick="removeBrokenPhoto(${bIdx}, ${pIdx})" class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-600 text-white flex items-center justify-center text-[9px] rounded-bl">&times;</button>
-                  </div>
-                `).join('')}
-              </div>
+              ${(bItem.photos || []).length ? `
+                <div class="flex flex-wrap gap-1 mt-1 max-h-16 overflow-y-auto">
+                  ${bItem.photos.map((ph, pIdx) => `
+                    <div class="relative w-8 h-8 rounded border border-slate-300 overflow-hidden flex-shrink-0">
+                      <img src="${ph}" class="w-full h-full object-cover cursor-pointer" onclick="openSingleLightbox('${ph}')">
+                      <button type="button" onclick="removeBrokenPhoto(${bIdx}, ${pIdx})" class="absolute top-0 right-0 w-3.5 h-3.5 bg-red-600 text-white flex items-center justify-center text-[9px] rounded-bl">&times;</button>
+                    </div>
+                  `).join('')}
+                </div>
+              ` : ''}
               <input type="text" value="${bItem.photoNote || ''}" 
                 oninput="importBrokenList[${bIdx}].photoNote = this.value" 
-                placeholder="Ghi chú khi chụp ảnh hư hại... *" 
+                placeholder="Ghi chú ảnh hư hại..." 
                 class="w-full mt-1 p-1 border border-slate-200 rounded text-[10px] bg-slate-50 focus:bg-white">
             </td>
-            <td class="p-2 text-center">
+
+            <!-- NÚT XÓA DESKTOP -->
+            <td class="hidden sm:table-cell p-2 text-center">
               <button type="button" onclick="removeBrokenItemRow(${bIdx})" class="text-red-500 hover:text-red-700 p-1" title="Xóa dòng">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
@@ -3197,6 +3324,7 @@
       buildImportTableRows();
     }
 
+    // XÓA HẲN DÒNG NẾU BẤM NHẦM
     function removeBrokenItemRow(bIdx) {
       if (!importBrokenList) return;
       importBrokenList.splice(bIdx, 1);
@@ -3213,9 +3341,15 @@
       buildImportTableRows();
     }
 
+    // CHO PHÉP GIẢM VỀ 0 HOẶC XÓA BỎ
     function updateBrokenItemQty(bIdx, val) {
       if (!importBrokenList[bIdx]) return;
-      importBrokenList[bIdx].brokenQty = Math.max(1, Number(val) || 1);
+      const n = Number(val);
+      if (val === '' || isNaN(n) || n <= 0) {
+        importBrokenList[bIdx].brokenQty = 0;
+      } else {
+        importBrokenList[bIdx].brokenQty = n;
+      }
       buildImportBrokenRows();
       buildImportTableRows();
     }
@@ -3245,15 +3379,14 @@
       buildImportBrokenRows();
     }
 
-    // 11. Gửi phiếu nhập kho với tất cả ràng buộc
+    // GỬI PHIẾU: TỰ ĐỘNG BỎ QUA CÁC DÒNG ĐỒ HỎNG CÓ SL = 0 HOẶC CHƯA CHỌN TÊN
     async function submitImportTicket() {
       const projectTicketId = document.getElementById('importProjectSelect')?.value;
       if (!projectTicketId) return alert("⚠️ Vui lòng chọn Dự án / Phiếu xuất hoàn trả!");
 
-      // BẮT BUỘC TÍCH CHỌN 1 TRONG 2 Ô (ĐÃ ĐỦ HOẶC CHƯA ĐỦ)
       const returnStatusRadio = document.querySelector('input[name="importReturnStatusRadio"]:checked');
       if (!returnStatusRadio) {
-        return alert("⚠️ VUI LÒNG TÍCH CHỌN:\n'Chương trình đã trả đủ đồ chưa?' (Tích chọn: Đã đủ hoặc Chưa đủ) trước khi hoàn tất gửi phiếu!");
+        return alert("⚠️ Vui lòng tích chọn: 'Chương trình đã trả đủ đồ chưa?' (Đã đủ hoặc Chưa đủ)!");
       }
       const returnStatus = returnStatusRadio.value;
 
@@ -3261,37 +3394,26 @@
       const warehouse = document.getElementById('importWarehouseSelect')?.value || "Kho Xuân Thủy";
       const exporterName = document.getElementById('importOriginalExporter')?.value || "---";
 
-      // RÀNG BUỘC 1: Bắt buộc chụp ảnh hiện trạng thu hồi chung
       if (!importReturnPhotos || importReturnPhotos.length === 0) {
-        return alert("⚠️ BẮT BUỘC CHỤP ẢNH HIỆN TRẠNG THU HỒI CHUNG!\nVui lòng bấm nút 'Chụp ảnh hiện trạng thu hồi' trước khi hoàn tất gửi phiếu.");
+        return alert("⚠️ BẮT BUỘC CHỤP ẢNH HIỆN TRẠNG THU HỒI CHUNG trước khi gửi!");
       }
 
-      // RÀNG BUỘC 2: Kiểm tra tất cả các ô trên hàng thông tin đồ hỏng
-      for (let i = 0; i < importBrokenList.length; i++) {
-        const b = importBrokenList[i];
+      // LỌC CHỈ GIỮ LẠI CÁC ĐỒ THỰC SỰ HỎNG (SL > 0 VÀ CÓ CHỌN TÊN)
+      const validBrokenItems = (importBrokenList || []).filter(b => b.name && Number(b.brokenQty) > 0);
+
+      for (let i = 0; i < validBrokenItems.length; i++) {
+        const b = validBrokenItems[i];
         const rowNum = i + 1;
-        if (!b.name || !b.name.trim()) {
-          return alert(`⚠️ Dòng đồ hỏng #${rowNum}: Chưa chọn Tên đạo cụ hỏng! Vui lòng điền đủ tất cả các ô.`);
-        }
-        if (!b.brokenQty || Number(b.brokenQty) < 1) {
-          return alert(`⚠️ Dòng đồ hỏng #${rowNum} ("${b.name}"): Số lượng hỏng phải lớn hơn 0!`);
-        }
         if (!b.location || !b.location.trim()) {
-          return alert(`⚠️ Dòng đồ hỏng #${rowNum} ("${b.name}"): Chưa điền Vị trí cất đồ hỏng!`);
+          return alert(`⚠️ Đồ hỏng "${b.name}": Chưa điền Vị trí cất đồ hỏng!`);
         }
         if (!b.note || !b.note.trim()) {
-          return alert(`⚠️ Dòng đồ hỏng #${rowNum} ("${b.name}"): Chưa điền Ghi chú hiện trạng hư hại!`);
+          return alert(`⚠️ Đồ hỏng "${b.name}": Chưa điền Ghi chú hiện trạng hư hại!`);
         }
-        const requiredPhotos = Number(b.brokenQty) || 1;
-        const actualPhotos = (b.photos || []).length;
-        if (actualPhotos === 0) {
-          return alert(`⚠️ Dòng đồ hỏng #${rowNum} ("${b.name}"): Bắt buộc chụp ít nhất 1 ảnh hiện trạng hư hại!`);
-        }
-        if (actualPhotos < requiredPhotos) {
-          return alert(`⚠️ Dòng đồ hỏng #${rowNum} ("${b.name}"): Số lượng hỏng là ${requiredPhotos} cái nhưng mới chụp ${actualPhotos} ảnh! Quy định tối thiểu 1 ảnh/cái.`);
-        }
-        if (!b.photoNote || !b.photoNote.trim()) {
-          return alert(`⚠️ Dòng đồ hỏng #${rowNum} ("${b.name}"): Chưa điền Ghi chú ảnh chụp hư hại!`);
+        const reqPhotos = Number(b.brokenQty) || 1;
+        const actPhotos = (b.photos || []).length;
+        if (actPhotos < reqPhotos) {
+          return alert(`⚠️ Đồ hỏng "${b.name}": Số lượng hỏng là ${reqPhotos} cái nhưng mới có ${actPhotos} ảnh! Quy định tối thiểu 1 ảnh/cái.`);
         }
       }
 
@@ -3300,29 +3422,7 @@
         return alert("⚠️ Danh sách đạo cụ hoàn trả đang trống!");
       }
 
-      // RÀNG BUỘC 3: Cảnh báo nếu số nhận về lớn hơn số đã mang đi
-      for (let i = 0; i < validItems.length; i++) {
-        const it = validItems[i];
-        const gQty = (it.goodQty !== '' && it.goodQty !== undefined) ? Number(it.goodQty) : 0;
-        const bQty = getBrokenQtyForProp(it.name);
-        const recQty = gQty + bQty;
-        const expQty = Number(it.exportQty) || 0;
-
-        if (expQty > 0 && recQty > expQty) {
-          const surplus = recQty - expQty;
-          const confirmSurplus = confirm(
-            `⚠️ CẢNH BÁO NHẬN THỪA ĐỒ:\n\n` +
-            `Đạo cụ "${it.name}" có:\n` +
-            `- Đã mang đi: ${expQty} ${it.unit || ''}\n` +
-            `- Số nhận về: ${recQty} ${it.unit || ''}\n` +
-            `=> Đang THỪA +${surplus} ${it.unit || ''} so với lúc xuất kho!\n\n` +
-            `Bạn có chắc chắn số lượng kiểm đếm thực tế này là đúng?`
-          );
-          if (!confirmSurplus) return;
-        }
-      }
-
-      // RÀNG BUỘC 4: Tổng số lượng các giá kệ phải bằng đúng Số nhận về
+      // RÀNG BUỘC: Tổng giá kệ = Số nhận về
       for (let i = 0; i < validItems.length; i++) {
         const it = validItems[i];
         const gQty = (it.goodQty !== '' && it.goodQty !== undefined) ? Number(it.goodQty) : 0;
@@ -3331,20 +3431,19 @@
 
         const totalLocQty = (it.locations || []).reduce((s, l) => s + (Number(l.qty) || 0), 0);
         if (totalLocQty !== recQty) {
-          return alert(`⚠️ ĐẠO CỤ "${it.name}":\nTổng số lượng lưu ở các giá kệ (${totalLocQty}) không khớp với Số nhận về (${recQty})!\n\nVui lòng phân bổ lại số lượng ở các kệ sao cho tổng bằng đúng ${recQty}.`);
+          return alert(`⚠️ ĐẠO CỤ "${it.name}":\nTổng vị trí lưu kệ (${totalLocQty}) chưa khớp với Số nhận về (${recQty})! Vui lòng sửa lại.`);
         }
       }
 
       const btnSubmit = document.getElementById('btnSubmitImport');
       if (btnSubmit) {
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh & lưu phiếu...';
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu phiếu...';
       }
 
       try {
-        // Tải ảnh đồ hỏng
         showUploadStatus("Đang tải ảnh chi tiết đồ hỏng...");
-        for (const b of importBrokenList) {
+        for (const b of validBrokenItems) {
           const uploadedUrls = [];
           for (let p = 0; p < (b.photos || []).length; p++) {
             const ph = b.photos[p];
@@ -3358,7 +3457,6 @@
           b.uploadedPhotos = uploadedUrls;
         }
 
-        // Tải ảnh hiện trạng chung
         showUploadStatus("Đang đồng bộ ảnh hiện trạng thu hồi chung...");
         const uploadedReturnPhotos = [];
         for (let r = 0; r < importReturnPhotos.length; r++) {
@@ -3401,12 +3499,12 @@
           importerPhone: currentUser ? currentUser.phone : "",
           generalNote: document.getElementById('importGeneralNote')?.value.trimEnd() || "",
           items: finalItems,
-          brokenItems: importBrokenList,
+          brokenItems: validBrokenItems,
           returnImages: uploadedReturnPhotos,
           creatorAvatar: currentUser ? currentUser.avatar : ""
         };
 
-        showUploadStatus("Đang lưu phiếu nhập kho vào Google Sheet...");
+        showUploadStatus("Đang lưu phiếu vào Google Sheet...");
         const res = await callBackend('saveImportTicket', payload, 'POST');
         hideUploadStatus();
 
@@ -3416,12 +3514,12 @@
         }
 
         if (res && res.success) {
-          showSuccessPopup("NHẬP KHO THÀNH CÔNG", `Phiếu thu hồi ${res.ticketId} đã được lưu. Trạng thái chương trình: [${returnStatus}].`);
+          showSuccessPopup("NHẬP KHO THÀNH CÔNG", `Đã lưu phiếu thu hồi ${res.ticketId}. Trạng thái: [${returnStatus}].`);
           resetImportForm(false);
           fetchInitialData();
           switchTab('archive');
         } else {
-          alert("Lỗi khi lưu phiếu nhập kho: " + (res && res.error ? res.error : ""));
+          alert("Lỗi lưu phiếu: " + (res && res.error ? res.error : ""));
         }
       } catch (err) {
         hideUploadStatus();
@@ -3433,6 +3531,7 @@
       }
     }
 
+    // RESET PHIẾU NHẬP: LÀM SẠCH HOÀN TOÀN BẢNG ĐỒ HỎNG VỀ TRỐNG
     function resetImportForm(askConfirm = true) {
       if (askConfirm) {
         if (!confirm("Bạn có chắc chắn muốn làm mới phiếu nhập kho?")) return;
@@ -3441,15 +3540,15 @@
       document.getElementById('importOriginalExporter').value = '';
       document.getElementById('importGeneralNote').value = '';
       
-      // Bỏ tích cả 2 ô trạng thái về trạng thái chưa chọn ban đầu
       document.querySelectorAll('input[name="importReturnStatusRadio"]').forEach(r => r.checked = false);
 
       importReturnPhotos = [];
-      document.getElementById('importPhotosCountText').innerText = 'Đã chụp: 0 ảnh (Bắt buộc có ảnh)';
+      document.getElementById('importPhotosCountText').innerText = 'Đã chụp: 0 ảnh';
+      
       initBlankImportChecklist();
-      importBrokenList = [];
+      importBrokenList = []; // XÓA SẠCH MẢNG ĐỒ HỎNG
       buildImportTableRows();
-      buildImportBrokenRows();
+      buildImportBrokenRows(); // VẼ LẠI BẢNG ĐỒ HỎNG VỀ TRẠNG THÁI TRỐNG HOÀN TOÀN
     }
     
     // ---------------- BẢNG PHIẾU THANH LÝ ----------------
@@ -3465,50 +3564,76 @@
     function createLiquidationRowElement(item, idx) {
       const tr = document.createElement('tr');
       tr.id = `liquidation-row-${idx}`;
-      tr.className = 'border-b border-slate-100 transition';
+      tr.className = 'block sm:table-row bg-white p-2 sm:p-0 rounded-xl sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition';
 
       tr.innerHTML = `
-        <td class="p-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
-        <td class="p-2 relative">
-          <input type="text" id="liquidation-input-name-${idx}" value="${item.name || ''}" 
-            oninput="handleChecklistTyping(event, ${idx}, 'liquidation')" 
-            onfocus="handleChecklistTyping(event, ${idx}, 'liquidation')" 
-            placeholder="Tên đạo cụ cần thanh lý..." 
-            class="w-full p-1.5 border border-slate-300 rounded font-bold text-xs bg-white">
-          <div id="liquidation-suggest-${idx}" class="hidden absolute left-2 right-2 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
-          <div id="liquidation-err-text-${idx}" class="hidden text-[10px] text-red-600 font-bold mt-0.5">⚠️ Tên không có trong kho!</div>
+        <td class="hidden sm:table-cell p-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
+        
+        <!-- HÀNG 1 MOBILE: [STT] [TÊN ĐẠO CỤ] [ĐVT] [NÚT XÓA] -->
+        <td class="block sm:table-cell p-0 sm:p-2 relative">
+          <div class="flex items-center gap-1 mb-1 sm:mb-0">
+            <span class="sm:hidden w-4 h-4 rounded bg-slate-100 flex items-center justify-center font-mono font-bold text-slate-500 text-[9px] flex-shrink-0">${idx + 1}</span>
+            <div class="flex-1 min-w-0 relative">
+              <input type="text" id="liquidation-input-name-${idx}" value="${item.name || ''}" 
+                oninput="handleChecklistTyping(event, ${idx}, 'liquidation')" 
+                onfocus="handleChecklistTyping(event, ${idx}, 'liquidation')" 
+                placeholder="Tên đồ thanh lý..." 
+                class="w-full p-1 border border-slate-300 rounded font-bold text-xs bg-white text-slate-800">
+              <div id="liquidation-suggest-${idx}" class="hidden absolute left-0 right-0 top-full mt-0.5 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-52 overflow-y-auto divide-y divide-slate-100"></div>
+              <div id="liquidation-err-text-${idx}" class="hidden text-[9px] text-red-600 font-bold">⚠️ Sai tên kho!</div>
+            </div>
+            <input type="text" readonly id="liquidation-unit-${idx}" value="${item.unit || ''}" placeholder="ĐVT" 
+              class="sm:hidden w-11 p-1 text-center font-bold text-slate-600 bg-slate-100 border border-slate-200 rounded text-[11px] cursor-not-allowed flex-shrink-0">
+            <button type="button" onclick="removeLiquidationRowItem(${idx})" class="sm:hidden p-1 text-slate-300 hover:text-red-500 flex-shrink-0" title="Xóa món này">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+          </div>
         </td>
-        <td class="p-2 text-center">
-          <input type="text" readonly id="liquidation-unit-${idx}" value="${item.unit || ''}" placeholder="---" 
+
+        <td class="hidden sm:table-cell p-2 text-center">
+          <input type="text" readonly value="${item.unit || ''}" placeholder="---" 
             class="w-16 p-1.5 text-center font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded text-xs cursor-not-allowed">
         </td>
-        <td class="p-2">
-          <select id="liq-source-${idx}" onchange="handleLiqSourceChange(${idx}, this.value)" class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs font-semibold">
-            <option value="broken" ${item.source === 'broken' ? 'selected' : ''}>🔴 Trừ Đồ ĐANG HỎNG</option>
-            <option value="usable" ${item.source === 'usable' ? 'selected' : ''}>🟢 Trừ TỒN DÙNG ĐƯỢC</option>
+
+        <!-- HÀNG 2 MOBILE: [TÌNH TRẠNG (CO GỌN)] + [SL HỦY] + [CHỤP ẢNH] CÙNG NẰM TRÊN 1 HÀNG NGANG -->
+        <!-- 1. TÌNH TRẠNG -->
+        <td class="inline-block sm:table-cell w-[44%] sm:w-36 p-0.5 sm:p-2 align-top">
+          <label class="sm:hidden block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Tình trạng đồ thanh lý</label>
+          <select id="liq-source-${idx}" onchange="handleLiqSourceChange(${idx}, this.value)" class="w-full p-1 border border-slate-300 rounded bg-white text-xs font-bold text-slate-800">
+            <option value="broken" ${item.source === 'broken' ? 'selected' : ''}>🔴 Đồ Hỏng</option>
+            <option value="usable" ${item.source === 'usable' ? 'selected' : ''}>🟢 Đồ Dùng được</option>
           </select>
-        </td>
-        <td class="p-2 text-center">
+        </td><!--
+        --><!-- 2. SL HỦY -->
+        <td class="inline-block sm:table-cell w-[24%] sm:w-20 p-0.5 sm:p-2 align-top text-center">
+          <label class="sm:hidden block text-[9px] font-bold text-red-700 uppercase mb-0.5">Số lượng</label>
           <input type="number" min="1" id="liquidation-qty-${idx}" value="${item.qty || ''}" 
-            oninput="handleLiqQtyChange(${idx}, this.value)" placeholder="SL" 
-            class="w-16 p-1.5 text-center font-bold border border-slate-300 rounded text-xs bg-white text-red-600">
-        </td>
-        <td class="p-2">
-          <div class="flex items-center gap-1.5">
-            <button type="button" onclick="triggerLiqPhotoCapture(${idx})" class="p-1.5 bg-slate-200 hover:bg-slate-300 rounded text-slate-700 font-semibold text-[11px]" title="Chụp ảnh tình trạng">
-              <i class="fa-solid fa-camera"></i> Chụp
+            oninput="handleLiqQtyChange(${idx}, this.value)" placeholder="0" 
+            class="w-full sm:w-16 p-1 text-center font-black border border-slate-300 rounded text-xs bg-white text-red-600">
+        </td><!--
+        --><!-- 3. ẢNH TÌNH TRẠNG -->
+        <td class="inline-block sm:table-cell w-[28%] sm:w-28 p-0.5 sm:p-2 align-top">
+          <label class="sm:hidden block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Ảnh</label>
+          <div class="flex items-center gap-1 h-[26px]">
+            <button type="button" onclick="triggerLiqPhotoCapture(${idx})" class="p-1 px-1.5 bg-slate-200 hover:bg-slate-300 rounded text-slate-700 font-semibold text-[10px] flex items-center gap-0.5 flex-shrink-0" title="Chụp ảnh tình trạng">
+              <i class="fa-solid fa-camera"></i>
             </button>
-            <div id="liq-photo-preview-${idx}" class="w-8 h-8 rounded border border-slate-300 overflow-hidden bg-slate-50 flex items-center justify-center">
-              ${item.conditionPhoto ? `<img src="${item.conditionPhoto}" class="w-full h-full object-cover cursor-pointer" onclick="openSingleLightbox('${item.conditionPhoto}')">` : '<span class="text-[9px] text-slate-300">Trống</span>'}
+            <div id="liq-photo-preview-${idx}" class="w-6 h-6 rounded border border-slate-300 overflow-hidden bg-slate-50 flex items-center justify-center flex-shrink-0">
+              ${item.conditionPhoto ? `<img src="${item.conditionPhoto}" class="w-full h-full object-cover cursor-pointer" onclick="openSingleLightbox('${item.conditionPhoto}')">` : '<span class="text-[8px] text-slate-300">Trống</span>'}
             </div>
           </div>
         </td>
-        <td class="p-2">
-          <input type="text" value="${item.note || ''}" oninput="handleLiqNoteChange(${idx}, this.value)" placeholder="Rách vỡ nát / Thanh lý phế liệu..." 
-            class="w-full p-1.5 border border-slate-200 rounded text-[11px] bg-white">
+
+        <!-- HÀNG 3 MOBILE: LÝ DO CHI TIẾT -->
+        <td class="block sm:table-cell p-0.5 sm:p-2 mt-1 sm:mt-0">
+          <input type="text" value="${item.note || ''}" oninput="handleLiqNoteChange(${idx}, this.value)" placeholder="Chi tiết cách xử lý: bỏ đi/ bán phế liệu..." 
+            class="w-full p-1 border border-slate-200 rounded text-[11px] bg-white">
         </td>
-        <td class="p-2 text-center">
-          <button type="button" onclick="removeLiquidationRowItem(${idx})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+
+        <td class="hidden sm:table-cell p-2 text-center">
+          <button type="button" onclick="removeLiquidationRowItem(${idx})" class="text-slate-400 hover:text-red-500 transition">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
         </td>
       `;
 
@@ -4080,51 +4205,129 @@
     
 
     // ---------------- TAB 6: THƯ VIỆN CHỨNG TỪ (BẢNG DANH SÁCH & XEM CHI TIẾT) ----------------
+    // ---------------- TAB 6: THƯ VIỆN CHỨNG TỪ (BẢNG DANH SÁCH & XEM CHI TIẾT) ----------------
     function renderArchiveTickets() {
       const tbody = document.getElementById('archiveTableBody');
       if (!tbody) return;
-      const fType = document.getElementById('archiveFilterType').value;
-      const fWh = document.getElementById('archiveFilterWarehouse').value;
-      const search = (document.getElementById('archiveSearchInput').value || '').toLowerCase();
 
-      const filtered = archivedTickets.filter(t => {
+      const typeFilterEl = document.getElementById('archiveFilterType');
+      const whFilterEl = document.getElementById('archiveFilterWarehouse');
+      const searchEl = document.getElementById('archiveSearchInput');
+
+      const fType = typeFilterEl ? typeFilterEl.value : '';
+      const fWh = whFilterEl ? whFilterEl.value : '';
+      const search = (searchEl ? searchEl.value : '').trim().toLowerCase();
+
+      const list = Array.isArray(archivedTickets) ? archivedTickets : [];
+
+      const filtered = list.filter(t => {
+        if (!t) return false;
         const mType = !fType || t.type === fType;
         const mWh = !fWh || t.warehouse === fWh;
-        const mSearch = (t.projectName || '').toLowerCase().includes(search) || t.id.toLowerCase().includes(search) || (t.exporterName || '').toLowerCase().includes(search);
-        return mType && mWh && mSearch;
+        
+        const projName = (t.projectName || '').toString().toLowerCase();
+        const ticketId = (t.id || '').toString().toLowerCase();
+        const executor = (t.exporterName || t.importerName || '').toString().toLowerCase();
+        
+        return mType && mWh && (!search || projName.includes(search) || ticketId.includes(search) || executor.includes(search));
       });
 
       tbody.innerHTML = '';
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-400">Không có chứng từ nào phù hợp</td></tr>`;
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-4 text-center text-slate-400 italic block sm:table-cell text-xs">
+              ${list.length === 0 ? 'Đang tải chứng từ...' : 'Không có chứng từ nào phù hợp'}
+            </td>
+          </tr>
+        `;
         return;
       }
 
       filtered.forEach((t, idx) => {
+        // Huy hiệu rút gọn xinh xắn
         let typeBadge = '';
-        if (t.type === 'NHAP_LAN_DAU') typeBadge = '<span class="px-2 py-1 bg-teal-100 text-teal-800 rounded font-bold text-[10px] whitespace-nowrap">NHẬP LẦN ĐẦU</span>';
-        else if (t.type === 'XUAT_KHO') typeBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded font-bold text-[10px] whitespace-nowrap">XUẤT KHO</span>';
-        else if (t.type === 'NHAP_KHO') typeBadge = '<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded font-bold text-[10px] whitespace-nowrap">NHẬP VỀ</span>';
-        else if (t.type === 'CHUAN_BI') typeBadge = '<span class="px-2 py-1 bg-purple-100 text-purple-800 rounded font-bold text-[10px] whitespace-nowrap">CHUẨN BỊ</span>';
-        else if (t.type === 'THANH_LY') typeBadge = '<span class="px-2 py-1 bg-red-100 text-red-800 rounded font-bold text-[10px] whitespace-nowrap">THANH LÝ</span>';
+        if (t.type === 'NHAP_LAN_DAU') typeBadge = '<span class="px-1.5 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">NHẬP MỚI</span>';
+        else if (t.type === 'XUAT_KHO') typeBadge = '<span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">XUẤT KHO</span>';
+        else if (t.type === 'NHAP_KHO') typeBadge = '<span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">NHẬP VỀ</span>';
+        else if (t.type === 'CHUAN_BI') typeBadge = '<span class="px-1.5 py-0.5 bg-purple-50 text-purple-700 border border-purple-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">CHUẨN BỊ</span>';
+        else if (t.type === 'THANH_LY') typeBadge = '<span class="px-1.5 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">THANH LÝ</span>';
+        else typeBadge = `<span class="px-1.5 py-0.5 bg-slate-50 text-slate-700 border border-slate-200 rounded font-bold text-[9px] whitespace-nowrap">${t.type || 'KHÁC'}</span>`;
 
-        const executor = t.exporterName || t.importerName || '---';
+        const fullExecutor = t.exporterName || t.importerName || '---';
+        // Rút gọn: Bỏ số điện thoại trong ngoặc để chống rớt dòng trên di động
+        const cleanExecutor = fullExecutor.replace(/\(.*?\)/g, '').trim();
+
+        // Rút gọn ngày giờ hiển thị: HH:mm DD/MM
+        let shortDate = '---';
+        let fullDateStr = '---';
+        if (t.createdAt) {
+          try {
+            const d = new Date(t.createdAt);
+            if (!isNaN(d.getTime())) {
+              const day = String(d.getDate()).padStart(2, '0');
+              const month = String(d.getMonth() + 1).padStart(2, '0');
+              const hours = String(d.getHours()).padStart(2, '0');
+              const mins = String(d.getMinutes()).padStart(2, '0');
+              shortDate = `${hours}:${mins} ${day}/${month}`;
+              fullDateStr = d.toLocaleString('vi-VN');
+            } else {
+              shortDate = t.createdAt.toString().substring(0, 16);
+              fullDateStr = t.createdAt.toString();
+            }
+          } catch(e) {
+            shortDate = t.createdAt.toString();
+            fullDateStr = t.createdAt.toString();
+          }
+        }
 
         tbody.innerHTML += `
-          <tr class="hover:bg-blue-50/50 transition border-b border-slate-100 cursor-pointer text-xs" onclick="openTicketDetailModal('${t.id}')">
-            <td class="py-3 px-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
-            <td class="py-3 px-3">
-              <div class="font-bold text-slate-900 text-[13px] leading-snug">${t.projectName}</div>
+          <tr class="block sm:table-row bg-white p-2 sm:p-0 rounded-lg sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition hover:bg-blue-50/50 active:bg-slate-100 cursor-pointer text-xs" onclick="openTicketDetailModal('${t.id}')">
+            <!-- STT Desktop -->
+            <td class="hidden sm:table-cell py-2 px-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
+            
+            <!-- THẺ MOBILE: GÓI GỌN CHỈ ĐÚNG 2 DÒNG -->
+            <td class="block sm:table-cell py-0 sm:py-2 px-0 sm:px-3">
+              <!-- DÒNG 1: STT + TÊN DỰ ÁN + HUY HIỆU -->
+              <div class="flex items-center justify-between gap-1.5">
+                <div class="flex items-center gap-1.5 flex-1 min-w-0">
+                  <span class="sm:hidden w-4 h-4 rounded bg-slate-100 flex items-center justify-center font-mono font-bold text-slate-500 text-[9px] flex-shrink-0">${idx + 1}</span>
+                  <span class="font-bold text-slate-900 text-xs sm:text-[13px] truncate">${t.projectName || 'Không tên'}</span>
+                </div>
+                <div class="sm:hidden flex-shrink-0">${typeBadge}</div>
+              </div>
+
+              <!-- DÒNG 2: KHO • NGƯỜI LẬP • THỜI GIAN • NÚT XEM -->
+              <div class="sm:hidden flex items-center justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-50">
+                <div class="truncate flex-1 pr-1 font-medium">
+                  <span class="text-slate-700 font-semibold">${t.warehouse || '---'}</span>
+                  <span class="text-slate-300 mx-1">•</span>
+                  <span>${cleanExecutor}</span>
+                  <span class="text-slate-300 mx-1">•</span>
+                  <span class="font-mono text-slate-400">${shortDate}</span>
+                </div>
+                <span class="px-2 py-0.5 bg-aba/10 text-aba rounded font-bold text-[9px] flex-shrink-0 flex items-center gap-0.5">
+                  Xem <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                </span>
+              </div>
             </td>
-            <td class="py-3 px-2 text-center">${typeBadge}</td>
-            <td class="py-3 px-3 font-semibold text-slate-700 whitespace-nowrap">${t.warehouse}</td>
-            <td class="py-3 px-3 text-slate-800 font-medium">${executor}</td>
-            <td class="py-3 px-2 text-center text-slate-500 font-mono text-[11px] whitespace-nowrap">
-              ${new Date(t.createdAt).toLocaleString('vi-VN')}
-            </td>
-            <td class="py-3 px-2 text-center whitespace-nowrap" onclick="event.stopPropagation()">
-              <button onclick="openTicketDetailModal('${t.id}')" class="px-3 py-1.5 bg-aba text-white hover:bg-aba-dark rounded-lg font-bold text-[11px] inline-flex items-center gap-1.5 shadow-sm transition">
-                <i class="fa-solid fa-eye"></i> Xem phiếu
+
+            <!-- CỘT DESKTOP: LOẠI PHIẾU -->
+            <td class="hidden sm:table-cell py-2 px-2 text-center">${typeBadge}</td>
+
+            <!-- CỘT DESKTOP: KHO THỰC HIỆN -->
+            <td class="hidden sm:table-cell py-2 px-3 font-semibold text-slate-700 whitespace-nowrap">${t.warehouse}</td>
+
+            <!-- CỘT DESKTOP: NGƯỜI THỰC HIỆN -->
+            <td class="hidden sm:table-cell py-2 px-3 text-slate-800 font-medium">${fullExecutor}</td>
+
+            <!-- CỘT DESKTOP: THỜI GIAN -->
+            <td class="hidden sm:table-cell py-2 px-2 text-center text-slate-500 font-mono text-[11px] whitespace-nowrap">${fullDateStr}</td>
+
+            <!-- CỘT DESKTOP: THAO TÁC -->
+            <td class="hidden sm:table-cell py-2 px-2 text-center whitespace-nowrap" onclick="event.stopPropagation()">
+              <button onclick="openTicketDetailModal('${t.id}')" class="px-2.5 py-1 bg-aba text-white hover:bg-aba-dark rounded-lg font-bold text-[11px] inline-flex items-center gap-1 shadow-sm transition">
+                <i class="fa-solid fa-eye text-[10px]"></i> Xem
               </button>
             </td>
           </tr>
@@ -4132,10 +4335,12 @@
       });
     }
 
-    // MODAL XEM TOÀN BỘ THÔNG TIN PHIẾU ĐÃ ĐIỀN (READ-ONLY)
+    // MODAL XEM CHI TIẾT PHIẾU (ĐÃ SỬA HẾT LỖI ÉP KIỂU VÀ TRÙNG BIẾN)
     function openTicketDetailModal(ticketId) {
-      const t = archivedTickets.find(item => item.id === ticketId);
-      if (!t) return;
+      if (!ticketId) return;
+      // Dùng so sánh lỏng (==) để an toàn dù ID là chuỗi hay số
+      const t = (archivedTickets || []).find(item => item && item.id == ticketId);
+      if (!t) return alert("Không tìm thấy thông tin chứng từ này!");
       activeViewTicket = t;
 
       const badge = document.getElementById('ticketModalBadge');
@@ -4163,25 +4368,31 @@
       }
 
       document.getElementById('pdfTicketHeader').innerText = titleHeader;
-      document.getElementById('pdfTicketId').innerText = t.id;
-      document.getElementById('pdfTicketCreatedAt').innerText = new Date(t.createdAt).toLocaleString('vi-VN');
+      document.getElementById('pdfTicketId').innerText = t.id || '---';
+      document.getElementById('pdfTicketCreatedAt').innerText = t.createdAt ? new Date(t.createdAt).toLocaleString('vi-VN') : '---';
 
-      document.getElementById('pdfProjectName').innerText = t.projectName;
+      document.getElementById('pdfProjectName').innerText = t.projectName || '---';
       document.getElementById('pdfLocation').innerText = t.location || '---';
       document.getElementById('pdfTime').innerText = t.time || '---';
-      document.getElementById('pdfWarehouse').innerText = t.warehouse;
+      document.getElementById('pdfWarehouse').innerText = t.warehouse || '---';
       document.getElementById('pdfExporter').innerText = t.exporterName ? `${t.exporterName} (${t.exporterPhone || ''})` : '---';
       document.getElementById('pdfImporter').innerText = t.importerName ? `${t.importerName} (${t.importerPhone || ''})` : '---';
 
-      // Đổ danh sách đồ vào bảng Read-only
+      // Đổ danh sách đồ vào bảng
       const tbody = document.getElementById('pdfItemsTbody');
       tbody.innerHTML = '';
-      (t.items || []).forEach((it, idx) => {
-        let locOrSource = t.warehouse;
+      
+      let itemsList = t.items || [];
+      if (typeof itemsList === 'string') {
+        try { itemsList = JSON.parse(itemsList); } catch(e) { itemsList = []; }
+      }
+
+      itemsList.forEach((it, idx) => {
+        let locOrSource = t.warehouse || '---';
         if (it.source === 'broken') locOrSource = 'Trừ đồ hỏng';
         else if (it.source === 'usable') locOrSource = 'Trừ đồ dùng được';
         else if (it.locations && it.locations.length) {
-          locOrSource = it.locations.map(l => `${l.warehouse} (${l.shelf || ''} / T${l.tier || ''})`).join('; ');
+          locOrSource = it.locations.map(l => `${l.warehouse || ''} (${l.shelf || ''} / T${l.tier || ''})`).join('; ');
         }
 
         const qtyDisplay = it.qty !== undefined ? it.qty : `${it.goodQty || 0} tốt / ${it.brokenQty || 0} hỏng`;
@@ -4189,8 +4400,8 @@
         tbody.innerHTML += `
           <tr>
             <td class="p-1.5 border border-slate-300 text-center font-bold text-slate-400">${idx + 1}</td>
-            <td class="p-1.5 border border-slate-300 font-bold text-slate-800">${it.name}</td>
-            <td class="p-1.5 border border-slate-300 text-center">${it.unit}</td>
+            <td class="p-1.5 border border-slate-300 font-bold text-slate-800">${it.name || '---'}</td>
+            <td class="p-1.5 border border-slate-300 text-center">${it.unit || '---'}</td>
             <td class="p-1.5 border border-slate-300 text-center font-bold text-aba">${qtyDisplay}</td>
             <td class="p-1.5 border border-slate-300 text-slate-600">${locOrSource}</td>
             <td class="p-1.5 border border-slate-300 text-slate-500">${it.note || it.reason || ''}</td>
@@ -4203,65 +4414,56 @@
       gallery.innerHTML = '';
       const allPhotos = [];
 
-      // Xử lý các dạng ảnh khác nhau theo loại phiếu
-      if (t.images && typeof t.images === 'object') {
-        if (Array.isArray(t.images)) {
-          allPhotos.push(...t.images);
+      let rawImages = t.images;
+      if (typeof rawImages === 'string') {
+        try { rawImages = JSON.parse(rawImages); } catch(e) { rawImages = [rawImages]; }
+      }
+
+      if (rawImages && typeof rawImages === 'object') {
+        if (Array.isArray(rawImages)) {
+          allPhotos.push(...rawImages);
         } else {
-          if (t.images.team) allPhotos.push(t.images.team);
-          if (t.images.truck) allPhotos.push(t.images.truck);
-          if (t.images.propImages) allPhotos.push(...t.images.propImages);
-          if (t.images.invoice) allPhotos.push(t.images.invoice);
-          if (t.images.returnImages) allPhotos.push(...t.images.returnImages);
+          if (rawImages.team) allPhotos.push(rawImages.team);
+          if (rawImages.truck) allPhotos.push(rawImages.truck);
+          if (rawImages.propImages) allPhotos.push(...rawImages.propImages);
+          if (rawImages.invoice) allPhotos.push(rawImages.invoice);
+          if (rawImages.returnImages) allPhotos.push(...rawImages.returnImages);
+          if (rawImages.stagingImages) allPhotos.push(...rawImages.stagingImages);
         }
       }
 
-      // Thêm ảnh tình trạng từng món nếu là phiếu thanh lý
-      (t.items || []).forEach(it => {
+      itemsList.forEach(it => {
         if (it.conditionPhoto) allPhotos.push(it.conditionPhoto);
+        if (it.photos && Array.isArray(it.photos)) allPhotos.push(...it.photos);
       });
 
-      if (!allPhotos.length) {
+      const cleanPhotos = allPhotos.filter(img => img && typeof img === 'string' && img.length > 5);
+
+      if (!cleanPhotos.length) {
         gallery.innerHTML = '<span class="text-slate-400 italic">Không có hình ảnh đính kèm</span>';
       } else {
-        if (!allPhotos.length) {
-        gallery.innerHTML = '<span class="text-slate-400 italic">Không có hình ảnh đính kèm</span>';
-      } else {
-        allPhotos.forEach((img, idx) => {
+        cleanPhotos.forEach((img, idx) => {
           gallery.innerHTML += `
-            <img src="${img}" crossorigin="anonymous" class="w-16 h-16 object-cover rounded-lg border border-slate-300 cursor-pointer hover:opacity-80" onclick="openLightbox(${JSON.stringify(allPhotos).replace(/"/g, '&quot;')}, ${idx})">
+            <img src="${img}" crossorigin="anonymous" class="w-16 h-16 object-cover rounded-lg border border-slate-300 cursor-pointer hover:opacity-80" onclick="openLightbox(${JSON.stringify(cleanPhotos).replace(/"/g, '&quot;')}, ${idx})">
           `;
         });
       }
 
-      // GÁN AVATAR NGƯỜI LẬP (LẤY TỪ PHIẾU ĐÃ LƯU HOẶC TÀI KHOẢN HIỆN TẠI)
+      // Gán Avatar và Người lập phiếu
       const creatorAvatarImg = document.getElementById('pdfCreatorAvatar');
       const creatorNameEl = document.getElementById('pdfCreatorName');
       
       const creatorName = t.exporterName || t.importerName || (currentUser ? currentUser.name : "Thủ kho");
-      creatorNameEl.innerText = creatorName;
+      if (creatorNameEl) creatorNameEl.innerText = creatorName;
 
-      let avatarUrl = t.creatorAvatar || (t.images && t.images.creatorAvatar) || (currentUser ? currentUser.avatar : "");
+      let avatarUrl = t.creatorAvatar || (rawImages && rawImages.creatorAvatar) || (currentUser ? currentUser.avatar : "");
       if (!avatarUrl || avatarUrl.includes('placeholder')) {
         avatarUrl = "https://via.placeholder.com/60?text=ABA";
       }
-      creatorAvatarImg.src = avatarUrl;
-      creatorAvatarImg.setAttribute('crossorigin', 'anonymous');
+      if (creatorAvatarImg) {
+        creatorAvatarImg.src = avatarUrl;
+        creatorAvatarImg.setAttribute('crossorigin', 'anonymous');
       }
-
-      // GÁN AVATAR VÀ TÊN NGƯỜI LẬP PHIẾU
-      const creatorAvatarImg = document.getElementById('pdfCreatorAvatar');
-      const creatorNameEl = document.getElementById('pdfCreatorName');
-      
-      const creatorName = t.exporterName || t.importerName || (currentUser ? currentUser.name : "Thủ kho");
-      creatorNameEl.innerText = creatorName;
-
-      // Ưu tiên avatar lưu trong phiếu hoặc avatar của người dùng hiện tại
-      let avatarUrl = t.creatorAvatar || (currentUser ? currentUser.avatar : "");
-      if (!avatarUrl || avatarUrl.includes('placeholder')) {
-        avatarUrl = "https://via.placeholder.com/60?text=ABA";
-      }
-      creatorAvatarImg.src = avatarUrl;
 
       openModal('ticketDetailModal');
     }
