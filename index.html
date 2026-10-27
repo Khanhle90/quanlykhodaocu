@@ -6,6 +6,8 @@
   <title>ABA - Quản Lý Đạo Cụ & Kho Bãi</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- THƯ VIỆN ĐỌC & XUẤT FILE EXCEL -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Thư viện tạo file PDF trực tiếp từ giao diện HTML -->
@@ -106,17 +108,19 @@
           <span id="userHeaderName" class="hidden sm:inline font-semibold text-slate-700 max-w-[120px] sm:max-w-[160px] truncate">Chưa đăng nhập</span>
         </div>
 
-        <button onclick="openSwitchAccountModal()" title="Đổi tài khoản" class="p-1.5 text-slate-500 hover:text-aba hover:bg-slate-100 rounded-lg text-sm">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        </button>
+        <!-- NÚT THOÁT TÀI KHOẢN (BẮT BUỘC MẬT KHẨU GOOGLE DRIVE) -->
+       <button type="button" onclick="openAdminLogoutModal()" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg text-sm transition" title="Khóa / Thoát tài khoản">
+         <i class="fa-solid fa-lock"></i>
+       </button>
+
         <button onclick="fetchInitialData()" title="Làm mới dữ liệu từ Sheet" class="p-1.5 text-slate-500 hover:text-aba hover:bg-slate-100 rounded-lg text-sm">
           <i class="fa-solid fa-rotate"></i>
         </button>
       </div>
     </div>
 
-    <!-- TABS NAVIGATION: 6 TAB DÀN ĐỀU VỪA KHÍT MÀN HÌNH ĐIỆN THOẠI, KHÔNG CẦN VUỐT -->
-    <nav class="max-w-7xl mx-auto px-1 sm:px-3 grid grid-cols-6 sm:flex sm:gap-1 border-t border-slate-100 text-xs font-medium bg-white">
+    <!-- TABS NAVIGATION: 7 TAB DÀN ĐỀU VỪA KHÍT MÀN HÌNH ĐIỆN THOẠI -->
+    <nav class="max-w-7xl mx-auto px-1 sm:px-3 grid grid-cols-7 sm:flex sm:gap-1 border-t border-slate-100 text-xs font-medium bg-white">
       <button onclick="switchTab('master')" id="tab-btn-master" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-aba text-aba font-bold flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
         <i class="fa-solid fa-boxes-stacked text-xs"></i>
         <span class="text-[9px] sm:text-xs whitespace-nowrap">Kho</span>
@@ -132,6 +136,10 @@
       <button onclick="switchTab('import')" id="tab-btn-import" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
         <i class="fa-solid fa-truck-ramp-box text-xs"></i>
         <span class="text-[9px] sm:text-xs whitespace-nowrap">Nhập kho</span>
+      </button>
+      <button onclick="switchTab('repair')" id="tab-btn-repair" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
+        <i class="fa-solid fa-screwdriver-wrench text-xs"></i>
+        <span class="text-[9px] sm:text-xs whitespace-nowrap">Sửa chữa</span>
       </button>
       <button onclick="switchTab('liquidation')" id="tab-btn-liquidation" class="tab-btn py-1.5 sm:py-2 px-0.5 sm:px-3 border-b-2 border-transparent text-slate-600 hover:text-aba flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 text-center transition">
         <i class="fa-solid fa-dumpster-fire text-xs"></i>
@@ -211,17 +219,16 @@
         <table class="w-full text-left border-collapse text-xs block sm:table">
           <!-- ẨN TIÊU ĐỀ TRÊN DI ĐỘNG (hidden), CHỈ HIỆN TRÊN MÁY TÍNH (sm:table-header-group) -->
           <thead class="hidden sm:table-header-group bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-bold">
-            <tr>
-              <th class="p-2 text-center w-14">Ảnh</th>
-              <th class="p-2 text-left">Đạo cụ (Bấm xem chi tiết)</th>
-              <th class="p-2 text-center">Phân loại</th>
-              <th class="p-2 text-left">Vị trí lưu cất</th>
-              <th class="p-2 text-center text-emerald-700">Dùng được</th>
-              <th class="p-2 text-center text-amber-700">Đang dùng</th>
-              <th class="p-2 text-center text-red-600">Hỏng</th>
-              <th class="p-2 text-center text-blue-700">Tại kho</th>
-              <th class="p-2 text-center">Tổng</th>
-            </tr>
+            <tr class="text-slate-700">
+                <th class="p-2 min-w-[180px] font-bold">ĐẠO CỤ (BẤM XEM CHI TIẾT)</th>
+                <th class="p-2 text-center font-bold">PHÂN LOẠI</th>
+                <th class="p-2 font-bold">VỊ TRÍ LƯU CẤT</th>
+                <th class="p-2 text-center font-bold text-emerald-700 whitespace-nowrap">SẴN SÀNG</th>
+                <th class="p-2 text-center font-bold text-amber-700 whitespace-nowrap">ĐANG ĐI</th>
+                <th class="p-2 text-center font-bold text-red-700 whitespace-nowrap">HỎNG</th>
+                <th class="p-2 text-center font-bold text-blue-700 whitespace-nowrap">TẠI KHO</th>
+                <th class="p-2 text-center font-bold text-slate-800 whitespace-nowrap">TỔNG</th>
+              </tr>
           </thead>
           <tbody id="masterPropsTableBody" class="block sm:table-row-group space-y-2 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
         </table>
@@ -421,7 +428,17 @@
     </section>
 
     <!-- ==================== TAB 3: PHIẾU XUẤT KHO ==================== -->
-    <section id="tab-export" class="tab-content hidden space-y-2">
+    <section id="tab-export" class="tab-content hidden space-y-3">
+      <!-- NÚT TIỆN ÍCH NHẬP EXCEL ĐA KHO -->
+      <div class="flex items-center justify-end gap-2 text-xs">
+        <button type="button" onclick="downloadExportExcelTemplate()" class="px-3 py-1.5 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold rounded-xl shadow-xs flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fa-solid fa-file-excel text-emerald-600"></i> Mẫu Excel
+        </button>
+        <button type="button" onclick="openModal('importExcelExportModal')" class="px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-xs flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fa-solid fa-file-import"></i> Nhập Excel Đa Kho
+        </button>
+      </div>
+      
       <!-- Banner Nạp đồ chuẩn bị -->
       <div id="stagingNotificationBanner" class="hidden bg-purple-50 border border-purple-300 p-2 rounded-xl flex items-center justify-between">
         <div class="flex items-center gap-1.5">
@@ -453,8 +470,9 @@
       <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm grid grid-cols-2 gap-2 text-xs">
         <!-- Hàng 1 - Cột 1: Dự án -->
         <div class="relative">
-          <label class="block font-semibold mb-0.5 text-[11px] text-slate-700">Dự án <span class="text-red-500">*</span></label>
-          <input type="text" id="exportProject" required oninput="handleExportProjectInput(event)" onfocus="handleExportProjectInput(event)" placeholder="Tên dự án..." class="w-full p-1.5 border border-slate-300 rounded font-bold text-slate-800 bg-white text-xs">
+          <label class="block font-semibold mb-0.5 text-[11px] text-slate-700">Dự án
+            <span class="text-red-500">*</span></label>
+          <input type="text" id="exportProject" required oninput="handleExportProjectInput(event)" onfocus="handleExportProjectInput(event)" placeholder="Ghi để hiện gợi ý" class="w-full p-1.5 border border-slate-300 rounded font-bold text-slate-800 bg-white text-xs">
           <div id="stagingProjectsSuggestBox" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-purple-300 rounded-xl shadow-2xl z-50 max-h-56 overflow-y-auto divide-y divide-purple-100"></div>
         </div>
 
@@ -669,13 +687,491 @@
             <i class="fa-solid fa-file-excel text-emerald-600"></i> Xuất File Hoàn Trả
           </button>
           <button id="btnSubmitImport" onclick="submitImportTicket()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-check-double"></i> HOÀN TẤT NHẬP KHO
+            <i class="fa-solid fa-check-double"></i> HOÀN TẤT
           </button>
         </div>
       </div>
     </section>
 
+    <!-- ==================== TAB: XỬ LÝ SỬA CHỮA ĐẠO CỤ HỎNG (TẬP TRUNG TỪNG MÓN) ==================== -->
+    <section id="tab-repair" class="tab-content hidden space-y-2.5">
+      <!-- 1. BỘ LỌC & THỐNG KÊ KHO ĐỒ HỎNG -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+          <span class="font-bold text-slate-800 text-xs sm:text-sm">DANH SÁCH ĐẠO CỤ THUỘC DIỆN HỎNG</span>
+          <span id="repairBrokenStatsBadge" class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-bold text-[11px]">
+            Đang tải...
+          </span>
+        </div>
+        <div class="grid grid-cols-2 sm:flex items-center gap-2">
+          <select id="repairWarehouseFilter" onchange="renderRepairBrokenList()" class="p-1.5 border border-slate-300 rounded-lg bg-slate-50 font-bold text-aba text-xs">
+            <option value="">Tất cả các kho</option>
+          </select>
+          <input type="text" id="repairSearchInput" oninput="renderRepairBrokenList()" placeholder="Tìm tên đồ hỏng..." class="p-1.5 border border-slate-300 rounded-lg bg-slate-50 text-xs">
+        </div>
+      </div>
+
+      <!-- 2. DANH SÁCH CÁC MÓN ĐỒ HỎNG DẠNG THẺ (CARD) TẬP TRUNG TỪNG MÓN -->
+      <div id="repairBrokenPropsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+        <!-- Render tự động bởi Javascript -->
+      </div>
+    </section>
+
+    <!-- ==================== MODAL XỬ LÝ SỬA CHỮA CHO TỪNG MÓN ĐỒ ==================== -->
+    <div id="repairPropModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-3 hidden">
+      <div class="bg-white rounded-2xl max-w-xl w-full p-4 sm:p-5 space-y-3 shadow-2xl max-h-[92vh] overflow-y-auto text-xs">
+        <!-- TIÊU ĐỀ MODAL -->
+        <div class="flex items-center justify-between border-b pb-2">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 bg-amber-100 text-amber-800 rounded-lg"><i class="fa-solid fa-screwdriver-wrench text-sm"></i></span>
+            <div>
+              <h3 id="modalRepairPropName" class="text-sm font-bold text-slate-800 uppercase">TÊN ĐẠO CỤ</h3>
+              <p class="text-[10px] text-slate-500 font-mono" id="modalRepairPropLoc">Kho: --- | Vị trí: ---</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeModal('repairPropModal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+        </div>
+
+        <!-- TÁCH THÀNH 2 Ô ĐỘC LẬP: HIỆN ĐANG HỎNG vs SỐ LƯỢNG XỬ LÝ ĐỢT NÀY -->
+        <div class="grid grid-cols-2 gap-2">
+          <!-- Ô 1: HIỆN ĐANG HỎNG (THÔNG TIN CỐ ĐỊNH NỀN ĐỎ) -->
+          <div class="bg-red-50 p-2.5 rounded-xl border border-red-200 flex flex-col justify-between">
+            <span class="text-[11px] font-bold text-red-800 uppercase tracking-tight flex items-center gap-1">
+              <i class="fa-solid fa-triangle-exclamation text-red-600"></i> Hiện đang hỏng tại kho
+            </span>
+            <div class="mt-1 flex items-baseline gap-1">
+              <span id="modalRepairMaxBroken" class="text-xl font-black text-red-600 font-mono">0</span>
+              <span id="modalRepairUnit" class="text-xs font-bold text-red-700">món</span>
+            </div>
+          </div>
+
+          <!-- Ô 2: SỐ LƯỢNG XỬ LÝ ĐỢT NÀY (Ô NHẬP LIỆU TO RÕ NỀN XANH) -->
+          <div class="bg-blue-50/70 p-2.5 rounded-xl border-2 border-aba flex flex-col justify-between">
+            <label for="modalRepairQty" class="text-[11px] font-black text-aba uppercase tracking-tight cursor-pointer">
+              Số lượng xử lý trong phiếu này:
+            </label>
+            <div class="mt-1 flex items-center gap-1.5">
+              <input type="number" id="modalRepairQty" min="1" value="1" 
+                class="w-full p-1.5 text-center font-black text-aba border border-aba rounded-lg text-base bg-white focus:ring-2 focus:ring-aba shadow-xs">
+              <span class="text-xs font-bold text-slate-600 modalRepairUnitLabel">món</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALBUM ẢNH BÁO HỎNG (CHỈ LẤY ĐÚNG ẢNH BÁO HỎNG CỦA MÓN NÀY) -->
+        <div id="repairBrokenHistoryGalleryBox" class="bg-red-50/40 p-2.5 rounded-xl border border-red-200 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-red-900 text-[11px] flex items-center gap-1.5">
+              <i class="fa-solid fa-camera text-red-600"></i> Ảnh hiện trạng đính kèm lúc báo hỏng:
+            </span>
+            <span id="repairBrokenHistoryCount" class="text-[10px] font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded">0 ảnh</span>
+          </div>
+          <div id="repairBrokenHistoryPhotos" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1 bg-white rounded-lg border border-red-100 min-h-[46px] items-center">
+            <!-- Render ảnh báo hỏng tự động -->
+          </div>
+        </div>
+
+        <!-- 3 NÚT CHỌN: TỰ SỬA / GỬI ĐI (GĐ1) / NHẬN VỀ (GĐ2) -->
+        <div>
+          <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-tight text-[11px]">
+            Chọn loại phiếu xử lý:
+          </label>
+          <div class="grid grid-cols-3 gap-1.5 text-center">
+            <!-- 1. Tự sửa -->
+            <div onclick="selectRepairMethod('self')" id="btnMethodSelf" class="cursor-pointer p-2 rounded-xl border-2 border-aba bg-blue-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-user-gear text-base text-aba"></i>
+              <div class="font-bold text-[10px] text-aba leading-tight">TỰ SỬA<br><span class="font-normal text-[9px] text-slate-500">Nội bộ</span></div>
+            </div>
+            <!-- 2. Gửi đi sửa (Giai đoạn 1) -->
+            <div onclick="selectRepairMethod('send_out')" id="btnMethodSendOut" class="cursor-pointer p-2 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex flex-col items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-truck-arrow-right text-base text-slate-400"></i>
+              <div class="font-bold text-[10px] text-slate-700 leading-tight">GỬI ĐI SỬA<br><span class="font-normal text-[9px] text-slate-400">Giai đoạn 1</span></div>
+            </div>
+            <!-- 3. Nhận về sau sửa (Giai đoạn 2) -->
+            <div onclick="selectRepairMethod('receive_in')" id="btnMethodReceiveIn" class="cursor-pointer p-2 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex flex-col items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-box-open text-base text-slate-400"></i>
+              <div class="font-bold text-[10px] text-slate-700 leading-tight">NHẬN VỀ<br><span class="font-normal text-[9px] text-slate-400">Giai đoạn 2</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= KHỐI 1: TỰ SỬA CHỮA NỘI BỘ ================= -->
+        <div id="blockMethodSelf" class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kết quả tự sửa chữa: <span class="text-red-500">*</span></label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center justify-center gap-1.5 p-2 bg-emerald-50 border border-emerald-300 rounded-lg font-bold text-emerald-800 text-xs cursor-pointer">
+                <input type="radio" name="selfRepairResult" value="success" checked onchange="toggleSelfRepairLocBox(true)" class="accent-emerald-600">
+                <span>✅ Sửa được (Thành đồ tốt)</span>
+              </label>
+              <label class="flex items-center justify-center gap-1.5 p-2 bg-red-50 border border-red-300 rounded-lg font-bold text-red-800 text-xs cursor-pointer">
+                <input type="radio" name="selfRepairResult" value="fail" onchange="toggleSelfRepairLocBox(false)" class="accent-red-600">
+                <span>❌ Không sửa được</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Vị trí cất đồ tốt sau khi sửa xong (Có chọn Kho) -->
+          <div id="selfRepairLocBox" class="bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-200 space-y-1.5">
+            <span class="block font-bold text-emerald-900 text-[11px]">📍 Vị trí lưu kho sau khi phục hồi thành đồ tốt:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Kho lưu trữ *</label>
+                <select id="selfRepairWarehouse" class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white font-bold text-aba"></select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Giá/Kệ</label>
+                <input type="text" list="shelfDatalist" id="selfRepairShelf" placeholder="Giá..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Tầng</label>
+                <input type="text" list="tierDatalist" id="selfRepairTier" placeholder="Tầng..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs text-center">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Nội dung / Cách thức đã khắc phục:</label>
+            <input type="text" id="selfRepairNote" placeholder="Vá bạt, hàn lại khung, tra dầu mỡ..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Ảnh nghiệm thu sau khi tự sửa <span class="text-red-500">* (Bấm vào ảnh để phóng to/zoom)</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="triggerCamera('repairSelf')" class="px-2.5 py-1.5 bg-aba text-white hover:bg-aba-dark rounded-lg font-bold text-xs flex items-center gap-1">
+                <i class="fa-solid fa-camera"></i> Chụp
+              </button>
+              <label class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-xs cursor-pointer flex items-center gap-1">
+                <i class="fa-solid fa-file-arrow-up"></i> File
+                <input type="file" accept="image/*" class="hidden" onchange="handleSingleRepairFileSelect(event, 'repairSelf')">
+              </label>
+              <div id="previewRepairSelf" class="w-12 h-12 rounded-lg border border-slate-300 overflow-hidden bg-white flex items-center justify-center flex-shrink-0 cursor-pointer shadow-xs" title="Bấm để xem ảnh to">
+                <span class="text-[9px] text-slate-400">Trống</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= KHỐI 2: PHIẾU GỬI ĐI SỬA (GIAI ĐOẠN 1) ================= -->
+        <div id="blockMethodSendOut" class="hidden space-y-2.5 bg-amber-50/50 p-3 rounded-xl border border-amber-200">
+          <div class="font-bold text-amber-900 flex items-center gap-1 text-xs border-b border-amber-200 pb-1">
+            <i class="fa-solid fa-truck-arrow-right text-amber-600"></i> PHIẾU BÀN GIAO GỬI ĐỒ CHO THỢ/XƯỞNG
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Đơn vị / Tên thợ nhận sửa <span class="text-red-500">*</span></label>
+              <input type="text" id="sendRepairProvider" placeholder="Tên thợ / xưởng sửa..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Số điện thoại bên sửa <span class="text-red-500">*</span></label>
+              <input type="tel" id="sendRepairPhone" placeholder="SĐT liên hệ (09...)..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs font-semibold">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 items-center">
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Thời gian gửi đi <span class="text-red-500">*</span></label>
+              <input type="date" id="sendRepairOutDate" class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Dự kiến chi phí (nếu có)</label>
+              <input type="text" id="sendRepairEstimatedCost" oninput="formatCurrencyInput(this)" placeholder="0" class="w-full p-1.5 border border-slate-300 rounded bg-white font-mono text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Yêu cầu / Tình trạng bàn giao:</label>
+            <input type="text" id="sendRepairOutNote" placeholder="Mô tả chỗ rách hỏng cần thợ may/hàn..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Ảnh chụp bàn giao lúc gửi đi <span class="text-red-500">* (Bấm vào ảnh để phóng to/zoom)</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="triggerCamera('repairSendOut')" class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs flex items-center gap-1">
+                <i class="fa-solid fa-camera"></i> Chụp
+              </button>
+              <label class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-xs cursor-pointer flex items-center gap-1">
+                <i class="fa-solid fa-file-arrow-up"></i> File
+                <input type="file" accept="image/*" class="hidden" onchange="handleSingleRepairFileSelect(event, 'repairSendOut')">
+              </label>
+              <div id="previewRepairSendOut" class="w-12 h-12 rounded-lg border border-slate-300 overflow-hidden bg-white flex items-center justify-center flex-shrink-0 cursor-pointer shadow-xs" title="Bấm để xem ảnh to">
+                <span class="text-[9px] text-slate-400">Trống</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= KHỐI 3: PHIẾU NHẬN VỀ (CHỈ LẤY TỪ PHIẾU ĐÃ GỬI) ================= -->
+        <div id="blockMethodReceiveIn" class="hidden space-y-2.5 bg-blue-50/50 p-3 rounded-xl border border-blue-200">
+          <div class="font-bold text-blue-900 flex items-center gap-1 text-xs border-b border-blue-200 pb-1">
+            <i class="fa-solid fa-box-open text-blue-600"></i> PHIẾU NGHIỆM THU NHẬN ĐỒ VỀ TỪ THỢ/XƯỞNG
+          </div>
+
+          <div>
+            <label class="block font-bold text-blue-900 mb-1 text-[11px]">
+              Chọn phiếu gửi đi sửa cần nghiệm thu nhận về <span class="text-red-500">*</span>
+            </label>
+            <select id="selectSendRepairTicket" onchange="onSelectSendRepairTicket(this.value)" class="w-full p-2 border border-blue-300 rounded-lg bg-white font-bold text-xs text-blue-900">
+              <option value="">-- Chọn đợt gửi đi sửa --</option>
+            </select>
+          </div>
+
+          <div id="loadedSendTicketInfoBox" class="hidden p-2.5 rounded-lg bg-white border border-blue-200 text-[11px] text-slate-700 space-y-1">
+            <div class="flex items-center justify-between">
+              <span><b>Thợ/Xưởng:</b> <span id="infoSendProvider" class="font-bold text-slate-800">---</span></span>
+              <span><b>SĐT:</b> <span id="infoSendPhone" class="font-bold text-slate-800">---</span></span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span><b>Ngày gửi:</b> <span id="infoSendDate">---</span></span>
+              <span><b>Đã gửi sửa:</b> <b id="infoSendQty" class="text-red-600">0</b></span>
+            </div>
+            <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+              <span class="font-bold text-slate-600">Ảnh bàn giao lúc gửi:</span>
+              <div id="infoSendPhotoThumb" class="w-8 h-8 rounded border border-slate-300 overflow-hidden bg-slate-50 flex items-center justify-center cursor-pointer" title="Bấm xem ảnh to">
+                <span class="text-[8px] text-slate-300">Trống</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Thời gian nhận về <span class="text-red-500">*</span></label>
+              <input type="date" id="receiveRepairInDate" class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Tổng chi phí thực tế (VNĐ)</label>
+              <input type="text" id="receiveRepairCost" oninput="formatCurrencyInput(this)" placeholder="0" class="w-full p-1.5 border border-slate-300 rounded bg-white font-mono font-bold text-aba text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Tình trạng nhận về <span class="text-red-500">*</span></label>
+            <select id="receiveRepairResult" onchange="toggleReceiveRepairLocBox(this.value)" class="w-full p-1.5 border border-slate-300 rounded font-bold text-xs bg-white text-slate-800">
+              <option value="success">✅ Đã sửa được (Thành đồ tốt)</option>
+              <option value="fail">❌ Thợ không sửa được (Vẫn hỏng)</option>
+            </select>
+          </div>
+
+          <!-- VỊ TRÍ CẤT ĐỒ TỐT: CÓ CHỌN KHO + GIÁ + TẦNG -->
+          <div id="receiveRepairLocBox" class="bg-white p-2.5 rounded-lg border border-blue-200 space-y-1.5">
+            <span class="block font-bold text-blue-900 text-[11px]">📍 Vị trí lưu kho sau khi nhận đồ tốt về:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Kho lưu trữ *</label>
+                <select id="receiveRepairWarehouse" class="w-full p-1.5 border border-slate-300 rounded text-xs bg-slate-50 font-bold text-aba"></select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Giá/Kệ</label>
+                <input type="text" list="shelfDatalist" id="receiveRepairShelf" placeholder="Giá..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-slate-50">
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Tầng</label>
+                <input type="text" list="tierDatalist" id="receiveRepairTier" placeholder="Tầng..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-slate-50 text-center">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Ghi chú chất lượng sau khi nhận về:</label>
+            <input type="text" id="receiveRepairNote" placeholder="Đã kiểm tra kín hơi, đường may chắc chắn..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Ảnh nghiệm thu lúc nhận về <span class="text-red-500">* (Bấm vào ảnh để phóng to/zoom)</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="triggerCamera('repairReceiveIn')" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs flex items-center gap-1">
+                <i class="fa-solid fa-camera"></i> Chụp
+              </button>
+              <label class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-xs cursor-pointer flex items-center gap-1">
+                <i class="fa-solid fa-file-arrow-up"></i> File
+                <input type="file" accept="image/*" class="hidden" onchange="handleSingleRepairFileSelect(event, 'repairReceiveIn')">
+              </label>
+              <div id="previewRepairReceiveIn" class="w-12 h-12 rounded-lg border border-slate-300 overflow-hidden bg-white flex items-center justify-center flex-shrink-0 cursor-pointer shadow-xs" title="Bấm để xem ảnh to">
+                <span class="text-[9px] text-slate-400">Trống</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NÚT GỬI HÀNH ĐỘNG -->
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('repairPropModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">
+            Hủy Bỏ
+          </button>
+          <button type="button" id="btnConfirmRepairProp" onclick="submitSinglePropRepair()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-check"></i> XÁC NHẬN & CẬP NHẬT
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MODAL NHẬP FILE EXCEL PHÂN TÁCH ĐA KHO ==================== -->
+    <div id="importExcelExportModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-3 hidden">
+      <div class="bg-white rounded-2xl max-w-2xl w-full p-4 sm:p-5 space-y-3.5 shadow-2xl max-h-[92vh] overflow-y-auto text-xs">
+        <!-- HEADER -->
+        <div class="flex items-center justify-between border-b pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="p-2 bg-emerald-100 text-emerald-800 rounded-xl"><i class="fa-solid fa-file-excel text-base"></i></span>
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 uppercase">NHẬP BẢNG DỰ ÁN EXCEL & PHÂN TÁCH ĐA KHO</h3>
+              <p class="text-[10px] text-slate-500">Hệ thống tự động lọc danh sách theo từng kho và sinh các Phiếu chờ xuất riêng biệt</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeModal('importExcelExportModal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+        </div>
+
+        <!-- THÔNG TIN CHUNG DỰ ÁN / CHƯƠNG TRÌNH -->
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Tên sự kiện / Dự án / Tour <span class="text-red-500">*</span></label>
+              <input type="text" id="excelProjectName" placeholder="Ví dụ: Hội trại 26/3, Teambuilding UTT..." class="w-full p-2 border border-slate-300 rounded-lg bg-white font-bold text-aba text-xs">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Người nhận / Đội ngũ mang đi <span class="text-red-500">*</span></label>
+              <input type="text" id="excelReceiverName" placeholder="Tên phụ trách / HDV / Trưởng đoàn..." class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs">
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Số điện thoại liên hệ</label>
+              <input type="tel" id="excelReceiverPhone" placeholder="SĐT phụ trách..." class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs font-semibold">
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Thời gian xuất kho dự kiến</label>
+              <input type="date" id="excelExportDate" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs">
+            </div>
+          </div>
+        </div>
+
+        <!-- KHUNG CHỌN FILE EXCEL -->
+        <div class="border-2 border-dashed border-emerald-300 bg-emerald-50/40 rounded-2xl p-4 text-center space-y-2">
+          <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-600"></i>
+          <div>
+            <label class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl cursor-pointer text-xs inline-flex items-center gap-1.5 shadow-sm transition">
+              <i class="fa-solid fa-file-circle-plus"></i> Chọn file Excel (.xlsx, .xls)
+              <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="hidden" onchange="handleExcelFileUpload(event)">
+            </label>
+            <p class="text-[10px] text-slate-500 mt-1">Hỗ trợ các cột: <b>Kho xuất</b>, <b>Tên đạo cụ</b> (hoặc Mã), <b>Số lượng</b>, <b>ĐVT</b>, <b>Ghi chú</b></p>
+          </div>
+        </div>
+
+        <!-- KHUNG XEM TRƯỚC KẾT QUẢ PHÂN TÁCH ĐA KHO -->
+        <div id="excelPreviewContainer" class="hidden space-y-2.5">
+          <div class="flex items-center justify-between border-b pb-1">
+            <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-cubes-stacked text-aba"></i> KẾT QUẢ PHÂN TÁCH:
+              <span id="detectedWarehousesCountBadge" class="px-2 py-0.5 bg-aba text-white rounded-full text-[10px]">0 kho</span>
+            </span>
+            <span id="totalItemsCountBadge" class="text-[11px] font-bold text-slate-500">0 món</span>
+          </div>
+
+          <!-- DANH SÁCH CÁC THẺ PHIẾU CHỜ TỪNG KHO -->
+          <div id="excelWarehouseCardsBox" class="space-y-2 max-h-56 overflow-y-auto p-1">
+            <!-- Render tự động bởi Javascript -->
+          </div>
+        </div>
+
+        <!-- FOOTER ACTIONS -->
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+          <button type="button" onclick="downloadExportExcelTemplate()" class="text-emerald-700 hover:text-emerald-800 font-bold text-xs flex items-center gap-1">
+            <i class="fa-solid fa-download"></i> Tải file mẫu chuẩn
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeModal('importExcelExportModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">
+              Đóng
+            </button>
+            <button type="button" id="btnConfirmGeneratePendingTickets" onclick="submitSplitPendingTickets()" disabled class="px-5 py-2 bg-slate-300 text-slate-500 font-bold rounded-xl shadow-xs text-xs flex items-center gap-1.5 transition cursor-not-allowed">
+              <i class="fa-solid fa-bolt"></i> TẠO CÁC PHIẾU CHỜ XUẤT KHO
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- TAB 5: PHIẾU THANH LÝ -->
+    <!-- ==================== TAB MỚI: PHIẾU SỬA CHỮA ĐẠO CỤ HỎNG ==================== -->
+    <section id="tab-repair" class="tab-content hidden space-y-2.5">
+      <!-- 1. THÔNG TIN PHIẾU SỬA CHỮA (CHIA ĐÚNG 2 TRƯỜNG / 1 HÀNG) -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        <div>
+          <label class="block font-semibold mb-0.5 text-[11px]">Ngày sửa chữa <span class="text-slate-400">(Tự động)</span></label>
+          <input type="date" id="repairDate" readonly class="w-full p-1.5 bg-slate-100 border border-slate-200 rounded font-bold text-slate-600 text-xs cursor-not-allowed">
+        </div>
+        <div>
+          <label class="block font-semibold mb-0.5 text-[11px]">Kho đồ hỏng cần sửa <span class="text-red-500">*</span></label>
+          <select id="repairWarehouse" onchange="onRepairWarehouseChange()" class="w-full p-1.5 border border-slate-300 rounded font-bold text-aba bg-white text-xs"></select>
+        </div>
+        <div>
+          <label class="block font-semibold mb-0.5 text-[11px]">Người nghiệm thu/phụ trách</label>
+          <input type="text" id="repairProposer" readonly class="w-full p-1.5 bg-slate-100 border border-slate-300 rounded text-slate-700 font-bold text-xs cursor-not-allowed">
+        </div>
+        <div>
+          <label class="block font-semibold mb-0.5 text-[11px]">Đơn vị / Thợ sửa chữa</label>
+          <input type="text" id="repairProvider" placeholder="Tự sửa / Xưởng may / Thợ hàn..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white">
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <label class="block font-semibold mb-0.5 text-[11px]">Chi phí sửa chữa (VNĐ nếu có)</label>
+          <input type="text" id="repairCostFormatted" oninput="formatCurrencyInput(this)" placeholder="0" class="w-full p-1.5 border border-slate-300 rounded font-mono font-bold text-aba text-xs bg-white">
+        </div>
+        <div class="col-span-2 sm:col-span-3">
+          <label class="block font-semibold mb-0.5 text-[11px]">Nội dung / Ghi chú đợt sửa</label>
+          <input type="text" id="repairGeneralNote" placeholder="Sửa chữa phục hồi đạo cụ hỏng sau đợt sự kiện..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white">
+        </div>
+      </div>
+
+      <!-- THANH CÔNG CỤ: NẠP NHANH TOÀN BỘ ĐỒ ĐANG HỎNG TẠI KHO -->
+      <div class="bg-amber-50/70 border border-amber-200 p-2 rounded-xl flex items-center justify-between text-xs">
+        <div class="flex items-center gap-1.5 text-amber-900 font-bold text-[11px]">
+          <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+          <span>Xử lý đạo cụ thuộc diện Hỏng đưa về dùng được</span>
+        </div>
+        <button type="button" onclick="loadAllBrokenPropsToRepairTable()" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-[11px] shadow-xs flex items-center gap-1">
+          <i class="fa-solid fa-bolt"></i> Điền nhanh toàn bộ đồ hỏng tại kho này
+        </button>
+      </div>
+
+      <!-- BẢNG DANH SÁCH ĐỒ SỬA CHỮA (CARD TRÊN MOBILE / BẢNG TRÊN MÁY TÍNH) -->
+      <div class="bg-transparent sm:bg-white sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm overflow-visible">
+        <table class="w-full text-left border-collapse text-xs block sm:table">
+          <thead class="hidden sm:table-header-group bg-slate-50 border-b border-slate-200 font-bold text-slate-600 uppercase text-[11px]">
+            <tr>
+              <th class="p-2 w-10 text-center">STT</th>
+              <th class="p-2 min-w-[200px]">Đạo cụ hỏng cần sửa</th>
+              <th class="p-2 w-16 text-center">ĐVT</th>
+              <th class="p-2 w-24 text-center text-red-600">Đang hỏng</th>
+              <th class="p-2 w-28 text-center text-emerald-700">Đã sửa xong</th>
+              <th class="p-2 min-w-[220px]">Vị trí lưu kệ sau khi sửa</th>
+              <th class="p-2 min-w-[130px]">Ảnh nghiệm thu</th>
+              <th class="p-2 min-w-[160px]">Nội dung khắc phục</th>
+              <th class="p-2 w-10 text-center">Xóa</th>
+            </tr>
+          </thead>
+          <tbody id="repairChecklistTableBody" class="block sm:table-row-group space-y-1 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
+        </table>
+      </div>
+
+      <!-- KHUNG THAO TÁC NÚT BẤM -->
+      <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 text-xs">
+        <span class="text-[11px] text-slate-500 italic">* Lưu ý: Số lượng sửa xong sẽ trừ vào số Hỏng và cộng lại vào Tồn dùng được + Vị trí kệ.</span>
+        <div class="grid grid-cols-2 sm:flex items-center gap-1.5">
+          <button type="button" onclick="resetRepairForm()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 font-bold rounded-xl text-xs flex items-center justify-center gap-1">
+            <i class="fa-solid fa-arrows-rotate text-red-500"></i> Nhập lại
+          </button>
+          <button id="btnSubmitRepair" onclick="submitRepairTicket()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg text-xs flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-circle-check"></i> HOÀN TẤT & PHỤC HỒI ĐỒ
+          </button>
+        </div>
+      </div>
+    </section>
     <section id="tab-liquidation" class="tab-content hidden space-y-2.5">
       <!-- THÔNG TIN THANH LÝ: CHIA ĐÚNG 2 TRƯỜNG / 1 HÀNG TRÊN MỌI THIẾT BỊ -->
       <div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
@@ -738,11 +1234,12 @@
           <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
         </div>
         <div class="grid grid-cols-2 gap-1.5">
-          <select id="archiveFilterType" onchange="renderArchiveTickets()" class="w-full p-1.5 border border-slate-300 rounded-lg bg-slate-50 text-[11px] font-semibold">
+          <select id="archiveFilterType" onchange="renderArchiveTickets()" class="p-1.5 border border-slate-300 rounded-lg bg-slate-50 font-bold text-slate-700 text-xs">
             <option value="">Tất cả loại phiếu</option>
             <option value="NHAP_LAN_DAU">Nhập Lần Đầu</option>
             <option value="XUAT_KHO">Xuất Kho</option>
             <option value="NHAP_KHO">Nhập Về</option>
+            <option value="SUA_CHUA">Sửa Chữa</option>
             <option value="CHUAN_BI">Chuẩn Bị</option>
             <option value="THANH_LY">Thanh Lý</option>
           </select>
@@ -893,6 +1390,24 @@
 
       <input type="hidden" id="editPropCode">
 
+      <!-- 1. TÊN ĐẠO CỤ (SỬA ĐƯỢC) -->
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <label class="block font-bold text-slate-700 mb-1">Tên đạo cụ (Sửa tên làm sai thông tin) <span class="text-red-500">*</span></label>
+        <input type="text" id="editPropName" placeholder="Nhập tên đạo cụ mới..." class="w-full p-2 border border-slate-300 rounded-lg bg-white font-bold text-slate-800 text-xs focus:ring-2 focus:ring-aba focus:border-aba shadow-xs">
+      </div>
+
+      <!-- 2. VỊ TRÍ LƯU CẤT (SỬA KHO, GIÁ, TẦNG - KHÓA SỐ LƯỢNG) -->
+      <div class="bg-amber-50/40 p-3 rounded-xl border border-amber-200 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-amber-900 flex items-center gap-1.5 text-xs">
+            <i class="fa-solid fa-warehouse text-aba"></i> Vị Trí Lưu Kho Thực Tế
+          </span>
+          <span class="text-[10px] text-slate-500 italic">* Tên kho & Số lượng cố định, chỉ sắp xếp lại Giá/Kệ và Tầng</span>
+        </div>
+        <!-- Danh sách vị trí được sinh tự động bởi Javascript -->
+        <div id="editLocationsContainer" class="space-y-1.5"></div>
+      </div>
+
       <!-- 1. Danh mục & Sử dụng cho -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
         <div>
@@ -994,19 +1509,21 @@
         <div>
           <div class="flex items-center justify-between mb-1">
             <span class="font-bold text-slate-700">Danh sách đạo cụ cho 1 Bộ game:</span>
-            <button type="button" onclick="appendGameItemRow()" class="px-2.5 py-1 bg-aba text-white rounded font-bold text-[11px]">+ Thêm món</button>
+            <button type="button" onclick="appendGameItemRow()" class="px-2.5 py-1 bg-aba text-white rounded font-bold text-[11px]">+ Thêm đồ</button>
           </div>
           <div class="overflow-visible min-h-[140px]">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead class="bg-slate-200/60 font-bold text-slate-600">
+            <table class="w-full text-left text-xs border-collapse block sm:table">
+              <!-- ẨN TIÊU ĐỀ TRÊN DI ĐỘNG, CHỈ HIỆN TRÊN MÁY TÍNH -->
+              <thead class="hidden sm:table-header-group bg-slate-200/60 font-bold text-slate-600">
                 <tr>
-                  <th class="p-1.5 min-w-[240px]">Tên Đạo Cụ (Chọn từ kho)</th>
+                  <th class="p-1.5 w-10 text-center">STT</th>
+                  <th class="p-1.5 min-w-[220px]">Tên Đạo Cụ (Chọn từ kho)</th>
                   <th class="p-1.5 w-20 text-center">ĐVT</th>
-                  <th class="p-1.5 w-20 text-center">Số lượng</th>
+                  <th class="p-1.5 w-24 text-center">Số lượng</th>
                   <th class="p-1.5 w-10 text-center">Xóa</th>
                 </tr>
               </thead>
-              <tbody id="newGameItemsTbody" class="divide-y divide-slate-100"></tbody>
+              <tbody id="newGameItemsTbody" class="block sm:table-row-group space-y-2 sm:space-y-0 sm:divide-y sm:divide-slate-100"></tbody>
             </table>
           </div>
         </div>
@@ -1095,32 +1612,42 @@
         </div>
         <div class="flex items-center gap-2">
           <button type="button" id="btnOpenEditFromDetail" onclick="openEditPropModalFromDetail()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
-            <i class="fa-solid fa-pen-to-square"></i> Sửa thông tin
+            <i class="fa-solid fa-pen-to-square"></i> Sửa
           </button>
           <button onclick="closeModal('propDetailModal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold ml-1 leading-none">&times;</button>
         </div>
       </div>
 
-      <div class="grid grid-cols-5 gap-2 text-center">
-        <div class="bg-slate-50 p-2 rounded-xl border border-slate-200">
-          <div class="text-[10px] text-slate-500 font-semibold">TỔNG SỐ</div>
-          <div id="detailTotal" class="text-base font-bold text-slate-800">0</div>
+      <!-- 5 CHỈ SỐ SẮP XẾP CHUẨN: DÙNG ĐƯỢC -> ĐANG ĐI -> HỎNG -> TẠI KHO -> TỔNG -->
+      <div class="grid grid-cols-5 gap-1.5 sm:gap-2 text-center">
+        <!-- 1. DÙNG ĐƯỢC (XANH LÁ) -->
+        <div class="bg-emerald-50 p-1.5 sm:p-2 rounded-xl border border-emerald-200">
+          <div class="text-[9px] sm:text-[10px] text-emerald-800 font-bold uppercase">SẴN SÀNG</div>
+          <div id="detailUsable" class="text-sm sm:text-base font-black text-emerald-700">0</div>
         </div>
-        <div class="bg-blue-50 p-2 rounded-xl border border-blue-200">
-          <div class="text-[10px] text-blue-800 font-semibold">TẠI KHO</div>
-          <div id="detailInStock" class="text-base font-bold text-blue-900">0</div>
+
+        <!-- 2. ĐANG ĐI (VÀNG CAM) -->
+        <div class="bg-amber-50 p-1.5 sm:p-2 rounded-xl border border-amber-200">
+          <div class="text-[9px] sm:text-[10px] text-amber-800 font-bold uppercase">ĐANG DÙNG</div>
+          <div id="detailInUse" class="text-sm sm:text-base font-black text-amber-700">0</div>
         </div>
-        <div class="bg-amber-50 p-2 rounded-xl border border-amber-200">
-          <div class="text-[10px] text-amber-800 font-semibold">ĐANG ĐI TOUR</div>
-          <div id="detailInUse" class="text-base font-bold text-amber-900">0</div>
+
+        <!-- 3. HỎNG (ĐỎ) -->
+        <div class="bg-red-50 p-1.5 sm:p-2 rounded-xl border border-red-200">
+          <div class="text-[9px] sm:text-[10px] text-red-800 font-bold uppercase">ĐANG HỎNG</div>
+          <div id="detailBroken" class="text-sm sm:text-base font-black text-red-600">0</div>
         </div>
-        <div class="bg-emerald-50 p-2 rounded-xl border border-emerald-200">
-          <div class="text-[10px] text-emerald-800 font-semibold">DÙNG ĐƯỢC</div>
-          <div id="detailUsable" class="text-base font-bold text-emerald-900">0</div>
+
+        <!-- 4. TẠI KHO (XANH DƯƠNG) -->
+        <div class="bg-blue-50 p-1.5 sm:p-2 rounded-xl border border-blue-200">
+          <div class="text-[9px] sm:text-[10px] text-blue-800 font-bold uppercase">TẠI KHO</div>
+          <div id="detailInStock" class="text-sm sm:text-base font-black text-blue-700">0</div>
         </div>
-        <div class="bg-red-50 p-2 rounded-xl border border-red-200">
-          <div class="text-[10px] text-red-800 font-semibold">ĐANG HỎNG</div>
-          <div id="detailBroken" class="text-base font-bold text-red-900">0</div>
+
+        <!-- 5. TỔNG (XÁM) -->
+        <div class="bg-slate-100 p-1.5 sm:p-2 rounded-xl border border-slate-200">
+          <div class="text-[9px] sm:text-[10px] text-slate-600 font-bold uppercase">TỔNG</div>
+          <div id="detailTotal" class="text-sm sm:text-base font-black text-slate-800">0</div>
         </div>
       </div>
 
@@ -1160,39 +1687,105 @@
   </div>
 
   <!-- MODALS ĐĂNG NHẬP, TÀI KHOẢN, CAMERA, CONFIRM, LIGHTBOX -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-3 hidden">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
-      <div class="text-center space-y-1">
-        <h3 class="text-base font-bold text-aba uppercase">Đăng Ký & Khóa Phiên Thiết Bị</h3>
-        <p class="text-xs text-slate-500">Định danh nhân sự chịu trách nhiệm đạo cụ ABA</p>
+  <!-- ================= MODAL ĐĂNG KÝ / ĐĂNG NHẬP PHÂN LOẠI THIẾT BỊ ================= -->
+<div id="loginModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 flex items-center justify-center p-3 hidden">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl border border-slate-100 text-xs">
+    <!-- TIÊU ĐỀ THAY ĐỔI THEO THIẾT BỊ -->
+    <div class="text-center space-y-1">
+      <div id="authDeviceBadge" class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-wider">
+        Nhận diện thiết bị...
+      </div>
+      <h3 id="authModalTitle" class="text-base font-black text-slate-800 uppercase tracking-tight">XÁC THỰC DANH TÍNH</h3>
+      <p id="authModalDesc" class="text-[11px] text-slate-500 leading-snug">Vui lòng cung cấp đúng thông tin để truy cập hệ thống.</p>
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label class="block font-bold text-slate-700 mb-1">Họ và tên của bạn <span class="text-red-500">*</span></label>
+        <input type="text" id="loginName" placeholder="Ví dụ: Lê Duy Khánh" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold text-xs bg-white text-slate-800 focus:border-aba focus:ring-1 focus:ring-aba">
       </div>
 
-      <div class="space-y-2 text-xs">
-        <div>
-          <label class="block font-semibold mb-0.5">Họ và tên của bạn <span class="text-red-500">*</span></label>
-          <input type="text" id="loginName" placeholder="Nguyễn Văn A" class="w-full p-2 border border-slate-300 rounded-lg uppercase">
-        </div>
-        <div>
-          <label class="block font-semibold mb-0.5">Số điện thoại <span class="text-red-500">*</span></label>
-          <input type="tel" id="loginPhone" placeholder="0987654321" class="w-full p-2 border border-slate-300 rounded-lg">
-        </div>
-        <div class="text-center pt-2">
-          <label class="block font-semibold mb-1">Chụp ảnh khuôn mặt nhận diện</label>
-          <div class="w-24 h-24 mx-auto rounded-full border-2 border-dashed border-aba flex items-center justify-center overflow-hidden bg-slate-50 relative">
-            <img id="loginAvatarPreview" src="" class="w-full h-full object-cover hidden">
-            <i id="loginCameraPlaceholder" class="fa-solid fa-camera text-2xl text-slate-400"></i>
-          </div>
-          <button type="button" onclick="triggerCamera('loginFace')" class="mt-2 px-3 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded text-xs font-semibold">
-            Bật Camera Chụp Mặt
-          </button>
-        </div>
+      <div>
+        <label class="block font-bold text-slate-700 mb-1">Số điện thoại cá nhân <span class="text-red-500">*</span></label>
+        <input type="tel" id="loginPhone" placeholder="Ví dụ: 0389975487" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold text-xs bg-white text-slate-800 focus:border-aba focus:ring-1 focus:ring-aba">
       </div>
 
-      <button onclick="confirmLogin()" class="w-full py-2.5 bg-aba hover:bg-aba-dark text-white font-bold rounded-xl shadow text-sm">
-        XÁC NHẬN ĐĂNG NHẬP
+      <!-- KHUNG CAMERA TRỰC TIẾP TRÊN MÀN HÌNH (CHỐNG CHỌN FILE TỪ THƯ VIỆN) -->
+         <div id="mobileCameraBlock" class="space-y-2 hidden">
+           <label class="block font-bold text-slate-700">Chụp ảnh xác thực khuôn mặt <span class="text-red-500">*</span></label>
+           
+           <!-- MÀN HÌNH HIỂN THỊ CAMERA SOI GƯƠNG -->
+           <!-- MÀN HÌNH CAMERA HÌNH TRÒN (FACEID CỦA HỆ THỐNG) -->
+           <div class="relative w-44 h-44 sm:w-48 sm:h-48 mx-auto bg-slate-900 rounded-full overflow-hidden border-4 border-aba/50 shadow-xl flex items-center justify-center">
+             <!-- Ống kính trực tiếp -->
+             <video id="authLiveVideo" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
+             
+             <!-- Ảnh kết quả sau khi chụp -->
+             <img id="loginAvatarPreview" class="w-full h-full object-cover hidden">
+             
+             <!-- Trạng thái chờ -->
+             <div id="authCameraWaiting" class="text-center p-3 text-slate-400 space-y-1 z-10">
+               <i class="fa-solid fa-user text-3xl text-slate-500"></i>
+               <p class="text-[10px] leading-tight">Bấm "Bật Camera"<br>để quét khuôn mặt</p>
+             </div>
+
+             <!-- Vòng tròn ngắm hỗ trợ căn chỉnh tâm mặt -->
+             <div class="pointer-events-none absolute inset-2 rounded-full border border-dashed border-white/30 z-20"></div>
+
+             <!-- Canvas ẩn để trích xuất ảnh -->
+             <canvas id="authCaptureCanvas" class="hidden"></canvas>
+           </div>
+
+           <!-- CÁC NÚT ĐIỀU KHIỂN CHỤP ẢNH -->
+           <div class="flex items-center justify-center gap-2">
+             <button type="button" id="btnStartLiveCamera" onclick="startLiveCameraStream()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs flex items-center gap-1.5">
+               <i class="fa-solid fa-video"></i> Bật Camera
+             </button>
+             <button type="button" id="btnSnapLivePhoto" onclick="captureLivePhoto()" disabled class="px-4 py-1.5 bg-aba text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm opacity-50 cursor-not-allowed">
+               <i class="fa-solid fa-camera"></i> Chụp ngay
+             </button>
+             <button type="button" id="btnRetakeLivePhoto" onclick="startLiveCameraStream()" class="px-3 py-1.5 bg-slate-100 text-slate-600 font-bold rounded-xl text-xs hidden">
+               <i class="fa-solid fa-rotate-right"></i> Chụp lại
+             </button>
+           </div>
+         </div>
+
+      <!-- LƯU Ý KHI ĐĂNG NHẬP TRÊN MÁY TÍNH -->
+      <div id="desktopNoticeBlock" class="hidden p-2.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-800 text-[10px] space-y-1">
+        <div class="font-bold flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> LƯU Ý MÁY TÍNH CÁ NHÂN:</div>
+        <div>Chỉ những tài khoản đã hoàn tất kích hoạt trên Điện thoại mới được phép đăng nhập trên máy tính.</div>
+      </div>
+    </div>
+
+    <button type="button" id="btnSubmitAuth" onclick="submitAuth()" class="w-full py-3 bg-gradient-to-r from-aba to-indigo-700 hover:from-aba-dark hover:to-indigo-800 text-white font-black rounded-2xl shadow-lg transition text-xs flex items-center justify-center gap-2">
+      <i class="fa-solid fa-shield-halved"></i> XÁC NHẬN TRUY CẬP
+    </button>
+  </div>
+</div>
+
+<!-- ================= MODAL MẬT KHẨU QUẢN TRỊ ĐỂ THOÁT TÀI KHOẢN ================= -->
+<div id="adminLogoutModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-3 hidden">
+  <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-3 shadow-2xl border border-slate-100 text-xs text-center">
+    <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl shadow-inner">
+      <i class="fa-solid fa-lock"></i>
+    </div>
+    <div class="space-y-1">
+      <h3 class="text-sm font-black text-slate-800 uppercase">MẬT KHẨU QUẢN TRỊ</h3>
+      <p class="text-[10px] text-slate-500 leading-tight">Nhập mật khẩu cài đặt trên Google Drive để thoát tài khoản trên thiết bị này.</p>
+    </div>
+    <div>
+      <input type="password" id="adminLogoutPasswordInput" placeholder="Nhập mật khẩu..." class="w-full p-2.5 border border-slate-300 rounded-xl text-center font-bold text-sm bg-white focus:border-red-500 focus:ring-1 focus:ring-red-500">
+    </div>
+    <div class="flex items-center gap-2 pt-1">
+      <button type="button" onclick="closeModal('adminLogoutModal')" class="w-1/2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs">
+        Hủy bỏ
+      </button>
+      <button type="button" onclick="confirmAdminLogout()" class="w-1/2 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs shadow-md">
+        Xác nhận
       </button>
     </div>
   </div>
+</div>
 
   <div id="switchAccountModal" class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-3 hidden">
     <div class="bg-white rounded-xl max-w-xs w-full p-4 space-y-3 shadow-xl text-xs">
@@ -1551,6 +2144,7 @@
         buildExportTableRows();
         buildImportTableRows();
         buildLiquidationTableRows();
+        if (typeof renderRepairBrokenList === 'function') renderRepairBrokenList();
       }
 
       const archiveRes = await callBackend('getArchivedTickets', {}, 'GET');
@@ -1562,8 +2156,7 @@
     }
 
     function populateWarehouseSelectors() {
-      // Đã bổ sung importWarehouseSelect để đổ đầy đủ danh sách kho vào Phiếu Nhập Kho
-      const selectors = ['filterWarehouse', 'propWarehouseSelect', 'exportWarehouse', 'importWarehouse', 'importWarehouseSelect', 'liqWarehouse', 'archiveFilterWarehouse', 'targetReallocateWh'];
+      const selectors = ['filterWarehouse', 'propWarehouseSelect', 'exportWarehouse', 'importWarehouse', 'importWarehouseSelect', 'repairWarehouse', 'liqWarehouse', 'archiveFilterWarehouse', 'targetReallocateWh'];
       selectors.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -1610,6 +2203,7 @@
       }
 
       if (tabId === 'master') renderMasterProps();
+      if (tabId === 'repair') initRepairTab();
       if (tabId === 'archive') renderArchiveTickets();
     }
 
@@ -1648,7 +2242,7 @@
         const badgeColor = p.type === 'Khấu hao' ? 'badge-depreciable' : 'badge-consumable';
         const locationsHtml = (p.locations || []).map(l => {
           const warn = (!l.shelf || !l.tier) ? '<span class="text-amber-600 font-bold ml-1">[⚠️ Chưa kệ]</span>' : '';
-          return `<div><span class="font-bold text-slate-700">[${l.warehouse}]</span> ${l.shelf || 'Chưa xếp'} / T${l.tier || '---'} (${l.qty})${warn}</div>`;
+          return `<div><span class="font-bold text-slate-700">[${l.warehouse}]</span> ${l.shelf || 'Chưa xếp'} / T${l.tier || '---'} ( <b class="font-black text-slate-900">${l.qty}</b> )${warn}</div>`;
         }).join('');
 
         const usableVal = p.usable !== undefined ? p.usable : (p.usableQty || 0);
@@ -1695,12 +2289,12 @@
             <!-- 5 CHỈ SỐ TỒN KHO: TRÊN MOBILE HIỂN THỊ DẠNG 5 Ô MINI THẲNG HÀNG -->
             <td colspan="5" class="block sm:hidden mt-1.5 pt-1.5 border-t border-slate-100">
               <div class="grid grid-cols-5 gap-1 text-center">
-                <div class="bg-emerald-50 p-1 rounded border border-emerald-100">
-                  <div class="text-[8px] font-bold text-emerald-800 uppercase">Dùng</div>
-                  <div class="text-xs font-black text-emerald-700">${usableVal}</div>
+                <div class="bg-emerald-50 p-1 rounded border border-emerald-100 flex flex-col justify-between items-center">
+                  <div class="text-[7.5px] font-bold text-emerald-800 uppercase tracking-tighter">SẴN SÀNG</div>
+                  <div class="text-xl font-black text-emerald-700 leading-tight">${usableVal}</div>
                 </div>
                 <div class="bg-amber-50 p-1 rounded border border-amber-100">
-                  <div class="text-[8px] font-bold text-amber-800 uppercase">Đang đi</div>
+                  <div class="text-[8px] font-bold text-amber-800 uppercase">Đang dùng</div>
                   <div class="text-xs font-bold text-amber-700">${inUseVal}</div>
                 </div>
                 <div class="bg-red-50 p-1 rounded border border-red-100">
@@ -1780,9 +2374,11 @@
       document.getElementById('detailTotal').innerText = p.total;
       document.getElementById('detailInStock').innerText = p.inStock;
       document.getElementById('detailInUse').innerText = p.inUse;
-      document.getElementById('detailUsable').innerText = p.usableInStock;
+      const calculatedUsable = (p.usableInStock !== undefined) ? p.usableInStock : Math.max(0, (Number(p.inStock) || 0) - (Number(p.broken) || 0));
+      document.getElementById('detailUsable').innerText = calculatedUsable;
       document.getElementById('detailBroken').innerText = p.broken;
 
+      // 1. Danh sách vị trí lưu kho
       const locBox = document.getElementById('detailLocationsList');
       locBox.innerHTML = '';
       if (!p.locations || !p.locations.length) {
@@ -1798,41 +2394,123 @@
         });
       }
 
+      // 2. Lọc các chương trình THỰC SỰ ĐANG DÙNG (Chưa trả hoặc mới trả 1 phần)
       const toursBox = document.getElementById('detailActiveToursList');
       toursBox.innerHTML = '';
-      const exportTickets = archivedTickets.filter(t => t.type === 'XUAT_KHO');
+
+      const allExports = archivedTickets.filter(t => t.type === 'XUAT_KHO');
+      const allImports = archivedTickets.filter(t => t.type === 'NHAP_KHO');
+
       const activeTours = [];
 
-      exportTickets.forEach(t => {
-        const item = (t.items || []).find(it => it.name.toLowerCase() === p.name.toLowerCase());
-        if (item) {
+      allExports.forEach(xk => {
+        const xkItem = (xk.items || []).find(it => (it.name || '').trim().toLowerCase() === p.name.trim().toLowerCase());
+        if (!xkItem) return;
+
+        const totalExportQty = Number(xkItem.qty) || 0;
+
+        // Tìm tất cả phiếu nhập kho liên kết với phiếu xuất này
+        const matchedImports = allImports.filter(nk => 
+          (nk.exportTicketId && nk.exportTicketId === xk.id) ||
+          (nk.note && nk.note.includes(xk.id)) ||
+          ((nk.projectName || '').trim().toLowerCase() === (xk.projectName || '').trim().toLowerCase())
+        );
+
+        // Nếu có phiếu nhập đánh dấu "Đã đủ" -> bỏ qua hoàn toàn
+        const isCompleted = matchedImports.some(nk => {
+          const status = nk.returnStatus || (nk.note && nk.note.includes('Trạng thái: Chưa đủ') ? 'Chưa đủ' : 'Đã đủ');
+          return status === 'Đã đủ';
+        });
+        if (isCompleted) return;
+
+        // Tính tổng số lượng món này đã được nhận về trong các phiếu nhập trước
+        let totalReturnedQty = 0;
+        matchedImports.forEach(nk => {
+          const nkItem = (nk.items || []).find(it => (it.name || '').trim().toLowerCase() === p.name.trim().toLowerCase());
+          if (nkItem) {
+            const g = Number(nkItem.goodQty) || 0;
+            const b = Number(nkItem.brokenQty) || 0;
+            const rec = nkItem.receivedQty !== undefined ? Number(nkItem.receivedQty) : (g + b);
+            totalReturnedQty += rec;
+          }
+        });
+
+        // Số lượng thực tế còn đang đi tour
+        const remainingInUse = totalExportQty - totalReturnedQty;
+        if (remainingInUse > 0) {
+          // Định dạng lại ngày tháng gọn gàng DD/MM/YYYY
+          let formattedDate = '---';
+          const rawDate = xk.time || xk.createdAt;
+          if (rawDate) {
+            try {
+              const d = new Date(rawDate);
+              if (!isNaN(d.getTime())) {
+                formattedDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+              } else {
+                formattedDate = rawDate.toString().substring(0, 10);
+              }
+            } catch(e) {
+              formattedDate = rawDate.toString().substring(0, 10);
+            }
+          }
+
           activeTours.push({
-            ticketId: t.id,
-            projectName: t.projectName,
-            warehouse: t.warehouse,
-            exporter: t.exporterName,
-            time: t.time || new Date(t.createdAt).toLocaleDateString('vi-VN'),
-            qty: item.qty
+            ticketId: xk.id,
+            projectName: xk.projectName,
+            warehouse: xk.warehouse,
+            exporter: xk.exporterName,
+            time: formattedDate,
+            qty: remainingInUse,
+            isPartial: totalReturnedQty > 0
           });
         }
       });
 
-      if (!activeTours.length) {
-        toursBox.innerHTML = '<div class="text-slate-400 italic">Hiện không có chương trình nào đang mượn đồ này</div>';
+      // Kiểm tra có đồ hỏng / đang sửa không
+      const brokenCount = Number(p.broken) || 0;
+
+      if (!activeTours.length && brokenCount === 0) {
+        toursBox.innerHTML = '<div class="text-slate-400 italic p-1 text-center">Hiện không có chương trình nào đang mượn và không có đồ đang sửa</div>';
       } else {
+        // Hiển thị các tour đang xuất
         activeTours.forEach(t => {
           toursBox.innerHTML += `
-            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-blue-200">
-              <div>
-                <b class="text-aba">${t.projectName}</b> (${t.time}) - Xuất từ <b>${t.warehouse}</b>
-                <div class="text-[10px] text-slate-500">Người xuất: ${t.exporter} (Mã: ${t.ticketId})</div>
+            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-blue-200 shadow-xs mb-1.5">
+              <div class="flex-1 min-w-0 pr-1">
+                <div class="font-bold text-aba truncate">${t.projectName}</div>
+                <div class="text-[10px] text-slate-500">
+                  Xuất: <b>${t.warehouse}</b> (${t.time}) • Người xuất: ${t.exporter}
+                </div>
+                ${t.isPartial ? '<span class="inline-block text-[9px] font-bold text-amber-700 bg-amber-50 px-1 rounded border border-amber-200 mt-0.5">⏳ Đã trả 1 phần</span>' : ''}
               </div>
-              <span class="px-2 py-0.5 bg-blue-100 text-blue-900 font-bold rounded">Đang dùng: ${t.qty} ${p.unit}</span>
+              <span class="px-2 py-0.5 bg-blue-100 text-blue-900 font-bold rounded text-xs flex-shrink-0">
+                Đang dùng: ${t.qty} ${p.unit}
+              </span>
             </div>
           `;
         });
+
+        // Hiển thị đồ đang hỏng / đang sửa nếu có
+        if (brokenCount > 0) {
+          toursBox.innerHTML += `
+            <div class="flex items-center justify-between bg-amber-50/60 p-2 rounded-lg border border-amber-300 shadow-xs mt-1">
+              <div class="flex-1 min-w-0 pr-1">
+                <div class="font-bold text-amber-900 flex items-center gap-1">
+                  <i class="fa-solid fa-screwdriver-wrench text-amber-600"></i> Đồ đang hỏng / Chờ sửa chữa
+                </div>
+                <div class="text-[10px] text-slate-600">
+                  Thuộc diện hỏng tại kho (Chờ phục hồi trong Tab Sửa Chữa)
+                </div>
+              </div>
+              <span class="px-2 py-0.5 bg-red-100 text-red-800 border border-red-300 font-bold rounded text-xs flex-shrink-0">
+                Đang hỏng: ${brokenCount} ${p.unit}
+              </span>
+            </div>
+          `;
+        }
       }
 
+      // 3. Thông số kỹ thuật & Thông tin khác
       document.getElementById('detailSpecs').innerText = p.specs || 'Không có';
       document.getElementById('detailCategories').innerText = (p.categories || []).join(', ') || '---';
       document.getElementById('detailPurposes').innerText = (p.purposes || []).join(', ') || '---';
@@ -2957,6 +3635,173 @@
         .reduce((sum, b) => sum + (Number(b.brokenQty) || 0), 0);
     }
 
+// =========================================================================
+    // LOGIC NHẬP FILE EXCEL XUẤT KHO & PHÂN TÁCH THÀNH CÁC PHIẾU CHỜ ĐA KHO
+    // =========================================================================
+    let parsedExcelDataByWarehouse = {}; // { "Kho Đông Anh": [...], "Kho Xuân Thủy": [...] }
+
+    // 1. TẢI FILE MẪU EXCEL CHUẨN ĐỂ NGƯỜI DÙNG ĐIỀN
+    function downloadExportExcelTemplate() {
+      if (typeof XLSX === 'undefined') return alert("Thư viện Excel đang tải, vui lòng thử lại sau 3 giây!");
+      
+      const sampleData = [
+        { "Kho xuất": "Kho Đông Anh", "Tên đạo cụ": "Bóng lăn", "Số lượng": 4, "Đơn vị tính": "quả", "Ghi chú": "Kiểm tra kín hơi" },
+        { "Kho xuất": "Kho Đông Anh", "Tên đạo cụ": "Ngựa hơi nhỏ", "Số lượng": 2, "Đơn vị tính": "con", "Ghi chú": "" },
+        { "Kho xuất": "Kho Xuân Thủy", "Tên đạo cụ": "Áo lưới xanh", "Số lượng": 50, "Đơn vị tính": "chiếc", "Ghi chú": "Chia 5 đội" },
+        { "Kho xuất": "Kho Xuân Thủy", "Tên đạo cụ": "Cờ chỉ huy", "Số lượng": 5, "Đơn vị tính": "chiếc", "Ghi chú": "" },
+        { "Kho xuất": "Kho Phạm Tuấn Tài", "Tên đạo cụ": "Loa kéo tay", "Số lượng": 1, "Đơn vị tính": "bộ", "Ghi chú": "Kèm 2 micro" }
+      ];
+
+      const ws = XLSX.utils.json_to_sheet(sampleData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "DanhSachXuatKho");
+      XLSX.writeFile(wb, "Mau_Xuat_Kho_Da_Kho_ABA.xlsx");
+    }
+
+    // 2. ĐỌC FILE EXCEL ĐƯỢC UPLOAD & PHÂN TÁCH THEO KHO
+    function handleExcelFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const data = new Uint8Array(evt.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
+
+          if (!rows.length) return alert("File Excel không có dữ liệu!");
+
+          parsedExcelDataByWarehouse = {};
+          let totalItemsCount = 0;
+
+          rows.forEach(r => {
+            // Nhận diện linh hoạt tên cột tiếng Việt hoặc không dấu
+            const wh = (r["Kho xuất"] || r["Kho"] || r["Kho hàng"] || r["Kho Lấy"] || "Kho Đông Anh").toString().trim();
+            const propName = (r["Tên đạo cụ"] || r["Đạo cụ"] || r["Tên hàng"] || r["Tên món"] || "").toString().trim();
+            const qty = Number(r["Số lượng"] || r["SL"] || r["Số Lượng"] || 1) || 1;
+            const unit = (r["Đơn vị tính"] || r["ĐVT"] || r["Đơn vị"] || "món").toString().trim();
+            const note = (r["Ghi chú"] || r["Lưu ý"] || "").toString().trim();
+
+            if (!propName) return; // Bỏ qua dòng trống tên
+
+            if (!parsedExcelDataByWarehouse[wh]) {
+              parsedExcelDataByWarehouse[wh] = [];
+            }
+
+            parsedExcelDataByWarehouse[wh].push({
+              name: propName,
+              qty: qty,
+              unit: unit,
+              note: note
+            });
+            totalItemsCount++;
+          });
+
+          const whKeys = Object.keys(parsedExcelDataByWarehouse);
+          if (!whKeys.length) return alert("Không tìm thấy dữ liệu đạo cụ hợp lệ trong file Excel!");
+
+          // Hiển thị khung xem trước
+          renderExcelPreview(whKeys, totalItemsCount);
+
+        } catch(err) {
+          alert("Lỗi phân tích file Excel: " + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+      e.target.value = '';
+    }
+
+    // 3. HIỂN THỊ KẾT QUẢ PHÂN TÁCH THÀNH CÁC PHIẾU CHỜ
+    function renderExcelPreview(whKeys, totalCount) {
+      const box = document.getElementById('excelWarehouseCardsBox');
+      const container = document.getElementById('excelPreviewContainer');
+      const badgeWh = document.getElementById('detectedWarehousesCountBadge');
+      const badgeTotal = document.getElementById('totalItemsCountBadge');
+      const btnConfirm = document.getElementById('btnConfirmGeneratePendingTickets');
+
+      badgeWh.innerText = `${whKeys.length} kho khác nhau`;
+      badgeTotal.innerText = `Tổng cộng: ${totalCount} món`;
+      box.innerHTML = '';
+
+      whKeys.forEach((wh, idx) => {
+        const items = parsedExcelDataByWarehouse[wh];
+        const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+
+        box.innerHTML += `
+          <div class="p-2.5 rounded-xl border border-blue-200 bg-blue-50/50 space-y-1.5 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                <span class="w-5 h-5 rounded-full bg-aba text-white flex items-center justify-center text-[10px] font-bold">${idx + 1}</span>
+                Phiếu chờ: <b class="text-aba uppercase">${wh}</b>
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-bold text-[10px]">
+                ${items.length} loại đồ (${totalQty} món)
+              </span>
+            </div>
+            <div class="text-[10px] text-slate-600 bg-white p-1.5 rounded-lg border border-blue-100 max-h-20 overflow-y-auto leading-relaxed">
+              ${items.map(it => `• <b>${it.name}</b>: ${it.qty} ${it.unit} ${it.note ? `<i class="text-slate-400">(${it.note})</i>` : ''}`).join('<br>')}
+            </div>
+          </div>
+        `;
+      });
+
+      container.classList.remove('hidden');
+      btnConfirm.disabled = false;
+      btnConfirm.className = "px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg text-xs flex items-center gap-1.5 transition cursor-pointer";
+    }
+
+    // 4. LƯU TẤT CẢ CÁC PHIẾU CHỜ XUẤT KHO LÊN HỆ THỐNG
+    async function submitSplitPendingTickets() {
+      const projName = document.getElementById('excelProjectName')?.value.trim();
+      const receiver = document.getElementById('excelReceiverName')?.value.trim();
+      const phone = document.getElementById('excelReceiverPhone')?.value.trim();
+      const exportDate = document.getElementById('excelExportDate')?.value || new Date().toISOString().split('T')[0];
+
+      if (!projName) return alert("Vui lòng nhập Tên sự kiện / Dự án!");
+      if (!receiver) return alert("Vui lòng nhập Người nhận / Đội ngũ mang đi!");
+
+      const whKeys = Object.keys(parsedExcelDataByWarehouse);
+      if (!whKeys.length) return alert("Chưa có dữ liệu phân tách!");
+
+      const btn = document.getElementById('btnConfirmGeneratePendingTickets');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo các phiếu chờ...';
+
+      showUploadStatus("Đang lưu các Phiếu chờ xuất kho vào hệ thống...");
+      try {
+        const payload = {
+          projectName: projName,
+          receiverName: receiver,
+          receiverPhone: phone,
+          exportDate: exportDate,
+          userExecutor: currentUser ? `${currentUser.name} (${currentUser.phone || ''})` : "Điều phối",
+          warehousesData: parsedExcelDataByWarehouse
+        };
+
+        const res = await callBackend('saveMultiPendingExportTickets', payload, 'POST');
+        hideUploadStatus();
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> TẠO CÁC PHIẾU CHỜ XUẤT KHO';
+
+        if (res && res.success) {
+          showSuccessPopup("PHÂN TÁCH THÀNH CÔNG!", `Đã tạo thành công ${res.createdCount} Phiếu chờ xuất kho cho các địa điểm.`);
+          closeModal('importExcelExportModal');
+          await fetchInitialData();
+          refreshPendingTicketsDropdown();
+        } else {
+          alert("Lỗi: " + (res && res.error ? res.error : "Không thể tạo phiếu"));
+        }
+      } catch(err) {
+        hideUploadStatus();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i> TẠO CÁC PHIẾU CHỜ XUẤT KHO';
+        alert("Lỗi hệ thống: " + err.message);
+      }
+    }
+
     // 6. Vẽ Bảng 1: Checklist Hoàn trả đạo cụ
     function buildImportTableRows() {
       const tbody = document.getElementById('importChecklistTbody');
@@ -3552,6 +4397,304 @@
     }
     
     // ---------------- BẢNG PHIẾU THANH LÝ ----------------
+    // =========================================================================
+    // LOGIC TAB SỬA CHỮA ĐẠO CỤ HỎNG (TAB MỚI)
+    // =========================================================================
+    let repairChecklist = [];
+    let currentRepairPhotoIdx = -1;
+
+    function initRepairTab() {
+      const today = new Date().toISOString().split('T')[0];
+      const rDate = document.getElementById('repairDate');
+      if (rDate) rDate.value = today;
+      const rUser = document.getElementById('repairProposer');
+      if (rUser) rUser.value = currentUser ? `${currentUser.name} (${currentUser.phone || ''})` : "Thủ kho";
+      if (!repairChecklist.length) {
+        initBlankRepairChecklist();
+      }
+      buildRepairTableRows();
+    }
+
+    function createBlankRepairItem() {
+      return {
+        name: '',
+        unit: '',
+        brokenQty: 0,
+        repairedQty: '',
+        shelf: '',
+        tier: '',
+        photo: '',
+        note: ''
+      };
+    }
+
+    function initBlankRepairChecklist() {
+      repairChecklist = [
+        createBlankRepairItem(),
+        createBlankRepairItem(),
+        createBlankRepairItem(),
+        createBlankRepairItem()
+      ];
+    }
+
+    function onRepairWarehouseChange() {
+      buildRepairTableRows();
+    }
+
+    // Nạp nhanh toàn bộ các đạo cụ đang hỏng của kho hiện tại
+    function loadAllBrokenPropsToRepairTable() {
+      const targetWh = document.getElementById('repairWarehouse').value;
+      const brokenProps = rawProps.filter(p => {
+        const hasBroken = (Number(p.broken) || 0) > 0;
+        const inThisWh = (p.locations || []).some(l => l.warehouse === targetWh) || (p.warehouse === targetWh);
+        return hasBroken && inThisWh;
+      });
+
+      if (!brokenProps.length) {
+        return alert(`Kho "${targetWh}" hiện không có đạo cụ nào thuộc diện Hỏng!`);
+      }
+
+      repairChecklist = brokenProps.map(p => {
+        // Gợi ý kệ đầu tiên đang lưu
+        const firstLoc = (p.locations || []).find(l => l.warehouse === targetWh) || {};
+        return {
+          name: p.name,
+          unit: p.unit,
+          brokenQty: Number(p.broken) || 0,
+          repairedQty: Number(p.broken) || 0, // Mặc định sửa hết
+          shelf: firstLoc.shelf || '',
+          tier: firstLoc.tier || '',
+          photo: '',
+          note: 'Đã khắc phục hoàn chỉnh'
+        };
+      });
+
+      repairChecklist.push(createBlankRepairItem());
+      buildRepairTableRows();
+    }
+
+    function buildRepairTableRows() {
+      const tbody = document.getElementById('repairChecklistTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const targetWh = document.getElementById('repairWarehouse')?.value || '';
+      // Lọc danh sách các món đang có hỏng > 0
+      const brokenPropsAvailable = rawProps.filter(p => (Number(p.broken) || 0) > 0);
+
+      repairChecklist.forEach((item, idx) => {
+        const brokenQty = Number(item.brokenQty) || 0;
+
+        tbody.innerHTML += `
+          <tr class="block sm:table-row bg-white p-2 sm:p-0 rounded-xl sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition">
+            <!-- STT -->
+            <td class="hidden sm:table-cell p-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
+            
+            <!-- HÀNG 1 MOBILE: [STT] [CHỌN ĐỒ HỎNG] [ĐVT] [NÚT XÓA] -->
+            <td class="block sm:table-cell p-0 sm:p-2 relative">
+              <div class="flex items-center gap-1 mb-1 sm:mb-0">
+                <span class="sm:hidden w-4 h-4 rounded bg-slate-100 flex items-center justify-center font-mono font-bold text-slate-500 text-[9px] flex-shrink-0">${idx + 1}</span>
+                <select onchange="selectRepairProp(${idx}, this.value)" class="flex-1 min-w-0 p-1 border border-slate-300 rounded font-bold text-xs bg-white text-slate-800">
+                  <option value="">-- Chọn đồ hỏng cần sửa --</option>
+                  ${brokenPropsAvailable.map(p => `
+                    <option value="${p.name}" ${p.name === item.name ? 'selected' : ''}>
+                      ${p.name} (Hỏng: ${p.broken} ${p.unit})
+                    </option>
+                  `).join('')}
+                </select>
+                <input type="text" readonly id="repair-unit-${idx}" value="${item.unit || ''}" placeholder="ĐVT" 
+                  class="sm:hidden w-11 p-1 text-center font-bold text-slate-600 bg-slate-100 border border-slate-200 rounded text-[11px] cursor-not-allowed flex-shrink-0">
+                <button type="button" onclick="removeRepairRowItem(${idx})" class="sm:hidden p-1 text-slate-300 hover:text-red-500 flex-shrink-0" title="Xóa món này">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </div>
+            </td>
+
+            <!-- CỘT DESKTOP: ĐVT -->
+            <td class="hidden sm:table-cell p-2 text-center">
+              <input type="text" readonly value="${item.unit || ''}" placeholder="---" 
+                class="w-16 p-1 text-center font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded text-xs cursor-not-allowed">
+            </td>
+
+            <!-- HÀNG 2 MOBILE: [ĐANG HỎNG] + [ĐÃ SỬA XONG] + [ẢNH NGHIỆM THU] NẰM CÙNG 1 HÀNG -->
+            <!-- 1. ĐANG HỎNG -->
+            <td class="inline-block sm:table-cell w-[30%] sm:w-24 p-0.5 sm:p-2 align-top text-center">
+              <label class="sm:hidden block text-[9px] font-bold text-red-700 uppercase mb-0.5">Đang hỏng</label>
+              <div class="p-1 rounded font-bold text-red-600 bg-red-50 border border-red-200 text-xs text-center">${brokenQty}</div>
+            </td><!--
+            --><!-- 2. ĐÃ SỬA XONG -->
+            <td class="inline-block sm:table-cell w-[36%] sm:w-28 p-0.5 sm:p-2 align-top text-center">
+              <label class="sm:hidden block text-[9px] font-bold text-emerald-700 uppercase mb-0.5">Sửa xong</label>
+              <input type="number" min="1" max="${brokenQty}" value="${item.repairedQty !== undefined ? item.repairedQty : ''}" 
+                oninput="handleRepairQtyChange(${idx}, this.value)" placeholder="0" 
+                class="w-full sm:w-20 p-1 text-center font-black border border-emerald-400 rounded text-xs bg-white text-emerald-800">
+            </td><!--
+            --><!-- 3. ẢNH NGHIỆM THU -->
+            <td class="inline-block sm:table-cell w-[30%] sm:w-28 p-0.5 sm:p-2 align-top">
+              <label class="sm:hidden block text-[9px] font-bold text-slate-600 uppercase mb-0.5">Ảnh sửa</label>
+              <div class="flex items-center gap-1 h-[26px]">
+                <button type="button" onclick="triggerRepairPhotoCapture(${idx})" class="p-1 px-1.5 bg-slate-200 hover:bg-slate-300 rounded text-slate-700 font-semibold text-[10px] flex items-center gap-0.5 flex-shrink-0">
+                  <i class="fa-solid fa-camera"></i>
+                </button>
+                <div id="repair-photo-preview-${idx}" class="w-6 h-6 rounded border border-slate-300 overflow-hidden bg-slate-50 flex items-center justify-center flex-shrink-0">
+                  ${item.photo ? `<img src="${item.photo}" class="w-full h-full object-cover cursor-pointer" onclick="openSingleLightbox('${item.photo}')">` : '<span class="text-[8px] text-slate-300">Trống</span>'}
+                </div>
+              </div>
+            </td>
+
+            <!-- HÀNG 3 MOBILE: VỊ TRÍ LƯU KHO SAU KHI SỬA (GIÁ & TẦNG) -->
+            <td class="block sm:table-cell p-0.5 sm:p-2 mt-1 sm:mt-0">
+              <div class="flex items-center gap-1">
+                <input type="text" list="shelfDatalist" placeholder="Giá cất..." value="${item.shelf || ''}" 
+                  oninput="repairChecklist[${idx}].shelf = this.value" 
+                  class="flex-1 min-w-0 p-1 border border-slate-300 rounded text-xs bg-white">
+                <input type="text" list="tierDatalist" placeholder="Tầng..." value="${item.tier || ''}" 
+                  oninput="repairChecklist[${idx}].tier = this.value" 
+                  class="w-14 p-1 border border-slate-300 rounded text-xs bg-white text-center">
+              </div>
+            </td>
+
+            <!-- HÀNG 4 MOBILE: NỘI DUNG KHẮC PHỤC -->
+            <td class="block sm:table-cell p-0.5 sm:p-2 mt-0.5 sm:mt-0">
+              <input type="text" value="${item.note || ''}" 
+                oninput="repairChecklist[${idx}].note = this.value" 
+                placeholder="Nội dung đã sửa: hàn khung, dán bạt, may lại..." 
+                class="w-full p-1 border border-slate-200 rounded text-[11px] bg-white">
+            </td>
+
+            <!-- NÚT XÓA DESKTOP -->
+            <td class="hidden sm:table-cell p-2 text-center">
+              <button type="button" onclick="removeRepairRowItem(${idx})" class="text-slate-400 hover:text-red-500 transition" title="Xóa dòng">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function selectRepairProp(idx, propName) {
+      if (!repairChecklist[idx]) return;
+      repairChecklist[idx].name = propName;
+      const targetWh = document.getElementById('repairWarehouse').value;
+      const prop = rawProps.find(p => p.name.toLowerCase() === (propName || '').trim().toLowerCase());
+      if (prop) {
+        repairChecklist[idx].unit = prop.unit || '';
+        repairChecklist[idx].brokenQty = Number(prop.broken) || 0;
+        repairChecklist[idx].repairedQty = Number(prop.broken) || 1;
+        const firstLoc = (prop.locations || []).find(l => l.warehouse === targetWh) || (prop.locations || [])[0] || {};
+        repairChecklist[idx].shelf = firstLoc.shelf || '';
+        repairChecklist[idx].tier = firstLoc.tier || '';
+      } else {
+        repairChecklist[idx].unit = '';
+        repairChecklist[idx].brokenQty = 0;
+        repairChecklist[idx].repairedQty = '';
+      }
+
+      if (idx === repairChecklist.length - 1) {
+        repairChecklist.push(createBlankRepairItem());
+      }
+      buildRepairTableRows();
+    }
+
+    function handleRepairQtyChange(idx, val) {
+      if (!repairChecklist[idx]) return;
+      const maxB = Number(repairChecklist[idx].brokenQty) || 0;
+      let n = Number(val) || 0;
+      if (n > maxB && maxB > 0) {
+        alert(`Số lượng sửa xong (${n}) không thể vượt quá số lượng đang hỏng (${maxB})!`);
+        n = maxB;
+      }
+      repairChecklist[idx].repairedQty = n;
+      buildRepairTableRows();
+    }
+
+    function removeRepairRowItem(idx) {
+      if (repairChecklist.length <= 4) {
+        repairChecklist[idx] = createBlankRepairItem();
+      } else {
+        repairChecklist.splice(idx, 1);
+      }
+      buildRepairTableRows();
+    }
+
+    function triggerRepairPhotoCapture(idx) {
+      currentRepairPhotoIdx = idx;
+      triggerCamera('repairItem');
+    }
+
+    function resetRepairForm(askConfirm = true) {
+      if (askConfirm) {
+        if (!confirm("Bạn có muốn làm mới phiếu sửa chữa?")) return;
+      }
+      document.getElementById('repairProvider').value = '';
+      document.getElementById('repairCostFormatted').value = '';
+      document.getElementById('repairGeneralNote').value = '';
+      initRepairTab();
+    }
+
+    async function submitRepairTicket() {
+      const warehouse = document.getElementById('repairWarehouse').value;
+      const validItems = repairChecklist.filter(it => it.name && Number(it.repairedQty) > 0);
+
+      if (!warehouse) return alert("Vui lòng chọn Kho sửa chữa!");
+      if (!validItems.length) return alert("Chưa có đạo cụ nào được chọn hoặc Số lượng sửa xong = 0!");
+
+      const btn = document.getElementById('btnSubmitRepair');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang cập nhật kho...';
+      }
+
+      showUploadStatus("Đang tải ảnh nghiệm thu sửa chữa...");
+      try {
+        for (let i = 0; i < validItems.length; i++) {
+          const it = validItems[i];
+          if (it.photo && it.photo.startsWith('data:image')) {
+            showUploadStatus(`Đang tải ảnh món ${i + 1}/${validItems.length}...`);
+            it.photo = await smartUploadImage(it.photo, `repair_${i + 1}`);
+          }
+        }
+
+        const cost = Number((document.getElementById('repairCostFormatted').value || '').replace(/\D/g, '')) || 0;
+        const payload = {
+          warehouse: warehouse,
+          repairDate: document.getElementById('repairDate').value,
+          repairerName: currentUser ? currentUser.name : "Thủ kho",
+          repairerPhone: currentUser ? currentUser.phone : "",
+          provider: document.getElementById('repairProvider').value.trimEnd(),
+          cost: cost,
+          note: document.getElementById('repairGeneralNote').value.trimEnd(),
+          items: validItems,
+          creatorAvatar: currentUser ? currentUser.avatar : ""
+        };
+
+        showUploadStatus("Đang phục hồi số lượng đạo cụ trên Google Sheet...");
+        const res = await callBackend('saveRepairTicket', payload, 'POST');
+        hideUploadStatus();
+
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> HOÀN TẤT & PHỤC HỒI ĐỒ';
+        }
+
+        if (res && res.success) {
+          showSuccessPopup("SỬA CHỮA THÀNH CÔNG", `Đã lưu phiếu ${res.ticketId}. Các đạo cụ đã được phục hồi số lượng dùng được tại ${warehouse}.`);
+          resetRepairForm(false);
+          fetchInitialData();
+          switchTab('archive');
+        } else {
+          alert("Lỗi khi lưu phiếu sửa chữa: " + (res && res.error ? res.error : ""));
+        }
+      } catch(err) {
+        hideUploadStatus();
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> HOÀN TẤT & PHỤC HỒI ĐỒ';
+        }
+        alert("Lỗi: " + err.message);
+      }
+    }
     function buildLiquidationTableRows() {
       const tbody = document.getElementById('liquidationChecklistTableBody');
       if (!tbody) return;
@@ -3735,27 +4878,49 @@
       tbody.innerHTML = '';
       newGameItems.forEach((item, idx) => {
         tbody.innerHTML += `
-          <tr class="transition border-b border-slate-100">
-            <td class="p-1.5 relative">
-              <input type="text" id="game-prop-input-${idx}" value="${item.name || ''}" 
-                oninput="handleGamePropTyping(event, ${idx})" 
-                onfocus="handleGamePropTyping(event, ${idx})" 
-                placeholder="Gõ tên để chọn đạo cụ chuẩn..." 
-                class="w-full p-1.5 border border-slate-300 rounded font-semibold text-xs bg-white">
-              <div id="game-suggest-${idx}" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-48 overflow-y-auto divide-y divide-slate-100"></div>
-              <div id="game-err-text-${idx}" class="hidden text-[10px] text-red-600 font-bold mt-0.5">⚠️ Tên không có trong danh mục kho! Vui lòng chọn gợi ý.</div>
+          <tr class="block sm:table-row bg-white p-2.5 sm:p-1.5 rounded-xl sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition">
+            <!-- STT Desktop -->
+            <td class="hidden sm:table-cell p-1.5 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
+
+            <!-- HÀNG 1 MOBILE: [STT] [TÊN ĐẠO CỤ (RỘNG RÃI)] [NÚT XÓA THÙNG RÁC] -->
+            <td class="block sm:table-cell p-0 sm:p-1.5 relative">
+              <div class="flex items-center gap-1.5">
+                <span class="sm:hidden w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-[10px] flex-shrink-0">${idx + 1}</span>
+                <div class="flex-1 min-w-0 relative">
+                  <input type="text" id="game-prop-input-${idx}" value="${item.name || ''}" 
+                    oninput="handleGamePropTyping(event, ${idx})" 
+                    onfocus="handleGamePropTyping(event, ${idx})" 
+                    placeholder="Gõ tên để chọn đạo cụ..." 
+                    class="w-full p-1.5 border border-slate-300 rounded-lg font-bold text-xs bg-white text-slate-800 focus:border-aba">
+                  <div id="game-suggest-${idx}" class="hidden absolute left-0 right-0 top-full mt-0.5 bg-white border border-slate-300 rounded-xl shadow-2xl z-50 max-h-48 overflow-y-auto divide-y divide-slate-100"></div>
+                </div>
+                <button type="button" onclick="removeGameItemRow(${idx})" class="sm:hidden w-7 h-7 flex items-center justify-center text-slate-300 hover:text-red-500 flex-shrink-0" title="Xóa món">
+                  <i class="fa-solid fa-trash-can text-sm"></i>
+                </button>
+              </div>
+              <div id="game-err-text-${idx}" class="hidden text-[10px] text-red-600 font-bold mt-1">⚠️ Tên không có trong kho! Vui lòng chọn gợi ý.</div>
             </td>
-            <td class="p-1.5 text-center">
+
+            <!-- HÀNG 2 MOBILE - CỘT 1: ĐƠN VỊ TÍNH -->
+            <td class="inline-block sm:table-cell w-1/2 sm:w-20 p-0 sm:p-1.5 mt-1.5 sm:mt-0 align-top">
+              <div class="sm:hidden text-[9px] font-bold text-slate-500 uppercase mb-0.5">Đơn vị tính</div>
               <input type="text" readonly id="game-unit-${idx}" value="${item.unit || ''}" placeholder="---" 
-                class="w-16 p-1.5 text-center font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded text-xs cursor-not-allowed">
+                class="w-full sm:w-16 p-1.5 text-center font-bold text-slate-700 bg-slate-100 border border-slate-200 rounded-lg sm:rounded text-xs cursor-not-allowed">
             </td>
-            <td class="p-1.5 text-center">
+
+            <!-- HÀNG 2 MOBILE - CỘT 2: SỐ LƯỢNG CHO 1 BỘ GAME -->
+            <td class="inline-block sm:table-cell w-1/2 sm:w-24 p-0 sm:p-1.5 mt-1.5 sm:mt-0 pl-1.5 sm:pl-0 align-top">
+              <div class="sm:hidden text-[9px] font-bold text-emerald-700 uppercase mb-0.5">SL / 1 bộ game</div>
               <input type="number" min="1" value="${item.qty || 1}" 
                 oninput="newGameItems[${idx}].qty = Number(this.value) || 1" 
-                class="w-16 p-1.5 text-center border border-slate-300 rounded text-xs font-bold text-aba bg-white">
+                class="w-full sm:w-16 p-1.5 text-center font-black border border-emerald-400 rounded-lg sm:rounded text-xs text-aba bg-white focus:border-aba">
             </td>
-            <td class="p-1.5 text-center">
-              <button type="button" onclick="removeGameItemRow(${idx})" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash-can"></i></button>
+
+            <!-- NÚT XÓA DESKTOP -->
+            <td class="hidden sm:table-cell p-1.5 text-center">
+              <button type="button" onclick="removeGameItemRow(${idx})" class="text-slate-300 hover:text-red-500 p-1 transition" title="Xóa món">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
             </td>
           </tr>
         `;
@@ -4202,9 +5367,516 @@
       }
     }
 
-    
+    // =========================================================================
+    // =========================================================================
+    // LOGIC TAB SỬA CHỮA: TẬP TRUNG TỪNG MÓN ĐỒ (ITEM-CENTRIC WORKFLOW)
+    // =========================================================================
+    let activeRepairProp = null;
+    let selectedRepairMethod = 'self';
+    let repairSelfPhoto = '';
+    let repairSendOutPhoto = '';
+    let repairReceiveInPhoto = '';
+    let activeSelectedSendTicket = null;
 
-    // ---------------- TAB 6: THƯ VIỆN CHỨNG TỪ (BẢNG DANH SÁCH & XEM CHI TIẾT) ----------------
+    function initRepairTab() {
+      const sel = document.getElementById('repairWarehouseFilter');
+      if (sel) {
+        sel.innerHTML = '<option value="">Tất cả các kho</option>';
+        warehouses.forEach(w => sel.innerHTML += `<option value="${w.name}">${w.name}</option>`);
+      }
+      renderRepairBrokenList();
+    }
+
+    function renderRepairBrokenList() {
+      const container = document.getElementById('repairBrokenPropsContainer');
+      const statsBadge = document.getElementById('repairBrokenStatsBadge');
+      if (!container) return;
+
+      const fWh = document.getElementById('repairWarehouseFilter')?.value || '';
+      const search = (document.getElementById('repairSearchInput')?.value || '').trim().toLowerCase();
+
+      const brokenProps = rawProps.filter(p => {
+        const isBroken = (Number(p.broken) || 0) > 0;
+        let matchWh = true;
+        if (fWh) {
+          matchWh = (p.locations || []).some(l => l.warehouse === fWh);
+        }
+        const matchSearch = !search || p.name.toLowerCase().includes(search) || (p.code || '').toLowerCase().includes(search);
+        return isBroken && matchWh && matchSearch;
+      });
+
+      const totalBrokenCount = brokenProps.reduce((sum, p) => sum + (Number(p.broken) || 0), 0);
+      if (statsBadge) {
+        statsBadge.innerText = `${brokenProps.length} loại đồ (${totalBrokenCount} món hỏng)`;
+      }
+
+      container.innerHTML = '';
+      if (!brokenProps.length) {
+        container.innerHTML = `
+          <div class="col-span-full bg-white p-8 rounded-2xl border border-slate-200 text-center space-y-2">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="font-bold text-slate-800 text-sm">Tuyệt vời! Hiện không có đạo cụ nào thuộc diện Hỏng.</div>
+            <p class="text-xs text-slate-500">Tất cả đạo cụ tại kho đều đang ở trạng thái sử dụng tốt hoặc đã được phục hồi xong.</p>
+          </div>
+        `;
+        return;
+      }
+
+      brokenProps.forEach(p => {
+        const locationsStr = (p.locations || []).map(l => `[${l.warehouse}] ${l.shelf || 'Chưa kệ'} / T${l.tier || '---'}`).join('; ');
+        
+        container.innerHTML += `
+          <div class="bg-white p-3 rounded-2xl border border-red-200 shadow-xs flex flex-col justify-between space-y-2.5 transition hover:shadow-md hover:border-red-300">
+            <div>
+              <div class="flex items-start gap-2.5">
+                <img src="${p.image || 'https://via.placeholder.com/60'}" class="w-14 h-14 object-cover rounded-xl border border-slate-200 flex-shrink-0 cursor-pointer" onclick="openLightbox(${JSON.stringify(p.images || [p.image]).replace(/"/g, '&quot;')}, 0)" title="Bấm xem ảnh to">
+                <div class="flex-1 min-w-0">
+                  <div class="font-bold text-slate-900 text-xs sm:text-sm truncate" title="${p.name}">${p.name}</div>
+                  <div class="text-[10px] text-slate-500 font-mono">${p.code} | ĐVT: <b>${p.unit}</b></div>
+                  <div class="mt-1 flex items-center gap-1.5 flex-wrap">
+                    <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-black text-[11px] animate-pulse">
+                      🔴 Đang hỏng: ${p.broken} ${p.unit}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 text-[10px] text-slate-600 mt-2 leading-relaxed">
+                <span class="font-bold text-slate-700"><i class="fa-solid fa-location-dot text-red-500 mr-1"></i>Đang lưu tại:</span>
+                <span class="truncate block">${locationsStr || 'Chưa định vị'}</span>
+              </div>
+            </div>
+
+            <button type="button" onclick="openRepairModalForProp('${p.code}')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-xl shadow-xs text-xs flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-screwdriver-wrench"></i> XỬ LÝ SỬA CHỮA MÓN NÀY
+            </button>
+          </div>
+        `;
+      });
+    }
+
+    function openRepairModalForProp(propCode) {
+      const p = rawProps.find(item => item.code === propCode);
+      if (!p) return;
+      activeRepairProp = p;
+
+      document.getElementById('modalRepairPropName').innerText = `${p.name} (${p.code})`;
+      const locStr = (p.locations || []).map(l => `${l.warehouse} (${l.shelf || ''} - T${l.tier || ''})`).join('; ');
+      document.getElementById('modalRepairPropLoc').innerText = `Vị trí hiện tại: ${locStr || 'Chưa kệ'}`;
+
+      document.getElementById('modalRepairMaxBroken').innerText = p.broken;
+      document.getElementById('modalRepairUnit').innerText = p.unit;
+      
+      document.querySelectorAll('.modalRepairUnitLabel').forEach(el => el.innerText = p.unit);
+
+      const qtyInput = document.getElementById('modalRepairQty');
+      if (qtyInput) {
+        qtyInput.max = p.broken;
+        qtyInput.value = p.broken;
+      }
+
+      // CHỈ LẤY ĐÚNG ẢNH BÁO SỰ CỐ ĐỒ HỎNG CỦA MÓN NÀY (TỪ PHIẾU NHẬP KHO)
+      const brokenPhotosList = [];
+      const importTickets = (archivedTickets || []).filter(t => t.type === 'NHAP_KHO');
+
+      importTickets.forEach(nk => {
+        let bItems = (nk.images && nk.images.brokenItems) ? nk.images.brokenItems : [];
+        if (typeof bItems === 'string') {
+          try { bItems = JSON.parse(bItems); } catch(e) { bItems = []; }
+        }
+
+        bItems.forEach(b => {
+          if (b.name && b.name.trim().toLowerCase() === p.name.trim().toLowerCase()) {
+            const dateStr = nk.createdAt ? new Date(nk.createdAt).toLocaleDateString('vi-VN') : '';
+            const caption = `${nk.projectName || 'Nhập kho'} (${dateStr}) - ${b.note || b.photoNote || 'Ảnh hư hại'}`;
+
+            // Ưu tiên lấy ảnh đã upload, tránh lấy trùng
+            const itemPhotos = (b.uploadedPhotos && b.uploadedPhotos.length) ? b.uploadedPhotos : (b.photos || []);
+            if (Array.isArray(itemPhotos)) {
+              itemPhotos.forEach(ph => {
+                if (ph && ph.length > 5 && !brokenPhotosList.some(x => x.url === ph)) {
+                  brokenPhotosList.push({ url: ph, caption: caption });
+                }
+              });
+            }
+          }
+        });
+      });
+
+      const countBadge = document.getElementById('repairBrokenHistoryCount');
+      const photosBox = document.getElementById('repairBrokenHistoryPhotos');
+      
+      if (countBadge) countBadge.innerText = `${brokenPhotosList.length} ảnh`;
+      if (photosBox) {
+        photosBox.innerHTML = '';
+        if (!brokenPhotosList.length) {
+          photosBox.innerHTML = '<span class="text-slate-400 italic text-[11px] p-1">Không có ảnh đính kèm lúc báo hỏng</span>';
+        } else {
+          brokenPhotosList.forEach((it, idx) => {
+            const allUrlsJson = JSON.stringify(brokenPhotosList.map(x => x.url)).replace(/"/g, '&quot;');
+            photosBox.innerHTML += `
+              <div class="relative group w-11 h-11 rounded-lg border border-red-200 overflow-hidden bg-slate-100 flex-shrink-0 cursor-pointer shadow-xs hover:border-red-400 transition" 
+                onclick="openLightbox(${allUrlsJson}, ${idx})" title="${it.caption} (Bấm xem to/zoom)">
+                <img src="${it.url}" class="w-full h-full object-cover">
+                <span class="absolute inset-x-0 bottom-0 bg-red-600/80 text-white text-[8px] text-center font-bold py-0.5 truncate">Xem</span>
+              </div>
+            `;
+          });
+        }
+      }
+
+      // ĐỔ DANH SÁCH CÁC KHO VÀO Ô CHỌN KHO LƯU CẤT SAU SỬA
+      const currentWh = (p.locations && p.locations[0]) ? p.locations[0].warehouse : (warehouses[0]?.name || "Kho Đông Anh");
+      ['selfRepairWarehouse', 'receiveRepairWarehouse'].forEach(id => {
+        const selWh = document.getElementById(id);
+        if (selWh) {
+          selWh.innerHTML = '';
+          warehouses.forEach(w => {
+            selWh.innerHTML += `<option value="${w.name}" ${w.name === currentWh ? 'selected' : ''}>${w.name}</option>`;
+          });
+        }
+      });
+
+      populateSendRepairTicketsDropdown(p.name);
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('sendRepairOutDate').value = today;
+      document.getElementById('receiveRepairInDate').value = today;
+
+      document.getElementById('selfRepairNote').value = 'Đã khắc phục hoàn chỉnh';
+      document.getElementById('sendRepairProvider').value = '';
+      document.getElementById('sendRepairPhone').value = '';
+      document.getElementById('sendRepairEstimatedCost').value = '';
+      document.getElementById('sendRepairOutNote').value = '';
+      document.getElementById('receiveRepairCost').value = '';
+      document.getElementById('receiveRepairNote').value = '';
+
+      const firstLoc = (p.locations || [])[0] || {};
+      document.getElementById('selfRepairShelf').value = firstLoc.shelf || '';
+      document.getElementById('selfRepairTier').value = firstLoc.tier || '';
+      document.getElementById('receiveRepairShelf').value = firstLoc.shelf || '';
+      document.getElementById('receiveRepairTier').value = firstLoc.tier || '';
+
+      repairSelfPhoto = '';
+      repairSendOutPhoto = '';
+      repairReceiveInPhoto = '';
+      updateRepairPhotoPreviews();
+
+      selectRepairMethod('self');
+      openModal('repairPropModal');
+    }
+
+    function populateSendRepairTicketsDropdown(propName) {
+      const sel = document.getElementById('selectSendRepairTicket');
+      const infoBox = document.getElementById('loadedSendTicketInfoBox');
+      if (!sel) return;
+      if (infoBox) infoBox.classList.add('hidden');
+
+      const allTickets = archivedTickets || [];
+      const sendTickets = allTickets.filter(t => 
+        t.type === 'SUA_CHUA' && 
+        (t.id.startsWith('SC_GUI_') || (t.note && t.note.includes('[Phiếu gửi đi sửa]')))
+      );
+
+      const receivedSendIds = new Set();
+      allTickets.filter(t => t.type === 'SUA_CHUA' && (t.id.startsWith('SC_NHAN_') || (t.note && t.note.includes('Giai đoạn 2')))).forEach(rTicket => {
+        let refId = (rTicket.images && rTicket.images.refSendTicketId) ? rTicket.images.refSendTicketId : '';
+        if (!refId && rTicket.note) {
+          const m = rTicket.note.match(/\[Ref_Send:\s*(SC_GUI_[^\]]+)\]/);
+          if (m) refId = m[1];
+        }
+        if (refId) receivedSendIds.add(refId);
+      });
+
+      const pendingSendTickets = sendTickets.filter(sTicket => {
+        if (receivedSendIds.has(sTicket.id)) return false;
+        const items = sTicket.items || [];
+        return items.some(it => (it.name || '').trim().toLowerCase() === propName.trim().toLowerCase());
+      });
+
+      sel.innerHTML = '<option value="">-- Chọn phiếu gửi đi sửa cần nghiệm thu --</option>';
+      if (!pendingSendTickets.length) {
+        sel.innerHTML = '<option value="">(Chưa có phiếu gửi đi sửa nào đang chờ nhận về)</option>';
+      } else {
+        pendingSendTickets.forEach(st => {
+          const item = (st.items || []).find(it => (it.name || '').trim().toLowerCase() === propName.trim().toLowerCase()) || {};
+          const dateStr = st.createdAt ? new Date(st.createdAt).toLocaleDateString('vi-VN') : '';
+          sel.innerHTML += `<option value="${st.id}">[Gửi ngày ${dateStr}] Thợ: ${st.importerName || '---'} (Gửi: ${item.qty || 1} ${item.unit || ''}) - Mã: ${st.id}</option>`;
+        });
+      }
+    }
+
+    function onSelectSendRepairTicket(ticketId) {
+      const infoBox = document.getElementById('loadedSendTicketInfoBox');
+      if (!ticketId) {
+        if (infoBox) infoBox.classList.add('hidden');
+        activeSelectedSendTicket = null;
+        return;
+      }
+
+      const st = (archivedTickets || []).find(t => t.id === ticketId);
+      if (!st) return;
+      activeSelectedSendTicket = st;
+
+      const pName = activeRepairProp ? activeRepairProp.name : '';
+      const item = (st.items || []).find(it => (it.name || '').trim().toLowerCase() === pName.trim().toLowerCase()) || {};
+
+      document.getElementById('infoSendProvider').innerText = st.importerName || '---';
+      document.getElementById('infoSendPhone').innerText = st.importerPhone || '---';
+      document.getElementById('infoSendDate').innerText = st.createdAt ? new Date(st.createdAt).toLocaleDateString('vi-VN') : '---';
+      document.getElementById('infoSendQty').innerText = `${item.qty || 1} ${item.unit || ''}`;
+
+      const qtyInput = document.getElementById('modalRepairQty');
+      if (qtyInput && item.qty) {
+        qtyInput.value = item.qty;
+      }
+
+      // Tự động gán kho nhận về bằng đúng kho lúc gửi đi
+      const selWh = document.getElementById('receiveRepairWarehouse');
+      if (selWh && st.warehouse) {
+        selWh.value = st.warehouse;
+      }
+
+      const photoBox = document.getElementById('infoSendPhotoThumb');
+      let sendPhotoUrl = '';
+      if (st.images && Array.isArray(st.images) && st.images[0]) sendPhotoUrl = st.images[0];
+      if (st.images && st.images.photos && Array.isArray(st.images.photos) && st.images.photos[0]) sendPhotoUrl = st.images.photos[0];
+
+      if (photoBox) {
+        if (sendPhotoUrl) {
+          photoBox.innerHTML = `<img src="${sendPhotoUrl}" class="w-full h-full object-cover" onclick="openSingleLightbox('${sendPhotoUrl}')" title="Bấm xem ảnh bàn giao gửi đi to rõ">`;
+        } else {
+          photoBox.innerHTML = '<span class="text-[8px] text-slate-300">Không ảnh</span>';
+        }
+      }
+
+      if (infoBox) infoBox.classList.remove('hidden');
+    }
+
+    function selectRepairMethod(method) {
+      selectedRepairMethod = method;
+      const btnSelf = document.getElementById('btnMethodSelf');
+      const btnSendOut = document.getElementById('btnMethodSendOut');
+      const btnReceiveIn = document.getElementById('btnMethodReceiveIn');
+
+      const blockSelf = document.getElementById('blockMethodSelf');
+      const blockSendOut = document.getElementById('blockMethodSendOut');
+      const blockReceiveIn = document.getElementById('blockMethodReceiveIn');
+
+      const submitBtn = document.getElementById('btnConfirmRepairProp');
+
+      [btnSelf, btnSendOut, btnReceiveIn].forEach(btn => {
+        btn.className = "cursor-pointer p-2 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex flex-col items-center justify-center gap-1 transition";
+        btn.querySelector('i').className = btn.querySelector('i').className.replace(/text-aba|text-amber-600|text-blue-600/, 'text-slate-400');
+        btn.querySelector('div').className = "font-bold text-[10px] text-slate-700 leading-tight";
+      });
+
+      blockSelf.classList.add('hidden');
+      blockSendOut.classList.add('hidden');
+      blockReceiveIn.classList.add('hidden');
+
+      if (method === 'self') {
+        btnSelf.className = "cursor-pointer p-2 rounded-xl border-2 border-aba bg-blue-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition";
+        btnSelf.querySelector('i').className = "fa-solid fa-user-gear text-base text-aba";
+        btnSelf.querySelector('div').className = "font-bold text-[10px] text-aba leading-tight";
+        blockSelf.classList.remove('hidden');
+        if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> HOÀN TẤT TỰ SỬA CHỮA';
+      } else if (method === 'send_out') {
+        btnSendOut.className = "cursor-pointer p-2 rounded-xl border-2 border-amber-500 bg-amber-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition";
+        btnSendOut.querySelector('i').className = "fa-solid fa-truck-arrow-right text-base text-amber-600";
+        btnSendOut.querySelector('div').className = "font-bold text-[10px] text-amber-900 leading-tight";
+        blockSendOut.classList.remove('hidden');
+        if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-truck-arrow-right"></i> LƯU PHIẾU GỬI ĐI SỬA';
+      } else if (method === 'receive_in') {
+        btnReceiveIn.className = "cursor-pointer p-2 rounded-xl border-2 border-blue-600 bg-blue-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition";
+        btnReceiveIn.querySelector('i').className = "fa-solid fa-box-open text-base text-blue-600";
+        btnReceiveIn.querySelector('div').className = "font-bold text-[10px] text-blue-900 leading-tight";
+        blockReceiveIn.classList.remove('hidden');
+        if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> LƯU PHIẾU NHẬN VỀ';
+      }
+    }
+
+    function toggleSelfRepairLocBox(isSuccess) {
+      const box = document.getElementById('selfRepairLocBox');
+      if (box) isSuccess ? box.classList.remove('hidden') : box.classList.add('hidden');
+    }
+
+    function toggleReceiveRepairLocBox(val) {
+      const box = document.getElementById('receiveRepairLocBox');
+      if (box) val === 'success' ? box.classList.remove('hidden') : box.classList.add('hidden');
+    }
+
+    async function handleSingleRepairFileSelect(e, targetField) {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const compressed = await compressImageFile(file, 1200, 0.7);
+        if (targetField === 'repairSelf') repairSelfPhoto = compressed;
+        if (targetField === 'repairSendOut') repairSendOutPhoto = compressed;
+        if (targetField === 'repairReceiveIn') repairReceiveInPhoto = compressed;
+        updateRepairPhotoPreviews();
+      } catch(err) {
+        alert("Lỗi đọc ảnh: " + err.message);
+      }
+      e.target.value = '';
+    }
+
+    function updateRepairPhotoPreviews() {
+      const pSelf = document.getElementById('previewRepairSelf');
+      if (pSelf) {
+        pSelf.innerHTML = repairSelfPhoto 
+          ? `<img src="${repairSelfPhoto}" class="w-full h-full object-cover cursor-pointer hover:opacity-80" onclick="openSingleLightbox('${repairSelfPhoto}')" title="Bấm xem ảnh to rõ/zoom">` 
+          : '<span class="text-[9px] text-slate-400">Trống</span>';
+      }
+
+      const pOut = document.getElementById('previewRepairSendOut');
+      if (pOut) {
+        pOut.innerHTML = repairSendOutPhoto 
+          ? `<img src="${repairSendOutPhoto}" class="w-full h-full object-cover cursor-pointer hover:opacity-80" onclick="openSingleLightbox('${repairSendOutPhoto}')" title="Bấm xem ảnh to rõ/zoom">` 
+          : '<span class="text-[8px] text-slate-400">Trống</span>';
+      }
+
+      const pIn = document.getElementById('previewRepairReceiveIn');
+      if (pIn) {
+        pIn.innerHTML = repairReceiveInPhoto 
+          ? `<img src="${repairReceiveInPhoto}" class="w-full h-full object-cover cursor-pointer hover:opacity-80" onclick="openSingleLightbox('${repairReceiveInPhoto}')" title="Bấm xem ảnh to rõ/zoom">` 
+          : '<span class="text-[8px] text-slate-400">Trống</span>';
+      }
+    }
+
+    async function submitSinglePropRepair() {
+      if (!activeRepairProp) return;
+
+      const p = activeRepairProp;
+      const qty = Number(document.getElementById('modalRepairQty')?.value) || 0;
+      if (qty <= 0) return alert("Vui lòng nhập Số lượng sửa chữa lớn hơn 0!");
+      if (qty > p.broken) return alert(`Số lượng sửa (${qty}) không thể vượt quá số lượng đang hỏng (${p.broken})!`);
+
+      let payload = {
+        propCode: p.code,
+        propName: p.name,
+        propUnit: p.unit,
+        repairQty: qty,
+        stage: selectedRepairMethod,
+        userExecutor: currentUser ? `${currentUser.name} (${currentUser.phone || ''})` : "Thủ kho",
+        creatorAvatar: currentUser ? currentUser.avatar : ""
+      };
+
+      // 1. TỰ SỬA CHỮA NỘI BỘ
+      if (selectedRepairMethod === 'self') {
+        const resultRadio = document.querySelector('input[name="selfRepairResult"]:checked');
+        const isSuccess = resultRadio ? resultRadio.value === 'success' : true;
+        
+        if (!repairSelfPhoto) {
+          return alert("⚠️ BẮT BUỘC CÓ ẢNH: Chụp hoặc tải ảnh nghiệm thu sau khi tự sửa!");
+        }
+
+        payload.result = isSuccess ? 'success' : 'fail';
+        payload.note = document.getElementById('selfRepairNote')?.value.trimEnd() || "";
+        payload.targetWarehouse = document.getElementById('selfRepairWarehouse')?.value || "Kho Đông Anh";
+        payload.warehouse = payload.targetWarehouse;
+        payload.targetShelf = document.getElementById('selfRepairShelf')?.value.trimEnd() || "";
+        payload.targetTier = document.getElementById('selfRepairTier')?.value.trimEnd() || "";
+      } 
+      // 2. GIAI ĐOẠN 1: GỬI ĐI SỬA
+      else if (selectedRepairMethod === 'send_out') {
+        const provider = document.getElementById('sendRepairProvider')?.value.trimEnd();
+        const phone = document.getElementById('sendRepairPhone')?.value.trimEnd();
+        const outDate = document.getElementById('sendRepairOutDate')?.value;
+
+        if (!provider) return alert("Vui lòng nhập Đơn vị / Tên thợ nhận sửa!");
+        if (!phone) return alert("Vui lòng nhập Số điện thoại bên nhận sửa chữa!");
+        if (!outDate) return alert("Vui lòng chọn Thời gian gửi đi!");
+        if (!repairSendOutPhoto) return alert("⚠️ BẮT BUỘC CÓ ẢNH: Chụp ảnh bàn giao lúc gửi đi!");
+
+        const estCost = Number((document.getElementById('sendRepairEstimatedCost')?.value || '').replace(/\D/g, '')) || 0;
+
+        payload.provider = provider;
+        payload.providerPhone = phone;
+        payload.sendDate = outDate;
+        payload.estimatedCost = estCost;
+        payload.note = document.getElementById('sendRepairOutNote')?.value.trimEnd() || "";
+        payload.warehouse = (p.locations && p.locations[0]) ? p.locations[0].warehouse : "Kho Đông Anh";
+      }
+      // 3. GIAI ĐOẠN 2: NHẬN VỀ SAU KHI SỬA
+      else if (selectedRepairMethod === 'receive_in') {
+        const selectedSendTicketId = document.getElementById('selectSendRepairTicket')?.value;
+        if (!selectedSendTicketId) {
+          return alert("⚠️ VUI LÒNG CHỌN PHIẾU GỬI ĐI SỬA CẦN NGHIỆM THU!\nPhiếu nhận về chỉ được lập cho các đợt đã gửi thợ trước đó.");
+        }
+
+        const inDate = document.getElementById('receiveRepairInDate')?.value;
+        const resultVal = document.getElementById('receiveRepairResult')?.value || 'success';
+
+        if (!inDate) return alert("Vui lòng chọn Thời gian nhận đồ về!");
+        if (!repairReceiveInPhoto) return alert("⚠️ BẮT BUỘC CÓ ẢNH: Chụp ảnh nghiệm thu khi nhận đồ về!");
+
+        const cost = Number((document.getElementById('receiveRepairCost')?.value || '').replace(/\D/g, '')) || 0;
+
+        payload.refSendTicketId = selectedSendTicketId;
+        payload.provider = document.getElementById('infoSendProvider')?.innerText || '---';
+        payload.providerPhone = document.getElementById('infoSendPhone')?.innerText || '---';
+        payload.receiveDate = inDate;
+        payload.result = resultVal;
+        payload.cost = cost;
+        payload.targetWarehouse = document.getElementById('receiveRepairWarehouse')?.value || "Kho Đông Anh";
+        payload.warehouse = payload.targetWarehouse;
+        payload.targetShelf = document.getElementById('receiveRepairShelf')?.value.trimEnd() || "";
+        payload.targetTier = document.getElementById('receiveRepairTier')?.value.trimEnd() || "";
+        payload.note = document.getElementById('receiveRepairNote')?.value.trimEnd() || "";
+      }
+
+      const btn = document.getElementById('btnConfirmRepairProp');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh & lưu...';
+      }
+
+      showUploadStatus("Đang tải ảnh nghiệm thu lên máy chủ...");
+      try {
+        if (selectedRepairMethod === 'self') {
+          payload.photo = repairSelfPhoto.startsWith('data:image') 
+            ? await smartUploadImage(repairSelfPhoto, `repair_self_${p.code}`) 
+            : repairSelfPhoto;
+        } else if (selectedRepairMethod === 'send_out') {
+          payload.photo = repairSendOutPhoto.startsWith('data:image') 
+            ? await smartUploadImage(repairSendOutPhoto, `repair_out_${p.code}`) 
+            : repairSendOutPhoto;
+        } else if (selectedRepairMethod === 'receive_in') {
+          payload.photo = repairReceiveInPhoto.startsWith('data:image') 
+            ? await smartUploadImage(repairReceiveInPhoto, `repair_in_${p.code}`) 
+            : repairReceiveInPhoto;
+        }
+
+        showUploadStatus("Đang cập nhật phiếu sửa chữa vào Google Sheet...");
+        const res = await callBackend('saveRepairTicket', payload, 'POST');
+        hideUploadStatus();
+
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> XÁC NHẬN & CẬP NHẬT';
+        }
+
+        if (res && res.success) {
+          showSuccessPopup("LƯU PHIẾU THÀNH CÔNG", `Đã lưu chứng từ ${res.ticketId} cho món "${p.name}".`);
+          closeModal('repairPropModal');
+          fetchInitialData();
+          switchTab('archive');
+        } else {
+          alert("Lỗi khi lưu phiếu: " + (res && res.error ? res.error : ""));
+        }
+      } catch(err) {
+        hideUploadStatus();
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> XÁC NHẬN & CẬP NHẬT';
+        }
+        alert("Lỗi: " + err.message);
+      }
+    }
+
     // ---------------- TAB 6: THƯ VIỆN CHỨNG TỪ (BẢNG DANH SÁCH & XEM CHI TIẾT) ----------------
     function renderArchiveTickets() {
       const tbody = document.getElementById('archiveTableBody');
@@ -4222,14 +5894,56 @@
 
       const filtered = list.filter(t => {
         if (!t) return false;
-        const mType = !fType || t.type === fType;
+
+        // 1. LỌC THEO LOẠI PHIẾU (ĐẶC BIỆT XỬ LÝ NHÓM SỬA CHỮA)
+        let mType = true;
+        if (fType) {
+          if (fType === 'SUA_CHUA') {
+            mType = t.type === 'SUA_CHUA';
+          } else if (fType === 'SC_GUI') {
+            mType = t.type === 'SUA_CHUA' && (t.id.startsWith('SC_GUI_') || (t.projectName && t.projectName.includes('Gửi')));
+          } else if (fType === 'SC_VE') {
+            mType = t.type === 'SUA_CHUA' && (t.id.startsWith('SC_NHAN_') || (t.projectName && (t.projectName.includes('về') || t.projectName.includes('ve'))));
+          } else if (fType === 'SC_TU') {
+            mType = t.type === 'SUA_CHUA' && (t.id.startsWith('SC_TS_') || (t.projectName && t.projectName.includes('Tự')));
+          } else {
+            mType = t.type === fType;
+          }
+        }
+
+        // 2. LỌC THEO KHO
         const mWh = !fWh || t.warehouse === fWh;
-        
+
+        // 3. TÌM KIẾM THÔNG MINH (TÌM TỪ KHÓA SỬA CHỮA, TÊN ĐỒ, MÃ PHIẾU, NGƯỜI LẬP)
+        let repairTag = '';
+        if (t.type === 'SUA_CHUA') {
+          repairTag = 'sửa chữa sua chua ';
+          if (t.id.startsWith('SC_GUI_') || (t.projectName && t.projectName.includes('Gửi'))) {
+            repairTag += 'gửi sửa gui sua xuat kho sua chua ';
+          } else if (t.id.startsWith('SC_NHAN_') || (t.projectName && (t.projectName.includes('về') || t.projectName.includes('ve')))) {
+            repairTag += 'sửa về sua ve nhap kho sua chua ';
+          } else {
+            repairTag += 'tự sửa tu sua sua chua noi bo ';
+          }
+        }
+
+        let itemNames = '';
+        try {
+          const its = typeof t.items === 'string' ? JSON.parse(t.items) : t.items;
+          if (Array.isArray(its)) {
+            itemNames = its.map(it => it.name || '').join(' ');
+          }
+        } catch(e) {}
+
         const projName = (t.projectName || '').toString().toLowerCase();
         const ticketId = (t.id || '').toString().toLowerCase();
         const executor = (t.exporterName || t.importerName || '').toString().toLowerCase();
+        const note = (t.note || '').toString().toLowerCase();
         
-        return mType && mWh && (!search || projName.includes(search) || ticketId.includes(search) || executor.includes(search));
+        const fullSearchContent = `${projName} ${ticketId} ${executor} ${note} ${itemNames} ${repairTag}`.toLowerCase();
+        const matchSearch = !search || fullSearchContent.includes(search);
+
+        return mType && mWh && matchSearch;
       });
 
       tbody.innerHTML = '';
@@ -4245,20 +5959,47 @@
       }
 
       filtered.forEach((t, idx) => {
-        // Huy hiệu rút gọn xinh xắn
+        let displayName = t.projectName || 'Không tên';
         let typeBadge = '';
-        if (t.type === 'NHAP_LAN_DAU') typeBadge = '<span class="px-1.5 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">NHẬP MỚI</span>';
-        else if (t.type === 'XUAT_KHO') typeBadge = '<span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">XUẤT KHO</span>';
-        else if (t.type === 'NHAP_KHO') typeBadge = '<span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">NHẬP VỀ</span>';
-        else if (t.type === 'CHUAN_BI') typeBadge = '<span class="px-1.5 py-0.5 bg-purple-50 text-purple-700 border border-purple-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">CHUẨN BỊ</span>';
-        else if (t.type === 'THANH_LY') typeBadge = '<span class="px-1.5 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">THANH LÝ</span>';
-        else typeBadge = `<span class="px-1.5 py-0.5 bg-slate-50 text-slate-700 border border-slate-200 rounded font-bold text-[9px] whitespace-nowrap">${t.type || 'KHÁC'}</span>`;
+
+        if (t.type === 'SUA_CHUA') {
+          let cleanItem = displayName
+            .replace(/^Phiếu gửi đi sửa \(Giai đoạn 1\):\s*/i, '')
+            .replace(/^Phiếu nhận về sau sửa \(Giai đoạn 2\):\s*/i, '')
+            .replace(/^Tự sửa chữa nội bộ:\s*/i, '')
+            .replace(/^Sửa chữa:\s*/i, '')
+            .replace(/^Gửi sửa:\s*/i, '')
+            .replace(/^Sửa về:\s*/i, '')
+            .replace(/^Tự sửa:\s*/i, '')
+            .trim();
+
+          if (t.id.startsWith('SC_GUI_') || displayName.includes('Gửi đi sửa') || displayName.includes('Gửi sửa')) {
+            typeBadge = '<span class="px-1.5 py-0.5 bg-amber-50 text-amber-700 border border-amber-300 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">GỬI SỬA</span>';
+            displayName = `Gửi sửa: ${cleanItem}`;
+          } else if (t.id.startsWith('SC_NHAN_') || displayName.includes('Nhận về sau sửa') || displayName.includes('Sửa về')) {
+            typeBadge = '<span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-300 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">SỬA VỀ</span>';
+            displayName = `Sửa về: ${cleanItem}`;
+          } else {
+            typeBadge = '<span class="px-1.5 py-0.5 bg-purple-50 text-purple-700 border border-purple-300 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">TỰ SỬA</span>';
+            displayName = `Tự sửa: ${cleanItem}`;
+          }
+        } else if (t.type === 'NHAP_LAN_DAU') {
+          typeBadge = '<span class="px-1.5 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">NHẬP MỚI</span>';
+        } else if (t.type === 'XUAT_KHO') {
+          typeBadge = '<span class="px-1.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">XUẤT KHO</span>';
+        } else if (t.type === 'NHAP_KHO') {
+          typeBadge = '<span class="px-1.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">NHẬP VỀ</span>';
+        } else if (t.type === 'CHUAN_BI') {
+          typeBadge = '<span class="px-1.5 py-0.5 bg-purple-50 text-purple-700 border border-purple-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">CHUẨN BỊ</span>';
+        } else if (t.type === 'THANH_LY') {
+          typeBadge = '<span class="px-1.5 py-0.5 bg-red-50 text-red-700 border border-red-200 rounded font-bold text-[9px] sm:text-[10px] whitespace-nowrap">THANH LÝ</span>';
+        } else {
+          typeBadge = `<span class="px-1.5 py-0.5 bg-slate-50 text-slate-700 border border-slate-200 rounded font-bold text-[9px] whitespace-nowrap">${t.type || 'KHÁC'}</span>`;
+        }
 
         const fullExecutor = t.exporterName || t.importerName || '---';
-        // Rút gọn: Bỏ số điện thoại trong ngoặc để chống rớt dòng trên di động
         const cleanExecutor = fullExecutor.replace(/\(.*?\)/g, '').trim();
 
-        // Rút gọn ngày giờ hiển thị: HH:mm DD/MM
         let shortDate = '---';
         let fullDateStr = '---';
         if (t.createdAt) {
@@ -4282,23 +6023,23 @@
         }
 
         tbody.innerHTML += `
-          <tr class="block sm:table-row bg-white p-2 sm:p-0 rounded-lg sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition hover:bg-blue-50/50 active:bg-slate-100 cursor-pointer text-xs" onclick="openTicketDetailModal('${t.id}')">
+          <tr class="block sm:table-row bg-white p-2.5 sm:p-0 rounded-xl sm:rounded-none border border-slate-200 sm:border-0 sm:border-b sm:border-slate-100 shadow-xs sm:shadow-none transition hover:bg-blue-50/40 active:bg-slate-100 cursor-pointer text-xs" onclick="openTicketDetailModal('${t.id}')">
             <!-- STT Desktop -->
-            <td class="hidden sm:table-cell py-2 px-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
+            <td class="hidden sm:table-cell py-2.5 px-2 text-center font-mono font-bold text-slate-400">${idx + 1}</td>
             
-            <!-- THẺ MOBILE: GÓI GỌN CHỈ ĐÚNG 2 DÒNG -->
-            <td class="block sm:table-cell py-0 sm:py-2 px-0 sm:px-3">
-              <!-- DÒNG 1: STT + TÊN DỰ ÁN + HUY HIỆU -->
+            <!-- THẺ MOBILE -->
+            <td class="block sm:table-cell py-0 sm:py-2.5 px-0 sm:px-3">
               <div class="flex items-center justify-between gap-1.5">
                 <div class="flex items-center gap-1.5 flex-1 min-w-0">
                   <span class="sm:hidden w-4 h-4 rounded bg-slate-100 flex items-center justify-center font-mono font-bold text-slate-500 text-[9px] flex-shrink-0">${idx + 1}</span>
-                  <span class="font-bold text-slate-900 text-xs sm:text-[13px] truncate">${t.projectName || 'Không tên'}</span>
+                  <span class="font-bold text-slate-900 text-xs sm:text-[13px] truncate" title="${displayName}">
+                    ${displayName}
+                  </span>
                 </div>
                 <div class="sm:hidden flex-shrink-0">${typeBadge}</div>
               </div>
 
-              <!-- DÒNG 2: KHO • NGƯỜI LẬP • THỜI GIAN • NÚT XEM -->
-              <div class="sm:hidden flex items-center justify-between text-[10px] text-slate-500 mt-1 pt-1 border-t border-slate-50">
+              <div class="sm:hidden flex items-center justify-between text-[10px] text-slate-500 mt-1.5 pt-1 border-t border-slate-50">
                 <div class="truncate flex-1 pr-1 font-medium">
                   <span class="text-slate-700 font-semibold">${t.warehouse || '---'}</span>
                   <span class="text-slate-300 mx-1">•</span>
@@ -4313,19 +6054,19 @@
             </td>
 
             <!-- CỘT DESKTOP: LOẠI PHIẾU -->
-            <td class="hidden sm:table-cell py-2 px-2 text-center">${typeBadge}</td>
+            <td class="hidden sm:table-cell py-2.5 px-2 text-center">${typeBadge}</td>
 
             <!-- CỘT DESKTOP: KHO THỰC HIỆN -->
-            <td class="hidden sm:table-cell py-2 px-3 font-semibold text-slate-700 whitespace-nowrap">${t.warehouse}</td>
+            <td class="hidden sm:table-cell py-2.5 px-3 font-semibold text-slate-700 whitespace-nowrap">${t.warehouse}</td>
 
             <!-- CỘT DESKTOP: NGƯỜI THỰC HIỆN -->
-            <td class="hidden sm:table-cell py-2 px-3 text-slate-800 font-medium">${fullExecutor}</td>
+            <td class="hidden sm:table-cell py-2.5 px-3 text-slate-800 font-medium">${fullExecutor}</td>
 
             <!-- CỘT DESKTOP: THỜI GIAN -->
-            <td class="hidden sm:table-cell py-2 px-2 text-center text-slate-500 font-mono text-[11px] whitespace-nowrap">${fullDateStr}</td>
+            <td class="hidden sm:table-cell py-2.5 px-2 text-center text-slate-500 font-mono text-[11px] whitespace-nowrap">${fullDateStr}</td>
 
             <!-- CỘT DESKTOP: THAO TÁC -->
-            <td class="hidden sm:table-cell py-2 px-2 text-center whitespace-nowrap" onclick="event.stopPropagation()">
+            <td class="hidden sm:table-cell py-2.5 px-2 text-center whitespace-nowrap" onclick="event.stopPropagation()">
               <button onclick="openTicketDetailModal('${t.id}')" class="px-2.5 py-1 bg-aba text-white hover:bg-aba-dark rounded-lg font-bold text-[11px] inline-flex items-center gap-1 shadow-sm transition">
                 <i class="fa-solid fa-eye text-[10px]"></i> Xem
               </button>
@@ -4345,7 +6086,25 @@
 
       const badge = document.getElementById('ticketModalBadge');
       let titleHeader = 'PHIẾU XUẤT KHO ĐẠO CỤ CHƯƠNG TRÌNH';
-      if (t.type === 'NHAP_LAN_DAU') {
+
+      if (t.type === 'SUA_CHUA') {
+        if (t.id.startsWith('SC_GUI_') || (t.projectName && t.projectName.includes('Gửi sửa')) || (t.note && t.note.includes('Giai đoạn 1'))) {
+          // 1. Phiếu gửi thợ
+          badge.className = 'px-2 py-0.5 rounded font-bold text-[10px] bg-amber-100 text-amber-800 border border-amber-300';
+          badge.innerText = 'XUẤT KHO SỬA CHỮA';
+          titleHeader = 'PHIẾU XUẤT KHO SỬA CHỮA ĐẠO CỤ';
+        } else if (t.id.startsWith('SC_NHAN_') || (t.projectName && t.projectName.includes('Sửa về')) || (t.note && t.note.includes('Giai đoạn 2'))) {
+          // 2. Phiếu nhận từ thợ về
+          badge.className = 'px-2 py-0.5 rounded font-bold text-[10px] bg-blue-100 text-blue-800 border border-blue-300';
+          badge.innerText = 'NHẬP KHO SỬA CHỮA';
+          titleHeader = 'PHIẾU NHẬP KHO SỬA CHỮA ĐẠO CỤ';
+        } else {
+          // 3. Tự sửa chữa nội bộ (không xuất, không nhập)
+          badge.className = 'px-2 py-0.5 rounded font-bold text-[10px] bg-purple-100 text-purple-800 border border-purple-300';
+          badge.innerText = 'SỬA CHỮA ĐẠO CỤ';
+          titleHeader = 'PHIẾU SỬA CHỮA ĐẠO CỤ';
+        }
+      } else if (t.type === 'NHAP_LAN_DAU') {
         badge.className = 'px-2 py-0.5 rounded font-bold text-[10px] bg-teal-100 text-teal-800';
         badge.innerText = 'NHẬP LẦN ĐẦU';
         titleHeader = 'PHIẾU NHẬP KHO ĐẠO CỤ LẦN ĐẦU';
@@ -4373,7 +6132,11 @@
 
       document.getElementById('pdfProjectName').innerText = t.projectName || '---';
       document.getElementById('pdfLocation').innerText = t.location || '---';
-      document.getElementById('pdfTime').innerText = t.time || '---';
+      let cleanTime = t.time || '---';
+      if (cleanTime && cleanTime.includes('GMT')) {
+        try { cleanTime = new Date(cleanTime).toLocaleString('vi-VN'); } catch(e) {}
+      }
+      document.getElementById('pdfTime').innerText = cleanTime;
       document.getElementById('pdfWarehouse').innerText = t.warehouse || '---';
       document.getElementById('pdfExporter').innerText = t.exporterName ? `${t.exporterName} (${t.exporterPhone || ''})` : '---';
       document.getElementById('pdfImporter').innerText = t.importerName ? `${t.importerName} (${t.importerPhone || ''})` : '---';
@@ -4572,7 +6335,7 @@
       ctx.drawImage(video, 0, 0, width, height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
 
-      // Xử lý từng chế độ camera duy nhất 1 lần
+      // Xử lý từng chế độ camera
       if (activeCameraMode === 'propMultiple') {
         currentPropImages.push(dataUrl);
         renderPropImagesGallery();
@@ -4636,6 +6399,18 @@
           }
         }
         closeCameraModal();
+      } else if (activeCameraMode === 'repairSelf') {
+        repairSelfPhoto = dataUrl;
+        updateRepairPhotoPreviews();
+        closeCameraModal(); // Tắt camera ngay lập tức sau khi chụp
+      } else if (activeCameraMode === 'repairSendOut') {
+        repairSendOutPhoto = dataUrl;
+        updateRepairPhotoPreviews();
+        closeCameraModal(); // Tắt camera ngay lập tức sau khi chụp
+      } else if (activeCameraMode === 'repairReceiveIn') {
+        repairReceiveInPhoto = dataUrl;
+        updateRepairPhotoPreviews();
+        closeCameraModal(); // Tắt camera ngay lập tức sau khi chụp
       }
     }
 
@@ -4949,6 +6724,7 @@
     let editSelectedPurposes = [];
     let editImagesList = [];
     let editInvoicesList = [];
+    let editLocationsList = [];
 
     function openEditPropModalFromDetail() {
       if (!activeEditingProp) {
@@ -4968,6 +6744,19 @@
       document.getElementById('editPropCode').value = p.code;
       document.getElementById('editModalPropTitle').innerText = `${p.name} (${p.code})`;
       
+      // 1. ĐIỀN TÊN ĐẠO CỤ VÀO Ô NHẬP ĐỂ SỬA
+      const nameInput = document.getElementById('editPropName');
+      if (nameInput) nameInput.value = p.name || '';
+
+      // 2. NẠP DANH SÁCH VỊ TRÍ LƯU KHO ĐỂ SỬA (KHO, GIÁ, TẦNG)
+      editLocationsList = JSON.parse(JSON.stringify(p.locations || []));
+      if (!editLocationsList.length) {
+        const defaultWh = (warehouses && warehouses[0]) ? warehouses[0].name : 'Kho Đông Anh';
+        editLocationsList = [{ warehouse: defaultWh, shelf: '', tier: '', qty: p.inStock || p.total || 0 }];
+      }
+      renderEditLocations();
+
+      // 3. DANH MỤC & MỤC ĐÍCH
       editSelectedCategories = p.categories ? [...p.categories] : [];
       editSelectedPurposes = p.purposes ? [...p.purposes] : [];
       renderEditTags();
@@ -4977,10 +6766,8 @@
       document.getElementById('editPropSupplier').value = p.supplier || '';
       document.getElementById('editPropPriceFormatted').value = p.purchasePrice ? Number(p.purchasePrice).toLocaleString('vi-VN') : '';
 
-      // Tải danh sách ảnh đạo cụ
+      // 4. ALBUM ẢNH & HÓA ĐƠN
       editImagesList = p.images && p.images.length ? [...p.images] : (p.image ? [p.image] : []);
-      
-      // Tải danh sách hóa đơn (hỗ trợ cả dạng mảng JSON hoặc 1 link chuỗi cũ)
       if (Array.isArray(p.invoice)) {
         editInvoicesList = [...p.invoice];
       } else if (typeof p.invoice === 'string' && p.invoice.startsWith('[')) {
@@ -4993,6 +6780,67 @@
 
       renderEditPropGalleries();
       openModal('editPropModal');
+    }
+
+    // HÀM VẼ CÁC VỊ TRÍ LƯU KHO: KHO, GIÁ, TẦNG SỬA ĐƯỢC - SỐ LƯỢNG KHÓA
+    // HÀM VẼ VỊ TRÍ LƯU KHO: KHÓA TÊN KHO & SỐ LƯỢNG - CHỈ SỬA GIÁ/KỆ VÀ TẦNG
+    function renderEditLocations() {
+      const box = document.getElementById('editLocationsContainer');
+      if (!box) return;
+      box.innerHTML = '';
+
+      if (!editLocationsList || !editLocationsList.length) {
+        box.innerHTML = '<div class="text-xs text-slate-400 italic p-2 text-center bg-white rounded-lg border border-dashed border-slate-200">Chưa có vị trí lưu kho</div>';
+        return;
+      }
+
+      editLocationsList.forEach((loc, idx) => {
+        box.innerHTML += `
+          <div class="p-2.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-1.5 items-center">
+              
+              <!-- 1. TÊN KHO (KHÓA CỐ ĐỊNH 🔒 - KHÔNG CHO SỬA TÊN KHO) -->
+              <div class="sm:col-span-4">
+                <label class="block text-[9px] font-bold text-slate-500 uppercase sm:hidden mb-0.5">Kho lưu cất (Cố định)</label>
+                <div class="relative">
+                  <input type="text" readonly value="${loc.warehouse || 'Kho chính'}" 
+                    title="Tên kho cố định theo đạo cụ, không thể sửa tay" 
+                    class="w-full p-1.5 pr-6 border border-slate-200 rounded-lg bg-slate-100 font-bold text-xs text-slate-700 cursor-not-allowed select-none">
+                  <i class="fa-solid fa-lock absolute right-2 top-2 text-[10px] text-slate-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+              <!-- 2. GIÁ / KỆ (SỬA ĐƯỢC) -->
+              <div class="sm:col-span-3">
+                <label class="block text-[9px] font-bold text-slate-500 uppercase sm:hidden mb-0.5">Giá / Kệ</label>
+                <input type="text" list="shelfDatalist" value="${loc.shelf || ''}" placeholder="Giá / Kệ (VD: Giá B...)" 
+                  oninput="editLocationsList[${idx}].shelf = this.value.trim()" 
+                  class="w-full p-1.5 border border-slate-300 rounded-lg bg-white font-semibold text-xs text-slate-800 focus:border-aba">
+              </div>
+
+              <!-- 3. TẦNG (SỬA ĐƯỢC) -->
+              <div class="sm:col-span-2">
+                <label class="block text-[9px] font-bold text-slate-500 uppercase sm:hidden mb-0.5">Tầng</label>
+                <input type="text" list="tierDatalist" value="${loc.tier || ''}" placeholder="Tầng (T1, T2...)" 
+                  oninput="editLocationsList[${idx}].tier = this.value.trim()" 
+                  class="w-full p-1.5 border border-slate-300 rounded-lg bg-white text-center font-semibold text-xs text-slate-800 focus:border-aba">
+              </div>
+
+              <!-- 4. SỐ LƯỢNG (KHÓA CỐ ĐỊNH 🔒 - KHÔNG CHO SỬA TAY) -->
+              <div class="sm:col-span-3">
+                <label class="block text-[9px] font-bold text-slate-400 uppercase sm:hidden mb-0.5">Số lượng (Khóa)</label>
+                <div class="relative">
+                  <input type="number" readonly value="${loc.qty || 0}" 
+                    title="Số lượng cố định theo kiểm kê và phiếu xuất/nhập, không thể sửa tay" 
+                    class="w-full p-1.5 pr-6 border border-slate-200 rounded-lg bg-slate-100 text-center font-black text-xs text-slate-700 cursor-not-allowed select-none">
+                  <i class="fa-solid fa-lock absolute right-2 top-2 text-[10px] text-slate-400 pointer-events-none"></i>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      });
     }
 
     function renderEditTags() {
@@ -5031,7 +6879,6 @@
     }
 
     function renderEditPropGalleries() {
-      // Gallery hóa đơn
       const invBox = document.getElementById('editPropInvoicesGallery');
       invBox.innerHTML = '';
       if (!editInvoicesList.length) {
@@ -5047,7 +6894,6 @@
         });
       }
 
-      // Gallery ảnh đạo cụ
       const imgBox = document.getElementById('editPropImagesGallery');
       imgBox.innerHTML = '';
       if (!editImagesList.length) {
@@ -5101,42 +6947,18 @@
       e.target.value = '';
     }
 
-    async function handleEditInvoiceFilesSelect(e) {
-      const files = Array.from(e.target.files);
-      for (const f of files) {
-        try {
-          const compressed = await compressImageFile(f, 1200, 0.7);
-          editInvoicesList.push(compressed);
-        } catch (err) {
-          console.error("Lỗi nén hóa đơn:", err);
-        }
-      }
-      renderEditPropGalleries();
-      e.target.value = '';
-    }
-
-    async function handleEditPropFilesSelect(e) {
-      const files = Array.from(e.target.files);
-      for (const f of files) {
-        try {
-          const compressed = await compressImageFile(f, 1200, 0.7);
-          editImagesList.push(compressed);
-        } catch (err) {
-          console.error("Lỗi nén ảnh đạo cụ:", err);
-        }
-      }
-      renderEditPropGalleries();
-      e.target.value = '';
-    }
-
+    // LƯU TOÀN BỘ THÔNG TIN ĐÃ SỬA LÊN MÁY CHỦ (GỒM TÊN MỚI VÀ VỊ TRÍ KHO MỚI)
     async function submitEditPropInfo() {
       if (!activeEditingProp) return;
+
+      const newName = (document.getElementById('editPropName')?.value || '').trim();
+      if (!newName) return alert("⚠️ Tên đạo cụ không được để trống!");
+
       const btn = document.getElementById('btnSaveEditProp');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh & lưu...';
 
       try {
-        // Tải ảnh hóa đơn mới lên ImgBB nếu là base64
         const finalInvoices = [];
         for (let i = 0; i < editInvoicesList.length; i++) {
           const inv = editInvoicesList[i];
@@ -5149,7 +6971,6 @@
           }
         }
 
-        // Tải ảnh đạo cụ mới lên ImgBB nếu là base64
         const finalImages = [];
         for (let i = 0; i < editImagesList.length; i++) {
           const img = editImagesList[i];
@@ -5167,6 +6988,8 @@
 
         const payload = {
           code: activeEditingProp.code,
+          name: newName,
+          locations: editLocationsList,
           specs: document.getElementById('editPropSpecs').value.trimEnd(),
           categories: editSelectedCategories,
           purposes: editSelectedPurposes,
@@ -5183,7 +7006,7 @@
         btn.innerHTML = '<i class="fa-solid fa-check"></i> LƯU THAY ĐỔI';
 
         if (res && res.success) {
-          showSuccessPopup("CẬP NHẬT THÀNH CÔNG", `Đã lưu thay đổi cho đạo cụ "${activeEditingProp.name}"!`);
+          showSuccessPopup("CẬP NHẬT THÀNH CÔNG", `Đã lưu thay đổi cho đạo cụ "${newName}"!`);
           closeModal('editPropModal');
           fetchInitialData();
         } else {
@@ -5247,6 +7070,307 @@
         openModal('loginModal');
       } else {
         alert("Mật mã Admin không chính xác!");
+      }
+    }
+  // =========================================================================
+    // HỆ THỐNG XÁC THỰC THIẾT BỊ CỐ ĐỊNH & BẢO MẬT GOOGLE DRIVE
+    // =========================================================================
+    var tempCapturedAvatar = "";
+
+    // 1. Nhận diện thiết bị: Điện thoại hay Máy tính
+    function isMobileClient() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    }
+
+    // 2. Kiểm tra đăng nhập tự động
+    function checkAuth() {
+      const saved = localStorage.getItem('ABA_USER');
+      if (saved) {
+        try {
+          currentUser = JSON.parse(saved);
+          updateHeaderUserInfo();
+          closeModal('loginModal');
+          return;
+        } catch (e) {
+          localStorage.removeItem('ABA_USER');
+        }
+      }
+
+      // Chưa có tài khoản -> Bật giao diện theo loại thiết bị
+      setupAuthInterface();
+      openModal('loginModal');
+    }
+
+    // 3. Tự động đổi giao diện theo Điện thoại / Máy tính
+    function setupAuthInterface() {
+      const isMobile = isMobileClient();
+      const badge = document.getElementById('authDeviceBadge');
+      const title = document.getElementById('authModalTitle');
+      const desc = document.getElementById('authModalDesc');
+      const cameraBlock = document.getElementById('mobileCameraBlock');
+      const desktopNotice = document.getElementById('desktopNoticeBlock');
+      const btnSubmit = document.getElementById('btnSubmitAuth');
+
+      if (isMobile) {
+        if (badge) {
+          badge.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase";
+          badge.innerText = "📱 Điện thoại cá nhân";
+        }
+        if (title) title.innerText = "KÍCH HOẠT THIẾT BỊ LẦN ĐẦU";
+        if (desc) desc.innerText = "Mỗi điện thoại gắn vĩnh viễn với 1 nhân sự cố định";
+        if (cameraBlock) cameraBlock.classList.remove('hidden');
+        if (desktopNotice) desktopNotice.classList.add('hidden');
+        if (btnSubmit) btnSubmit.innerHTML = '<i class="fa-solid fa-mobile-screen"></i> KÍCH HOẠT & KHÓA THIẾT BỊ';
+      } else {
+        if (badge) {
+          badge.className = "inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 uppercase";
+          badge.innerText = "💻 Máy tính cá nhân";
+        }
+        if (title) title.innerText = "ĐỐI SOÁT TÀI KHOẢN MÁY TÍNH";
+        if (desc) desc.innerText = "Nhập thông tin đã được kích hoạt trên điện thoại trước đó.";
+        if (cameraBlock) cameraBlock.classList.add('hidden');
+        if (desktopNotice) desktopNotice.classList.remove('hidden');
+        if (btnSubmit) btnSubmit.innerHTML = '<i class="fa-solid fa-laptop"></i> ĐỐI SOÁT & ĐĂNG NHẬP';
+      }
+    }
+
+    // 4. Chụp ảnh mặt trên Điện thoại
+    function handleAuthPhotoCapture(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 320;
+          let w = img.width, h = img.height;
+          if (w > h) { if (w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; } }
+          else { if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; } }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          tempCapturedAvatar = canvas.toDataURL('image/jpeg', 0.8);
+
+          const preview = document.getElementById('loginAvatarPreview');
+          const placeholder = document.getElementById('loginCameraPlaceholder');
+          if (preview) { preview.src = tempCapturedAvatar; preview.classList.remove('hidden'); }
+          if (placeholder) placeholder.classList.add('hidden');
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // 5. Gửi dữ liệu xác thực
+    async function submitAuth() {
+      const name = (document.getElementById('loginName')?.value || '').trim();
+      const phone = (document.getElementById('loginPhone')?.value || '').trim();
+      const isMobile = isMobileClient();
+
+      if (!name) return alert("Vui lòng nhập Họ và tên!");
+      if (!phone) return alert("Vui lòng nhập Số điện thoại!");
+
+      const btn = document.getElementById('btnSubmitAuth');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực với Google Drive...';
+      }
+
+      try {
+        if (isMobile) {
+          if (!tempCapturedAvatar) {
+            if (btn) btn.disabled = false;
+            setupAuthInterface();
+            return alert("Bắt buộc phải chụp ảnh khuôn mặt để kích hoạt thiết bị!");
+          }
+
+          const res = await callBackend('registerMobileUser', {
+            name: name,
+            phone: phone,
+            avatar: tempCapturedAvatar
+          }, 'POST');
+
+          if (btn) btn.disabled = false;
+          setupAuthInterface();
+
+          if (res && res.success) {
+            currentUser = res.user;
+            localStorage.setItem('ABA_USER', JSON.stringify(currentUser));
+            updateHeaderUserInfo();
+            closeModal('loginModal');
+            alert(`Kích hoạt thành công!\nThiết bị này đã gắn cố định với: ${currentUser.name}`);
+          } else {
+            alert("Không thể kích hoạt: " + (res && res.error ? res.error : "Lỗi hệ thống"));
+          }
+        } else {
+          const res = await callBackend('loginDesktopUser', {
+            name: name,
+            phone: phone
+          }, 'POST');
+
+          if (btn) btn.disabled = false;
+          setupAuthInterface();
+
+          if (res && res.success) {
+            currentUser = res.user;
+            localStorage.setItem('ABA_USER', JSON.stringify(currentUser));
+            updateHeaderUserInfo();
+            closeModal('loginModal');
+          } else {
+            alert("Từ chối truy cập: " + (res && res.error ? res.error : "Tài khoản không hợp lệ"));
+          }
+        }
+      } catch (err) {
+        if (btn) btn.disabled = false;
+        setupAuthInterface();
+        alert("Lỗi kết nối máy chủ: " + err.message);
+      }
+    }
+
+    // Tương thích với các nút cũ (nếu có)
+    function submitLogin() { submitAuth(); }
+
+    // 6. Cập nhật thông tin Header
+    function updateHeaderUserInfo() {
+      if (!currentUser) return;
+      const headerName = document.getElementById('userHeaderName');
+      const headerAvatar = document.getElementById('userHeaderAvatar');
+      if (headerName) headerName.innerText = currentUser.name;
+      if (headerAvatar && currentUser.avatar) headerAvatar.src = currentUser.avatar;
+    }
+
+    // 7. Thoát tài khoản bằng mật khẩu Google Drive
+    function openAdminLogoutModal() {
+      const passInput = document.getElementById('adminLogoutPasswordInput');
+      if (passInput) passInput.value = '';
+      openModal('adminLogoutModal');
+    }
+
+    async function confirmAdminLogout() {
+      const pass = (document.getElementById('adminLogoutPasswordInput')?.value || '').trim();
+      if (!pass) return alert("Vui lòng nhập Mật khẩu quản trị cài trên Google Drive!");
+
+      showUploadStatus("Đang kiểm tra mật khẩu...");
+      try {
+        const res = await callBackend('verifyLogoutPassword', { password: pass }, 'POST');
+        hideUploadStatus();
+
+        if (res && res.success) {
+          localStorage.removeItem('ABA_USER');
+          sessionStorage.clear();
+          currentUser = null;
+          alert("Mật khẩu chính xác. Đã xóa tài khoản khỏi máy!");
+          window.location.reload();
+        } else {
+          alert(res && res.error ? res.error : "Mật khẩu không chính xác!");
+        }
+      } catch(err) {
+        hideUploadStatus();
+        alert("Lỗi xác minh: " + err.message);
+      }
+    }
+
+    // 8. TỰ ĐỘNG KÍCH HOẠT KHI TẢI TRANG
+    setTimeout(() => {
+      checkAuth();
+    }, 400);  
+  // =========================================================================
+    // XỬ LÝ CAMERA TRỰC TIẾP (WEBCAM/MOBILE CAMERA STREAM)
+    // =========================================================================
+    var activeCameraStream = null;
+
+    // 1. Kích hoạt ống kính máy ảnh (ưu tiên camera trước)
+    async function startLiveCameraStream() {
+      const video = document.getElementById('authLiveVideo');
+      const preview = document.getElementById('loginAvatarPreview');
+      const waiting = document.getElementById('authCameraWaiting');
+      const btnSnap = document.getElementById('btnSnapLivePhoto');
+      const btnRetake = document.getElementById('btnRetakeLivePhoto');
+      const btnStart = document.getElementById('btnStartLiveCamera');
+
+      try {
+        // Tắt luồng cũ nếu đang chạy
+        stopLiveCameraStream();
+
+        const constraints = {
+          video: {
+            facingMode: 'user', // Ưu tiên camera selfie trước
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          },
+          audio: false
+        };
+
+        activeCameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = activeCameraStream;
+        await video.play();
+
+        // Cập nhật giao diện sang chế độ ngắm chụp
+        video.classList.remove('hidden');
+        preview.classList.add('hidden');
+        waiting.classList.add('hidden');
+        btnStart.classList.add('hidden');
+        btnRetake.classList.add('hidden');
+
+        btnSnap.disabled = false;
+        btnSnap.classList.remove('opacity-50', 'cursor-not-allowed');
+      } catch (err) {
+        alert("Không thể mở Camera trực tiếp: " + err.message + "\nHãy đảm bảo bạn đã bấm 'Cho phép' (Allow) quyền sử dụng Camera trên trình duyệt!");
+      }
+    }
+
+    // 2. Chụp bắt khung hình từ Camera
+    function captureLivePhoto() {
+      const video = document.getElementById('authLiveVideo');
+      const canvas = document.getElementById('authCaptureCanvas');
+      const preview = document.getElementById('loginAvatarPreview');
+      const btnSnap = document.getElementById('btnSnapLivePhoto');
+      const btnRetake = document.getElementById('btnRetakeLivePhoto');
+
+      if (!video || !canvas) return;
+
+      const vW = video.videoWidth || 480;
+      const vH = video.videoHeight || 480;
+      
+      // Lấy cạnh ngắn nhất để cắt khung vuông tâm 1:1, vừa khít hình tròn
+      const cropSize = Math.min(vW, vH);
+      const startX = (vW - cropSize) / 2;
+      const startY = (vH - cropSize) / 2;
+
+      // Đặt kích thước lưu trữ tối ưu 360x360
+      const outputSize = 360;
+      canvas.width = outputSize;
+      canvas.height = outputSize;
+
+      const ctx = canvas.getContext('2d');
+      // Lật ngang gương soi
+      ctx.translate(outputSize, 0);
+      ctx.scale(-1, 1);
+
+      // Cắt đúng tâm ảnh đưa vào canvas
+      ctx.drawImage(video, startX, startY, cropSize, cropSize, 0, 0, outputSize, outputSize);
+
+      // Nén ảnh sang JPEG
+      tempCapturedAvatar = canvas.toDataURL('image/jpeg', 0.85);
+
+      preview.src = tempCapturedAvatar;
+      preview.classList.remove('hidden');
+      video.classList.add('hidden');
+
+      stopLiveCameraStream();
+
+      btnSnap.disabled = true;
+      btnSnap.classList.add('opacity-50', 'cursor-not-allowed');
+      btnRetake.classList.remove('hidden');
+    }
+
+    // 3. Dừng luồng Camera khi chụp xong hoặc đóng modal
+    function stopLiveCameraStream() {
+      if (activeCameraStream) {
+        activeCameraStream.getTracks().forEach(track => track.stop());
+        activeCameraStream = null;
       }
     }
   </script>
