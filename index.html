@@ -748,101 +748,322 @@
       </div>
     </section>
 
-    <!-- ==================== TAB SỬA CHỮA: THEO DÕI & NGHIỆM THU ĐỒ HỎNG ==================== -->
-    <section id="tab-repair" class="tab-content hidden space-y-3">
-      <!-- 1. THANH THỐNG KÊ & BỘ LỌC ĐỒ HỎNG -->
-      <div class="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 text-xs">
+    <!-- ==================== TAB: XỬ LÝ SỬA CHỮA ĐẠO CỤ HỎNG (TẬP TRUNG TỪNG MÓN) ==================== -->
+    <section id="tab-repair" class="tab-content hidden space-y-2.5">
+      <!-- 1. BỘ LỌC & THỐNG KÊ KHO ĐỒ HỎNG -->
+      <div class="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 text-xs">
         <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-red-600 text-white flex items-center justify-center text-sm shadow-xs flex-shrink-0">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
-          </span>
-          <div>
-            <h2 class="text-xs sm:text-sm font-bold text-slate-800 uppercase tracking-tight">DANH SÁCH ĐẠO CỤ ĐANG HỎNG / CẦN SỬA</h2>
-            <p class="text-[10px] text-slate-500">Quản lý các đạo cụ gặp sự cố sau sự kiện và nghiệm thu sửa xong về kho</p>
-          </div>
-          <span id="repairStatsBadge" class="px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 font-bold text-[10px] ml-auto sm:ml-1 whitespace-nowrap">
-            0 món hỏng
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+          <span class="font-bold text-slate-800 text-xs sm:text-sm">DANH SÁCH ĐẠO CỤ THUỘC DIỆN HỎNG</span>
+          <span id="repairBrokenStatsBadge" class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-bold text-[11px]">
+            Đang tải...
           </span>
         </div>
-
         <div class="grid grid-cols-2 sm:flex items-center gap-2">
-          <select id="repairFilterWarehouse" onchange="renderRepairTabList()" class="p-2 border border-slate-300 rounded-xl bg-slate-50 font-bold text-slate-700 text-xs">
+          <select id="repairWarehouseFilter" onchange="renderRepairBrokenList()" class="p-1.5 border border-slate-300 rounded-xl bg-slate-50 font-bold text-aba text-xs">
             <option value="">Tất cả các kho</option>
           </select>
           <div class="relative flex-1 sm:w-56">
-            <input type="text" id="repairSearchInput" oninput="renderRepairTabList()" placeholder="Tìm tên đồ hỏng..." class="w-full pl-7 pr-2 py-2 border border-slate-300 rounded-xl bg-slate-50 text-xs">
-            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+            <input type="text" id="repairSearchInput" oninput="renderRepairBrokenList()" placeholder="Tìm tên đồ hỏng..." class="w-full pl-7 pr-2 py-1.5 border border-slate-300 rounded-xl bg-slate-50 text-xs">
+            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-400 text-xs"></i>
           </div>
         </div>
       </div>
 
-      <!-- 2. DANH SÁCH ĐẠO CỤ HỎNG (CARD TRÊN MOBILE, BẢNG TRÊN PC) -->
-      <div id="repairListContainer" class="space-y-2.5">
-        <!-- Render tự động bằng Javascript -->
+      <!-- 2. DANH SÁCH CÁC MÓN ĐỒ HỎNG DẠNG THẺ (CARD) TẬP TRUNG TỪNG MÓN -->
+      <div id="repairBrokenPropsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+        <!-- Render tự động bởi Javascript -->
       </div>
     </section>
 
-    <!-- MODAL: NGHIỆM THU SỬA XONG & TRẢ VỀ KHO -->
-    <div id="repairCompleteModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-3 hidden">
-      <div class="bg-white rounded-3xl max-w-lg w-full p-4 sm:p-5 space-y-3.5 shadow-2xl max-h-[92vh] overflow-y-auto text-xs">
+    <!-- ==================== MODAL XỬ LÝ SỬA CHỮA CHO TỪNG MÓN ĐỒ ==================== -->
+    <div id="repairPropModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-3 hidden">
+      <div class="bg-white rounded-3xl max-w-xl w-full p-4 sm:p-5 space-y-3 shadow-2xl max-h-[92vh] overflow-y-auto text-xs">
+        <!-- TIÊU ĐỀ MODAL -->
         <div class="flex items-center justify-between border-b pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">
-              <i class="fa-solid fa-check"></i>
-            </span>
-            <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight">NGHIỆM THU ĐẠO CỤ ĐÃ SỬA XONG</h3>
+            <span class="p-1.5 bg-amber-100 text-amber-800 rounded-xl"><i class="fa-solid fa-screwdriver-wrench text-sm"></i></span>
+            <div>
+              <h3 id="modalRepairPropName" class="text-sm font-bold text-slate-800 uppercase">TÊN ĐẠO CỤ</h3>
+              <p class="text-[10px] text-slate-500 font-mono" id="modalRepairPropLoc">Kho: --- | Vị trí: ---</p>
+            </div>
           </div>
-          <button type="button" onclick="closeModal('repairCompleteModal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
+          <button type="button" onclick="closeModal('repairPropModal')" class="text-slate-400 hover:text-slate-600 text-2xl font-bold leading-none">&times;</button>
         </div>
 
-        <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-          <div class="font-bold text-slate-900 text-xs sm:text-sm" id="repairModalPropName">---</div>
-          <div class="text-[10px] text-slate-500 font-mono mt-0.5">
-            Mã: <b id="repairModalPropCode" class="text-slate-700">---</b> • Đang hỏng: <b id="repairModalMaxQty" class="text-red-600">0</b> <span id="repairModalUnit">món</span>
-          </div>
-        </div>
-
+        <!-- TÁCH THÀNH 2 Ô ĐỘC LẬP: HIỆN ĐANG HỎNG vs SỐ LƯỢNG XỬ LÝ ĐỢT NÀY -->
         <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Số lượng đã sửa xong <span class="text-red-500">*</span></label>
-            <input type="number" id="repairQtyDone" min="1" class="w-full p-2 border border-emerald-400 rounded-xl font-bold text-emerald-800 text-xs bg-emerald-50/30">
+          <!-- Ô 1: HIỆN ĐANG HỎNG (THÔNG TIN CỐ ĐỊNH NỀN ĐỎ) -->
+          <div class="bg-red-50 p-2.5 rounded-xl border border-red-200 flex flex-col justify-between">
+            <span class="text-[11px] font-bold text-red-800 uppercase tracking-tight flex items-center gap-1">
+              <i class="fa-solid fa-triangle-exclamation text-red-600"></i> Hiện đang hỏng tại kho
+            </span>
+            <div class="mt-1 flex items-baseline gap-1">
+              <span id="modalRepairMaxBroken" class="text-xl font-black text-red-600 font-mono">0</span>
+              <span id="modalRepairUnit" class="text-xs font-bold text-red-700">món</span>
+            </div>
           </div>
-          <div>
-            <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Chi phí sửa chữa (VNĐ)</label>
-            <input type="text" id="repairCostFormatted" oninput="formatCurrencyInput(this)" placeholder="0" class="w-full p-2 border border-slate-300 rounded-xl font-mono font-bold text-aba text-xs bg-white">
-          </div>
-        </div>
 
-        <!-- VỊ TRÍ XẾP LẠI KHO -->
-        <div class="bg-amber-50/40 p-2.5 rounded-xl border border-amber-200 space-y-2">
-          <label class="font-bold text-amber-900 text-[11px] block">Xếp vào vị trí kho sau khi sửa:</label>
-          <div class="grid grid-cols-3 gap-1.5">
-            <div>
-              <label class="block text-[10px] text-slate-500 font-semibold mb-0.5">Kho lưu</label>
-              <select id="repairReturnWarehouse" class="w-full p-1.5 border border-slate-300 rounded-lg text-xs bg-white font-bold"></select>
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-500 font-semibold mb-0.5">Giá / Kệ</label>
-              <input type="text" list="shelfDatalist" id="repairReturnShelf" placeholder="Giá..." class="w-full p-1.5 border border-slate-300 rounded-lg text-xs bg-white">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-500 font-semibold mb-0.5">Tầng</label>
-              <input type="text" list="tierDatalist" id="repairReturnTier" placeholder="Tầng..." class="w-full p-1.5 border border-slate-300 rounded-lg text-xs bg-white text-center">
+          <!-- Ô 2: SỐ LƯỢNG XỬ LÝ ĐỢT NÀY (Ô NHẬP LIỆU TO RÕ NỀN XANH) -->
+          <div class="bg-blue-50/70 p-2.5 rounded-xl border-2 border-aba flex flex-col justify-between">
+            <label for="modalRepairQty" class="text-[11px] font-black text-aba uppercase tracking-tight cursor-pointer">
+              Số lượng xử lý đợt này:
+            </label>
+            <div class="mt-1 flex items-center gap-1.5">
+              <input type="number" id="modalRepairQty" min="1" value="1" 
+                class="w-full p-1.5 text-center font-black text-aba border border-aba rounded-lg text-base bg-white focus:ring-2 focus:ring-aba shadow-xs">
+              <span class="text-xs font-bold text-slate-600 modalRepairUnitLabel">món</span>
             </div>
           </div>
         </div>
 
+        <!-- ALBUM ẢNH BÁO HỎNG (LẤY TỪ PHIẾU NHẬP KHO CỦA MÓN NÀY) -->
+        <div id="repairBrokenHistoryGalleryBox" class="bg-red-50/40 p-2.5 rounded-xl border border-red-200 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-red-900 text-[11px] flex items-center gap-1.5">
+              <i class="fa-solid fa-camera text-red-600"></i> Ảnh hiện trạng đính kèm lúc báo hỏng:
+            </span>
+            <span id="repairBrokenHistoryCount" class="text-[10px] font-bold text-red-700 bg-red-100 px-1.5 py-0.5 rounded-full">0 ảnh</span>
+          </div>
+          <div id="repairBrokenHistoryPhotos" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1 bg-white rounded-lg border border-red-100 min-h-[46px] items-center"></div>
+        </div>
+
+        <!-- 3 NÚT CHỌN LOẠI PHIẾU: TỰ SỬA / GỬI ĐI (GĐ1) / NHẬN VỀ (GĐ2) -->
         <div>
-          <label class="block font-bold text-slate-700 mb-0.5 text-[11px]">Ghi chú đơn vị sửa / tình trạng sau sửa</label>
-          <input type="text" id="repairNote" placeholder="Ví dụ: Đã may lại quai, vá dù, dán lại vải hơi..." class="w-full p-2 border border-slate-300 rounded-xl text-xs bg-white">
+          <label class="block font-bold text-slate-700 mb-1.5 uppercase tracking-tight text-[11px]">
+            Chọn loại phiếu xử lý:
+          </label>
+          <div class="grid grid-cols-3 gap-1.5 text-center">
+            <!-- 1. Tự sửa -->
+            <div onclick="selectRepairMethod('self')" id="btnMethodSelf" class="cursor-pointer p-2 rounded-xl border-2 border-aba bg-blue-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-user-gear text-base text-aba"></i>
+              <div class="font-bold text-[10px] text-aba leading-tight">TỰ SỬA<br><span class="font-normal text-[9px] text-slate-500">Nội bộ</span></div>
+            </div>
+            <!-- 2. Gửi đi sửa (Giai đoạn 1) -->
+            <div onclick="selectRepairMethod('send_out')" id="btnMethodSendOut" class="cursor-pointer p-2 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex flex-col items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-truck-arrow-right text-base text-slate-400"></i>
+              <div class="font-bold text-[10px] text-slate-700 leading-tight">GỬI ĐI SỬA<br><span class="font-normal text-[9px] text-slate-400">Giai đoạn 1</span></div>
+            </div>
+            <!-- 3. Nhận về sau sửa (Giai đoạn 2) -->
+            <div onclick="selectRepairMethod('receive_in')" id="btnMethodReceiveIn" class="cursor-pointer p-2 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex flex-col items-center justify-center gap-1 transition">
+              <i class="fa-solid fa-box-open text-base text-slate-400"></i>
+              <div class="font-bold text-[10px] text-slate-700 leading-tight">NHẬN VỀ<br><span class="font-normal text-[9px] text-slate-400">Giai đoạn 2</span></div>
+            </div>
+          </div>
         </div>
 
+        <!-- ================= KHỐI 1: TỰ SỬA CHỮA NỘI BỘ ================= -->
+        <div id="blockMethodSelf" class="space-y-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Kết quả tự sửa chữa: <span class="text-red-500">*</span></label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center justify-center gap-1.5 p-2 bg-emerald-50 border border-emerald-300 rounded-lg font-bold text-emerald-800 text-xs cursor-pointer">
+                <input type="radio" name="selfRepairResult" value="success" checked onchange="toggleSelfRepairLocBox(true)" class="accent-emerald-600">
+                <span>✅ Sửa được (Thành đồ tốt)</span>
+              </label>
+              <label class="flex items-center justify-center gap-1.5 p-2 bg-red-50 border border-red-300 rounded-lg font-bold text-red-800 text-xs cursor-pointer">
+                <input type="radio" name="selfRepairResult" value="fail" onchange="toggleSelfRepairLocBox(false)" class="accent-red-600">
+                <span>❌ Không sửa được</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Vị trí cất đồ tốt sau khi sửa xong -->
+          <div id="selfRepairLocBox" class="bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-200 space-y-1.5">
+            <span class="block font-bold text-emerald-900 text-[11px]">📍 Vị trí lưu kho sau khi phục hồi thành đồ tốt:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Kho lưu trữ *</label>
+                <select id="selfRepairWarehouse" class="w-full p-1.5 border border-slate-300 rounded text-xs bg-white font-bold text-aba"></select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Giá/Kệ</label>
+                <input type="text" list="shelfDatalist" id="selfRepairShelf" placeholder="Giá..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Tầng</label>
+                <input type="text" list="tierDatalist" id="selfRepairTier" placeholder="Tầng..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs text-center">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Nội dung / Cách thức đã khắc phục:</label>
+            <input type="text" id="selfRepairNote" placeholder="Vá bạt, hàn lại khung, tra dầu mỡ..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Ảnh nghiệm thu sau khi tự sửa <span class="text-red-500">* (Bấm vào ảnh để phóng to/zoom)</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="triggerCamera('repairSelf')" class="px-2.5 py-1.5 bg-aba text-white hover:bg-aba-dark rounded-lg font-bold text-xs flex items-center gap-1">
+                <i class="fa-solid fa-camera"></i> Chụp
+              </button>
+              <label class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-xs cursor-pointer flex items-center gap-1">
+                <i class="fa-solid fa-file-arrow-up"></i> File
+                <input type="file" accept="image/*" class="hidden" onchange="handleSingleRepairFileSelect(event, 'repairSelf')">
+              </label>
+              <div id="previewRepairSelf" class="w-12 h-12 rounded-lg border border-slate-300 overflow-hidden bg-white flex items-center justify-center flex-shrink-0 cursor-pointer shadow-xs" title="Bấm để xem ảnh to">
+                <span class="text-[9px] text-slate-400">Trống</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= KHỐI 2: PHIẾU GỬI ĐI SỬA (GIAI ĐOẠN 1) ================= -->
+        <div id="blockMethodSendOut" class="hidden space-y-2.5 bg-amber-50/50 p-3 rounded-xl border border-amber-200">
+          <div class="font-bold text-amber-900 flex items-center gap-1 text-xs border-b border-amber-200 pb-1">
+            <i class="fa-solid fa-truck-arrow-right text-amber-600"></i> PHIẾU BÀN GIAO GỬI ĐỒ CHO THỢ/XƯỞNG
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Đơn vị / Tên thợ nhận sửa <span class="text-red-500">*</span></label>
+              <input type="text" id="sendRepairProvider" placeholder="Tên thợ / xưởng sửa..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Số điện thoại bên sửa <span class="text-red-500">*</span></label>
+              <input type="tel" id="sendRepairPhone" placeholder="SĐT liên hệ (09...)..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs font-semibold">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 items-center">
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Thời gian gửi đi <span class="text-red-500">*</span></label>
+              <input type="date" id="sendRepairOutDate" class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Dự kiến chi phí (nếu có)</label>
+              <input type="text" id="sendRepairEstimatedCost" oninput="formatCurrencyInput(this)" placeholder="0" class="w-full p-1.5 border border-slate-300 rounded bg-white font-mono text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Yêu cầu / Tình trạng bàn giao:</label>
+            <input type="text" id="sendRepairOutNote" placeholder="Mô tả chỗ rách hỏng cần thợ may/hàn..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Ảnh chụp bàn giao lúc gửi đi <span class="text-red-500">* (Bấm vào ảnh để phóng to/zoom)</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="triggerCamera('repairSendOut')" class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs flex items-center gap-1">
+                <i class="fa-solid fa-camera"></i> Chụp
+              </button>
+              <label class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-xs cursor-pointer flex items-center gap-1">
+                <i class="fa-solid fa-file-arrow-up"></i> File
+                <input type="file" accept="image/*" class="hidden" onchange="handleSingleRepairFileSelect(event, 'repairSendOut')">
+              </label>
+              <div id="previewRepairSendOut" class="w-12 h-12 rounded-lg border border-slate-300 overflow-hidden bg-white flex items-center justify-center flex-shrink-0 cursor-pointer shadow-xs" title="Bấm để xem ảnh to">
+                <span class="text-[9px] text-slate-400">Trống</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= KHỐI 3: PHIẾU NHẬN VỀ (CHỈ LẤY TỪ PHIẾU ĐÃ GỬI) ================= -->
+        <div id="blockMethodReceiveIn" class="hidden space-y-2.5 bg-blue-50/50 p-3 rounded-xl border border-blue-200">
+          <div class="font-bold text-blue-900 flex items-center gap-1 text-xs border-b border-blue-200 pb-1">
+            <i class="fa-solid fa-box-open text-blue-600"></i> PHIẾU NGHIỆM THU NHẬN ĐỒ VỀ TỪ THỢ/XƯỞNG
+          </div>
+
+          <div>
+            <label class="block font-bold text-blue-900 mb-1 text-[11px]">
+              Chọn phiếu gửi đi sửa cần nghiệm thu nhận về <span class="text-red-500">*</span>
+            </label>
+            <select id="selectSendRepairTicket" onchange="onSelectSendRepairTicket(this.value)" class="w-full p-2 border border-blue-300 rounded-lg bg-white font-bold text-xs text-blue-900">
+              <option value="">-- Chọn đợt gửi đi sửa --</option>
+            </select>
+          </div>
+
+          <div id="loadedSendTicketInfoBox" class="hidden p-2.5 rounded-lg bg-white border border-blue-200 text-[11px] text-slate-700 space-y-1">
+            <div class="flex items-center justify-between">
+              <span><b>Thợ/Xưởng:</b> <span id="infoSendProvider" class="font-bold text-slate-800">---</span></span>
+              <span><b>SĐT:</b> <span id="infoSendPhone" class="font-bold text-slate-800">---</span></span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span><b>Ngày gửi:</b> <span id="infoSendDate">---</span></span>
+              <span><b>Đã gửi sửa:</b> <b id="infoSendQty" class="text-red-600">0</b></span>
+            </div>
+            <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+              <span class="font-bold text-slate-600">Ảnh bàn giao lúc gửi:</span>
+              <div id="infoSendPhotoThumb" class="w-8 h-8 rounded border border-slate-300 overflow-hidden bg-slate-50 flex items-center justify-center cursor-pointer" title="Bấm xem ảnh to">
+                <span class="text-[8px] text-slate-300">Trống</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Thời gian nhận về <span class="text-red-500">*</span></label>
+              <input type="date" id="receiveRepairInDate" class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+            </div>
+            <div>
+              <label class="block font-semibold mb-0.5 text-[11px]">Tổng chi phí thực tế (VNĐ)</label>
+              <input type="text" id="receiveRepairCost" oninput="formatCurrencyInput(this)" placeholder="0" class="w-full p-1.5 border border-slate-300 rounded bg-white font-mono font-bold text-aba text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Tình trạng nhận về <span class="text-red-500">*</span></label>
+            <select id="receiveRepairResult" onchange="toggleReceiveRepairLocBox(this.value)" class="w-full p-1.5 border border-slate-300 rounded font-bold text-xs bg-white text-slate-800">
+              <option value="success">✅ Đã sửa được (Thành đồ tốt)</option>
+              <option value="fail">❌ Thợ không sửa được (Vẫn hỏng)</option>
+            </select>
+          </div>
+
+          <!-- VỊ TRÍ CẤT ĐỒ TỐT: CÓ CHỌN KHO + GIÁ + TẦNG -->
+          <div id="receiveRepairLocBox" class="bg-white p-2.5 rounded-lg border border-blue-200 space-y-1.5">
+            <span class="block font-bold text-blue-900 text-[11px]">📍 Vị trí lưu kho sau khi nhận đồ tốt về:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Kho lưu trữ *</label>
+                <select id="receiveRepairWarehouse" class="w-full p-1.5 border border-slate-300 rounded text-xs bg-slate-50 font-bold text-aba"></select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Giá/Kệ</label>
+                <input type="text" list="shelfDatalist" id="receiveRepairShelf" placeholder="Giá..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-slate-50">
+              </div>
+              <div>
+                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Tầng</label>
+                <input type="text" list="tierDatalist" id="receiveRepairTier" placeholder="Tầng..." class="w-full p-1.5 border border-slate-300 rounded text-xs bg-slate-50 text-center">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold mb-0.5 text-[11px]">Ghi chú chất lượng sau khi nhận về:</label>
+            <input type="text" id="receiveRepairNote" placeholder="Đã kiểm tra kín hơi, đường may chắc chắn..." class="w-full p-1.5 border border-slate-300 rounded bg-white text-xs">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">
+              Ảnh nghiệm thu lúc nhận về <span class="text-red-500">* (Bấm vào ảnh để phóng to/zoom)</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="triggerCamera('repairReceiveIn')" class="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-xs flex items-center gap-1">
+                <i class="fa-solid fa-camera"></i> Chụp
+              </button>
+              <label class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-xs cursor-pointer flex items-center gap-1">
+                <i class="fa-solid fa-file-arrow-up"></i> File
+                <input type="file" accept="image/*" class="hidden" onchange="handleSingleRepairFileSelect(event, 'repairReceiveIn')">
+              </label>
+              <div id="previewRepairReceiveIn" class="w-12 h-12 rounded-lg border border-slate-300 overflow-hidden bg-white flex items-center justify-center flex-shrink-0 cursor-pointer shadow-xs" title="Bấm để xem ảnh to">
+                <span class="text-[9px] text-slate-400">Trống</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NÚT GỬI HÀNH ĐỘNG -->
         <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('repairCompleteModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">
-            Hủy
+          <button type="button" onclick="closeModal('repairPropModal')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">
+            Hủy Bỏ
           </button>
-          <button type="button" id="btnConfirmRepairSubmit" onclick="submitRepairCompleted()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md text-xs flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-check-double"></i> HOÀN TẤT & NHẬP LẠI KHO
+          <button type="button" id="btnConfirmRepairProp" onclick="submitSinglePropRepair()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-check"></i> XÁC NHẬN & CẬP NHẬT
           </button>
         </div>
       </div>
@@ -4345,6 +4566,9 @@
     async function triggerCamera(mode) {
       activeCameraMode = mode;
       const textMap = {
+        repairSelf: "Chụp ảnh nghiệm thu sau khi tự sửa",
+        repairSendOut: "Chụp ảnh bàn giao khi gửi đi sửa",
+        repairReceiveIn: "Chụp ảnh nghiệm thu khi nhận về từ thợ",
         propMultiple: "Chụp ảnh đạo cụ thực tế",
         invoice: "Chụp ảnh hóa đơn mua hàng",
         loginFace: "Chụp ảnh khuôn mặt nhận diện",
@@ -4468,6 +4692,18 @@
             prevBox.innerHTML = `<img src="${dataUrl}" class="w-full h-full object-cover cursor-pointer" onclick="openSingleLightbox('${dataUrl}')">`;
           }
         }
+        closeCameraModal();
+      } else if (activeCameraMode === 'repairSelf') {
+        repairSelfPhoto = dataUrl;
+        updateRepairPhotoPreviews();
+        closeCameraModal();
+      } else if (activeCameraMode === 'repairSendOut') {
+        repairSendOutPhoto = dataUrl;
+        updateRepairPhotoPreviews();
+        closeCameraModal();
+      } else if (activeCameraMode === 'repairReceiveIn') {
+        repairReceiveInPhoto = dataUrl;
+        updateRepairPhotoPreviews();
         closeCameraModal();
       }
     }
@@ -6276,179 +6512,527 @@
       buildImportBrokenRows();
     }
   // =========================================================================
-    // HỆ THỐNG VẬN HÀNH TAB SỬA CHỮA (LỌC ĐỒ HỎNG & NGHIỆM THU VỀ KHO)
+    // LOGIC TAB SỬA CHỮA: TẬP TRUNG TỪNG MÓN ĐỒ (ITEM-CENTRIC WORKFLOW CHUẨN)
     // =========================================================================
     let activeRepairProp = null;
+    let selectedRepairMethod = 'self';
+    let repairSelfPhoto = '';
+    let repairSendOutPhoto = '';
+    let repairReceiveInPhoto = '';
+    let activeSelectedSendTicket = null;
 
     function initRepairTab() {
-      // Đổ danh sách kho vào bộ lọc
-      const sel = document.getElementById('repairFilterWarehouse');
+      const sel = document.getElementById('repairWarehouseFilter');
       if (sel) {
         sel.innerHTML = '<option value="">Tất cả các kho</option>';
         (warehouses || []).forEach(w => sel.innerHTML += `<option value="${w.name}">${w.name}</option>`);
       }
-      const returnWhSel = document.getElementById('repairReturnWarehouse');
-      if (returnWhSel) {
-        returnWhSel.innerHTML = '';
-        (warehouses || []).forEach(w => returnWhSel.innerHTML += `<option value="${w.name}">${w.name}</option>`);
-      }
-      renderRepairTabList();
+      renderRepairBrokenList();
     }
 
-    function renderRepairTabList() {
-      const container = document.getElementById('repairListContainer');
-      const statsBadge = document.getElementById('repairStatsBadge');
+    function renderRepairBrokenList() {
+      const container = document.getElementById('repairBrokenPropsContainer');
+      const statsBadge = document.getElementById('repairBrokenStatsBadge');
       if (!container) return;
 
-      const fWh = document.getElementById('repairFilterWarehouse')?.value || '';
+      const fWh = document.getElementById('repairWarehouseFilter')?.value || '';
       const search = (document.getElementById('repairSearchInput')?.value || '').trim().toLowerCase();
 
-      // Lấy danh sách các đạo cụ đang có số lượng hỏng > 0
       const brokenProps = (rawProps || []).filter(p => {
-        const brokenQty = Number(p.broken !== undefined ? p.broken : (p.brokenQty || 0));
-        if (brokenQty <= 0) return false;
-
-        const matchSearch = p.name.toLowerCase().includes(search) || p.code.toLowerCase().includes(search);
+        const isBroken = (Number(p.broken !== undefined ? p.broken : p.brokenQty) || 0) > 0;
         let matchWh = true;
         if (fWh) {
           matchWh = (p.locations || []).some(l => l.warehouse === fWh);
         }
-        return matchSearch && matchWh;
+        const matchSearch = !search || p.name.toLowerCase().includes(search) || (p.code || '').toLowerCase().includes(search);
+        return isBroken && matchWh && matchSearch;
       });
 
-      const totalBrokenCount = brokenProps.reduce((sum, p) => sum + Number(p.broken !== undefined ? p.broken : (p.brokenQty || 0)), 0);
-      if (statsBadge) statsBadge.innerText = `${totalBrokenCount} món hỏng (${brokenProps.length} loại)`;
+      const totalBrokenCount = brokenProps.reduce((sum, p) => sum + (Number(p.broken !== undefined ? p.broken : p.brokenQty) || 0), 0);
+      if (statsBadge) {
+        statsBadge.innerText = `${brokenProps.length} loại đồ (${totalBrokenCount} món hỏng)`;
+      }
 
       container.innerHTML = '';
       if (!brokenProps.length) {
         container.innerHTML = `
-          <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center space-y-2">
-            <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-xl">
+          <div class="col-span-full bg-white p-8 rounded-2xl border border-slate-200 text-center space-y-2">
+            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl">
               <i class="fa-solid fa-circle-check"></i>
             </div>
-            <p class="font-bold text-slate-800 text-xs sm:text-sm">Hiện không có đạo cụ nào bị hỏng!</p>
-            <p class="text-[11px] text-slate-400">Các đạo cụ được báo hỏng từ phiếu nhập kho sẽ xuất hiện tại đây để sửa chữa.</p>
+            <div class="font-bold text-slate-800 text-sm">Tuyệt vời! Hiện không có đạo cụ nào thuộc diện Hỏng.</div>
+            <p class="text-xs text-slate-500">Tất cả đạo cụ tại kho đều đang ở trạng thái sử dụng tốt hoặc đã được phục hồi xong.</p>
           </div>
         `;
         return;
       }
 
-      brokenProps.forEach((p, idx) => {
-        const brokenQty = Number(p.broken !== undefined ? p.broken : (p.brokenQty || 0));
-        const whNames = (p.locations || []).map(l => l.warehouse).filter((v, i, a) => a.indexOf(v) === i).join(', ') || 'Kho ABA';
-
+      brokenProps.forEach(p => {
+        const brokenQty = Number(p.broken !== undefined ? p.broken : p.brokenQty) || 0;
+        const locationsStr = (p.locations || []).map(l => `[${l.warehouse}] ${l.shelf || 'Chưa kệ'} / T${l.tier || '---'}`).join('; ');
+        
         container.innerHTML += `
-          <div class="bg-white p-3 rounded-2xl border border-red-200/80 shadow-2xs hover:border-red-300 transition space-y-2">
-            <div class="flex items-start justify-between gap-2">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <img src="${p.image || 'https://via.placeholder.com/40'}" class="w-11 h-11 object-cover rounded-xl border border-slate-200 flex-shrink-0" onclick="openSingleLightbox('${p.image || ''}')">
-                <div class="min-w-0">
-                  <div class="font-black text-slate-900 text-xs sm:text-sm truncate">${p.name}</div>
-                  <div class="text-[10px] text-slate-500 font-mono">Mã: ${p.code} • ĐVT: ${p.unit} • Kho: <b>${whNames}</b></div>
+          <div class="bg-white p-3 rounded-2xl border border-red-200 shadow-xs flex flex-col justify-between space-y-2.5 transition hover:shadow-md hover:border-red-300">
+            <div>
+              <div class="flex items-start gap-2.5">
+                <img src="${p.image || 'https://via.placeholder.com/60'}" class="w-14 h-14 object-cover rounded-xl border border-slate-200 flex-shrink-0 cursor-pointer" onclick="openLightbox(${JSON.stringify(p.images || [p.image]).replace(/"/g, '&quot;')}, 0)" title="Bấm xem ảnh to">
+                <div class="flex-1 min-w-0">
+                  <div class="font-bold text-slate-900 text-xs sm:text-sm truncate" title="${p.name}">${p.name}</div>
+                  <div class="text-[10px] text-slate-500 font-mono">${p.code} | ĐVT: <b>${p.unit}</b></div>
+                  <div class="mt-1 flex items-center gap-1.5 flex-wrap">
+                    <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-black text-[11px] animate-pulse">
+                      🔴 Đang hỏng: ${brokenQty} ${p.unit}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <span class="px-2.5 py-1 rounded-xl bg-red-100 text-red-800 font-black text-xs whitespace-nowrap border border-red-200 flex-shrink-0">
-                Hỏng: ${brokenQty} ${p.unit}
-              </span>
+
+              <div class="bg-slate-50 p-2 rounded-xl border border-slate-100 text-[10px] text-slate-600 mt-2 leading-relaxed">
+                <span class="font-bold text-slate-700"><i class="fa-solid fa-location-dot text-red-500 mr-1"></i>Đang lưu tại:</span>
+                <span class="truncate block">${locationsStr || 'Chưa định vị'}</span>
+              </div>
             </div>
 
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs flex-wrap gap-2">
-              <div class="text-[11px] text-slate-600 italic truncate max-w-xs">
-                ${p.specs ? `Quy cách: ${p.specs}` : 'Cần kiểm tra khắc phục hư hại'}
-              </div>
-              <button type="button" onclick="openRepairModal('${p.code}')" class="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition ml-auto">
-                <i class="fa-solid fa-wrench"></i> Báo đã sửa xong
-              </button>
-            </div>
+            <button type="button" onclick="openRepairModalForProp('${p.code}')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold rounded-xl shadow-xs text-xs flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-screwdriver-wrench"></i> XỬ LÝ SỬA CHỮA MÓN NÀY
+            </button>
           </div>
         `;
       });
     }
 
-    function openRepairModal(code) {
-      const p = (rawProps || []).find(x => x.code === code);
+    function openRepairModalForProp(propCode) {
+      const p = (rawProps || []).find(item => item.code === propCode);
       if (!p) return;
       activeRepairProp = p;
 
-      const brokenQty = Number(p.broken !== undefined ? p.broken : (p.brokenQty || 0));
+      const brokenQty = Number(p.broken !== undefined ? p.broken : p.brokenQty) || 0;
 
-      document.getElementById('repairModalPropName').innerText = p.name;
-      document.getElementById('repairModalPropCode').innerText = p.code;
-      document.getElementById('repairModalMaxQty').innerText = brokenQty;
-      document.getElementById('repairModalUnit').innerText = p.unit;
+      document.getElementById('modalRepairPropName').innerText = `${p.name} (${p.code})`;
+      const locStr = (p.locations || []).map(l => `${l.warehouse} (${l.shelf || ''} - T${l.tier || ''})`).join('; ');
+      document.getElementById('modalRepairPropLoc').innerText = `Vị trí hiện tại: ${locStr || 'Chưa kệ'}`;
+
+      document.getElementById('modalRepairMaxBroken').innerText = brokenQty;
+      document.getElementById('modalRepairUnit').innerText = p.unit;
       
-      const qtyInput = document.getElementById('repairQtyDone');
-      qtyInput.value = brokenQty;
-      qtyInput.max = brokenQty;
+      document.querySelectorAll('.modalRepairUnitLabel').forEach(el => el.innerText = p.unit);
 
-      document.getElementById('repairCostFormatted').value = '';
-      document.getElementById('repairNote').value = '';
-
-      // Tự động gợi ý kho và kệ cũ
-      const firstLoc = (p.locations && p.locations[0]) ? p.locations[0] : null;
-      if (firstLoc) {
-        document.getElementById('repairReturnWarehouse').value = firstLoc.warehouse || '';
-        document.getElementById('repairReturnShelf').value = firstLoc.shelf || '';
-        document.getElementById('repairReturnTier').value = firstLoc.tier || '';
+      const qtyInput = document.getElementById('modalRepairQty');
+      if (qtyInput) {
+        qtyInput.max = brokenQty;
+        qtyInput.value = brokenQty;
       }
 
-      openModal('repairCompleteModal');
+      // CHỈ LẤY ĐÚNG ẢNH BÁO SỰ CỐ ĐỒ HỎNG CỦA MÓN NÀY TỪ CÁC PHIẾU NHẬP KHO
+      const brokenPhotosList = [];
+      const importTickets = (archivedTickets || []).filter(t => t.type === 'NHAP_KHO');
+
+      importTickets.forEach(nk => {
+        let bItems = (nk.images && nk.images.brokenItems) ? nk.images.brokenItems : [];
+        if (typeof bItems === 'string') {
+          try { bItems = JSON.parse(bItems); } catch(e) { bItems = []; }
+        }
+
+        bItems.forEach(b => {
+          if (b.name && b.name.trim().toLowerCase() === p.name.trim().toLowerCase()) {
+            const dateStr = nk.createdAt ? new Date(nk.createdAt).toLocaleDateString('vi-VN') : '';
+            const caption = `${nk.projectName || 'Nhập kho'} (${dateStr}) - ${b.note || b.photoNote || 'Ảnh hư hại'}`;
+
+            const itemPhotos = (b.uploadedPhotos && b.uploadedPhotos.length) ? b.uploadedPhotos : (b.photos || []);
+            if (Array.isArray(itemPhotos)) {
+              itemPhotos.forEach(ph => {
+                if (ph && ph.length > 5 && !brokenPhotosList.some(x => x.url === ph)) {
+                  brokenPhotosList.push({ url: ph, caption: caption });
+                }
+              });
+            }
+          }
+        });
+      });
+
+      const countBadge = document.getElementById('repairBrokenHistoryCount');
+      const photosBox = document.getElementById('repairBrokenHistoryPhotos');
+      
+      if (countBadge) countBadge.innerText = `${brokenPhotosList.length} ảnh`;
+      if (photosBox) {
+        photosBox.innerHTML = '';
+        if (!brokenPhotosList.length) {
+          photosBox.innerHTML = '<span class="text-slate-400 italic text-[11px] p-1">Không có ảnh đính kèm lúc báo hỏng</span>';
+        } else {
+          brokenPhotosList.forEach((it, idx) => {
+            const allUrlsJson = JSON.stringify(brokenPhotosList.map(x => x.url)).replace(/"/g, '&quot;');
+            photosBox.innerHTML += `
+              <div class="relative group w-11 h-11 rounded-lg border border-red-200 overflow-hidden bg-slate-100 flex-shrink-0 cursor-pointer shadow-xs hover:border-red-400 transition" 
+                onclick="openLightbox(${allUrlsJson}, ${idx})" title="${it.caption} (Bấm xem to/zoom)">
+                <img src="${it.url}" class="w-full h-full object-cover">
+                <span class="absolute inset-x-0 bottom-0 bg-red-600/80 text-white text-[8px] text-center font-bold py-0.5 truncate">Xem</span>
+              </div>
+            `;
+          });
+        }
+      }
+
+      // ĐỔ DANH SÁCH CÁC KHO VÀO Ô CHỌN KHO LƯU CẤT SAU SỬA
+      const currentWh = (p.locations && p.locations[0]) ? p.locations[0].warehouse : ((warehouses && warehouses[0]) ? warehouses[0].name : "Kho Đông Anh");
+      ['selfRepairWarehouse', 'receiveRepairWarehouse'].forEach(id => {
+        const selWh = document.getElementById(id);
+        if (selWh) {
+          selWh.innerHTML = '';
+          (warehouses || []).forEach(w => {
+            selWh.innerHTML += `<option value="${w.name}" ${w.name === currentWh ? 'selected' : ''}>${w.name}</option>`;
+          });
+        }
+      });
+
+      populateSendRepairTicketsDropdown(p.name);
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('sendRepairOutDate').value = today;
+      document.getElementById('receiveRepairInDate').value = today;
+
+      document.getElementById('selfRepairNote').value = 'Đã khắc phục hoàn chỉnh';
+      document.getElementById('sendRepairProvider').value = '';
+      document.getElementById('sendRepairPhone').value = '';
+      document.getElementById('sendRepairEstimatedCost').value = '';
+      document.getElementById('sendRepairOutNote').value = '';
+      document.getElementById('receiveRepairCost').value = '';
+      document.getElementById('receiveRepairNote').value = '';
+
+      const firstLoc = (p.locations || [])[0] || {};
+      document.getElementById('selfRepairShelf').value = firstLoc.shelf || '';
+      document.getElementById('selfRepairTier').value = firstLoc.tier || '';
+      document.getElementById('receiveRepairShelf').value = firstLoc.shelf || '';
+      document.getElementById('receiveRepairTier').value = firstLoc.tier || '';
+
+      repairSelfPhoto = '';
+      repairSendOutPhoto = '';
+      repairReceiveInPhoto = '';
+      updateRepairPhotoPreviews();
+
+      selectRepairMethod('self');
+      openModal('repairPropModal');
     }
 
-    async function submitRepairCompleted() {
+    function populateSendRepairTicketsDropdown(propName) {
+      const sel = document.getElementById('selectSendRepairTicket');
+      const infoBox = document.getElementById('loadedSendTicketInfoBox');
+      if (!sel) return;
+      if (infoBox) infoBox.classList.add('hidden');
+
+      const allTickets = archivedTickets || [];
+      const sendTickets = allTickets.filter(t => 
+        t.type === 'SUA_CHUA' && 
+        (t.id.startsWith('SC_GUI_') || (t.note && t.note.includes('[Phiếu gửi đi sửa]')))
+      );
+
+      const receivedSendIds = new Set();
+      allTickets.filter(t => t.type === 'SUA_CHUA' && (t.id.startsWith('SC_NHAN_') || (t.note && t.note.includes('Giai đoạn 2')))).forEach(rTicket => {
+        let refId = (rTicket.images && rTicket.images.refSendTicketId) ? rTicket.images.refSendTicketId : '';
+        if (!refId && rTicket.note) {
+          const m = rTicket.note.match(/\[Ref_Send:\s*(SC_GUI_[^\]]+)\]/);
+          if (m) refId = m[1];
+        }
+        if (refId) receivedSendIds.add(refId);
+      });
+
+      const pendingSendTickets = sendTickets.filter(sTicket => {
+        if (receivedSendIds.has(sTicket.id)) return false;
+        const items = sTicket.items || [];
+        return items.some(it => (it.name || '').trim().toLowerCase() === propName.trim().toLowerCase());
+      });
+
+      sel.innerHTML = '<option value="">-- Chọn phiếu gửi đi sửa cần nghiệm thu --</option>';
+      if (!pendingSendTickets.length) {
+        sel.innerHTML = '<option value="">(Chưa có phiếu gửi đi sửa nào đang chờ nhận về)</option>';
+      } else {
+        pendingSendTickets.forEach(st => {
+          const item = (st.items || []).find(it => (it.name || '').trim().toLowerCase() === propName.trim().toLowerCase()) || {};
+          const dateStr = st.createdAt ? new Date(st.createdAt).toLocaleDateString('vi-VN') : '';
+          sel.innerHTML += `<option value="${st.id}">[Gửi ngày ${dateStr}] Thợ: ${st.importerName || '---'} (Gửi: ${item.qty || 1} ${item.unit || ''}) - Mã: ${st.id}</option>`;
+        });
+      }
+    }
+
+    function onSelectSendRepairTicket(ticketId) {
+      const infoBox = document.getElementById('loadedSendTicketInfoBox');
+      if (!ticketId) {
+        if (infoBox) infoBox.classList.add('hidden');
+        activeSelectedSendTicket = null;
+        return;
+      }
+
+      const st = (archivedTickets || []).find(t => t.id === ticketId);
+      if (!st) return;
+      activeSelectedSendTicket = st;
+
+      const pName = activeRepairProp ? activeRepairProp.name : '';
+      const item = (st.items || []).find(it => (it.name || '').trim().toLowerCase() === pName.trim().toLowerCase()) || {};
+
+      document.getElementById('infoSendProvider').innerText = st.importerName || '---';
+      document.getElementById('infoSendPhone').innerText = st.importerPhone || '---';
+      document.getElementById('infoSendDate').innerText = st.createdAt ? new Date(st.createdAt).toLocaleDateString('vi-VN') : '---';
+      document.getElementById('infoSendQty').innerText = `${item.qty || 1} ${item.unit || ''}`;
+
+      const qtyInput = document.getElementById('modalRepairQty');
+      if (qtyInput && item.qty) {
+        qtyInput.value = item.qty;
+      }
+
+      const selWh = document.getElementById('receiveRepairWarehouse');
+      if (selWh && st.warehouse) {
+        selWh.value = st.warehouse;
+      }
+
+      const photoBox = document.getElementById('infoSendPhotoThumb');
+      let sendPhotoUrl = '';
+      if (st.images && Array.isArray(st.images) && st.images[0]) sendPhotoUrl = st.images[0];
+      if (st.images && st.images.photos && Array.isArray(st.images.photos) && st.images.photos[0]) sendPhotoUrl = st.images.photos[0];
+
+      if (photoBox) {
+        if (sendPhotoUrl) {
+          photoBox.innerHTML = `<img src="${sendPhotoUrl}" class="w-full h-full object-cover" onclick="openSingleLightbox('${sendPhotoUrl}')" title="Bấm xem ảnh bàn giao gửi đi to rõ">`;
+        } else {
+          photoBox.innerHTML = '<span class="text-[8px] text-slate-300">Không ảnh</span>';
+        }
+      }
+
+      if (infoBox) infoBox.classList.remove('hidden');
+    }
+
+    function selectRepairMethod(method) {
+      selectedRepairMethod = method;
+      const btnSelf = document.getElementById('btnMethodSelf');
+      const btnSendOut = document.getElementById('btnMethodSendOut');
+      const btnReceiveIn = document.getElementById('btnMethodReceiveIn');
+
+      const blockSelf = document.getElementById('blockMethodSelf');
+      const blockSendOut = document.getElementById('blockMethodSendOut');
+      const blockReceiveIn = document.getElementById('blockMethodReceiveIn');
+
+      const submitBtn = document.getElementById('btnConfirmRepairProp');
+
+      [btnSelf, btnSendOut, btnReceiveIn].forEach(btn => {
+        if (!btn) return;
+        btn.className = "cursor-pointer p-2 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 flex flex-col items-center justify-center gap-1 transition";
+        const icon = btn.querySelector('i');
+        if (icon) icon.className = icon.className.replace(/text-aba|text-amber-600|text-blue-600/, 'text-slate-400');
+        const textDiv = btn.querySelector('div');
+        if (textDiv) textDiv.className = "font-bold text-[10px] text-slate-700 leading-tight";
+      });
+
+      if (blockSelf) blockSelf.classList.add('hidden');
+      if (blockSendOut) blockSendOut.classList.add('hidden');
+      if (blockReceiveIn) blockReceiveIn.classList.add('hidden');
+
+      if (method === 'self') {
+        if (btnSelf) {
+          btnSelf.className = "cursor-pointer p-2 rounded-xl border-2 border-aba bg-blue-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition";
+          const icon = btnSelf.querySelector('i');
+          if (icon) icon.className = "fa-solid fa-user-gear text-base text-aba";
+          const textDiv = btnSelf.querySelector('div');
+          if (textDiv) textDiv.className = "font-bold text-[10px] text-aba leading-tight";
+        }
+        if (blockSelf) blockSelf.classList.remove('hidden');
+        if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> HOÀN TẤT TỰ SỬA CHỮA';
+      } else if (method === 'send_out') {
+        if (btnSendOut) {
+          btnSendOut.className = "cursor-pointer p-2 rounded-xl border-2 border-amber-500 bg-amber-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition";
+          const icon = btnSendOut.querySelector('i');
+          if (icon) icon.className = "fa-solid fa-truck-arrow-right text-base text-amber-600";
+          const textDiv = btnSendOut.querySelector('div');
+          if (textDiv) textDiv.className = "font-bold text-[10px] text-amber-900 leading-tight";
+        }
+        if (blockSendOut) blockSendOut.classList.remove('hidden');
+        if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-truck-arrow-right"></i> LƯU PHIẾU GỬI ĐI SỬA';
+      } else if (method === 'receive_in') {
+        if (btnReceiveIn) {
+          btnReceiveIn.className = "cursor-pointer p-2 rounded-xl border-2 border-blue-600 bg-blue-50/80 shadow-xs flex flex-col items-center justify-center gap-1 transition";
+          const icon = btnReceiveIn.querySelector('i');
+          if (icon) icon.className = "fa-solid fa-box-open text-base text-blue-600";
+          const textDiv = btnReceiveIn.querySelector('div');
+          if (textDiv) textDiv.className = "font-bold text-[10px] text-blue-900 leading-tight";
+        }
+        if (blockReceiveIn) blockReceiveIn.classList.remove('hidden');
+        if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> LƯU PHIẾU NHẬN VỀ';
+      }
+    }
+
+    function toggleSelfRepairLocBox(isSuccess) {
+      const box = document.getElementById('selfRepairLocBox');
+      if (box) isSuccess ? box.classList.remove('hidden') : box.classList.add('hidden');
+    }
+
+    function toggleReceiveRepairLocBox(val) {
+      const box = document.getElementById('receiveRepairLocBox');
+      if (box) val === 'success' ? box.classList.remove('hidden') : box.classList.add('hidden');
+    }
+
+    async function handleSingleRepairFileSelect(e, targetField) {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const compressed = await compressImageFile(file, 1200, 0.7);
+        if (targetField === 'repairSelf') repairSelfPhoto = compressed;
+        if (targetField === 'repairSendOut') repairSendOutPhoto = compressed;
+        if (targetField === 'repairReceiveIn') repairReceiveInPhoto = compressed;
+        updateRepairPhotoPreviews();
+      } catch(err) {
+        alert("Lỗi đọc ảnh: " + err.message);
+      }
+      e.target.value = '';
+    }
+
+    function updateRepairPhotoPreviews() {
+      const pSelf = document.getElementById('previewRepairSelf');
+      if (pSelf) {
+        pSelf.innerHTML = repairSelfPhoto 
+          ? `<img src="${repairSelfPhoto}" class="w-full h-full object-cover cursor-pointer hover:opacity-80" onclick="openSingleLightbox('${repairSelfPhoto}')" title="Bấm xem ảnh to rõ/zoom">` 
+          : '<span class="text-[9px] text-slate-400">Trống</span>';
+      }
+
+      const pOut = document.getElementById('previewRepairSendOut');
+      if (pOut) {
+        pOut.innerHTML = repairSendOutPhoto 
+          ? `<img src="${repairSendOutPhoto}" class="w-full h-full object-cover cursor-pointer hover:opacity-80" onclick="openSingleLightbox('${repairSendOutPhoto}')" title="Bấm xem ảnh to rõ/zoom">` 
+          : '<span class="text-[8px] text-slate-400">Trống</span>';
+      }
+
+      const pIn = document.getElementById('previewRepairReceiveIn');
+      if (pIn) {
+        pIn.innerHTML = repairReceiveInPhoto 
+          ? `<img src="${repairReceiveInPhoto}" class="w-full h-full object-cover cursor-pointer hover:opacity-80" onclick="openSingleLightbox('${repairReceiveInPhoto}')" title="Bấm xem ảnh to rõ/zoom">` 
+          : '<span class="text-[8px] text-slate-400">Trống</span>';
+      }
+    }
+
+    async function submitSinglePropRepair() {
       if (!activeRepairProp) return;
-      const brokenMax = Number(activeRepairProp.broken !== undefined ? activeRepairProp.broken : (activeRepairProp.brokenQty || 0));
-      const qtyDone = Number(document.getElementById('repairQtyDone')?.value) || 0;
 
-      if (qtyDone <= 0) return alert("Số lượng sửa xong phải lớn hơn 0!");
-      if (qtyDone > brokenMax) return alert(`Số lượng sửa xong (${qtyDone}) không thể lớn hơn số lượng đang hỏng (${brokenMax})!`);
+      const p = activeRepairProp;
+      const brokenMax = Number(p.broken !== undefined ? p.broken : p.brokenQty) || 0;
+      const qty = Number(document.getElementById('modalRepairQty')?.value) || 0;
+      if (qty <= 0) return alert("Vui lòng nhập Số lượng sửa chữa lớn hơn 0!");
+      if (qty > brokenMax) return alert(`Số lượng sửa (${qty}) không thể vượt quá số lượng đang hỏng (${brokenMax})!`);
 
-      const wh = document.getElementById('repairReturnWarehouse')?.value;
-      if (!wh) return alert("Vui lòng chọn Kho lưu trữ sau khi sửa!");
-
-      const shelf = document.getElementById('repairReturnShelf')?.value.trimEnd() || '';
-      const tier = document.getElementById('repairReturnTier')?.value.trimEnd() || '';
-      const note = document.getElementById('repairNote')?.value.trimEnd() || '';
-      const costStr = document.getElementById('repairCostFormatted')?.value.replace(/\D/g, '') || '0';
-      const cost = Number(costStr) || 0;
-
-      const btn = document.getElementById('btnConfirmRepairSubmit');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu nghiệm thu...';
-
-      const payload = {
-        propCode: activeRepairProp.code,
-        propName: activeRepairProp.name,
-        unit: activeRepairProp.unit,
-        qtyRepaired: qtyDone,
-        cost: cost,
-        warehouse: wh,
-        shelf: shelf,
-        tier: tier,
-        note: note,
-        repairerName: currentUser ? currentUser.name : "Kỹ thuật",
-        repairerPhone: currentUser ? currentUser.phone : ""
+      let payload = {
+        propCode: p.code,
+        propName: p.name,
+        propUnit: p.unit,
+        repairQty: qty,
+        stage: selectedRepairMethod,
+        userExecutor: currentUser ? `${currentUser.name} (${currentUser.phone || ''})` : "Thủ kho",
+        creatorAvatar: currentUser ? currentUser.avatar : ""
       };
 
-      showUploadStatus("Đang ghi nhận hoàn tất sửa chữa...");
-      const res = await callBackend('saveRepairTicket', payload, 'POST');
-      hideUploadStatus();
+      if (selectedRepairMethod === 'self') {
+        const resultRadio = document.querySelector('input[name="selfRepairResult"]:checked');
+        const isSuccess = resultRadio ? resultRadio.value === 'success' : true;
+        
+        if (!repairSelfPhoto) {
+          return alert("⚠️ BẮT BUỘC CÓ ẢNH: Chụp hoặc tải ảnh nghiệm thu sau khi tự sửa!");
+        }
 
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-check-double"></i> HOÀN TẤT & NHẬP LẠI KHO';
+        payload.result = isSuccess ? 'success' : 'fail';
+        payload.note = document.getElementById('selfRepairNote')?.value.trimEnd() || "";
+        payload.targetWarehouse = document.getElementById('selfRepairWarehouse')?.value || "Kho Đông Anh";
+        payload.warehouse = payload.targetWarehouse;
+        payload.targetShelf = document.getElementById('selfRepairShelf')?.value.trimEnd() || "";
+        payload.targetTier = document.getElementById('selfRepairTier')?.value.trimEnd() || "";
+      } 
+      else if (selectedRepairMethod === 'send_out') {
+        const provider = document.getElementById('sendRepairProvider')?.value.trimEnd();
+        const phone = document.getElementById('sendRepairPhone')?.value.trimEnd();
+        const outDate = document.getElementById('sendRepairOutDate')?.value;
 
-      // Cập nhật lại số liệu ngay trong bộ nhớ để màn hình cập nhật tức thì
-      activeRepairProp.broken = Math.max(0, brokenMax - qtyDone);
-      if (activeRepairProp.usable !== undefined) activeRepairProp.usable += qtyDone;
-      if (activeRepairProp.usableInStock !== undefined) activeRepairProp.usableInStock += qtyDone;
-      if (activeRepairProp.inStock !== undefined) activeRepairProp.inStock += qtyDone;
+        if (!provider) return alert("Vui lòng nhập Đơn vị / Tên thợ nhận sửa!");
+        if (!phone) return alert("Vui lòng nhập Số điện thoại bên nhận sửa chữa!");
+        if (!outDate) return alert("Vui lòng chọn Thời gian gửi đi!");
+        if (!repairSendOutPhoto) return alert("⚠️ BẮT BUỘC CÓ ẢNH: Chụp ảnh bàn giao lúc gửi đi!");
 
-      showSuccessPopup("NGHIỆM THU THÀNH CÔNG!", `Đã chuyển ${qtyDone} ${activeRepairProp.unit} "${activeRepairProp.name}" trở lại danh mục dùng được tại ${wh}.`);
-      closeModal('repairCompleteModal');
-      
-      renderRepairTabList();
-      renderMasterProps();
-      fetchInitialData();
+        const estCost = Number((document.getElementById('sendRepairEstimatedCost')?.value || '').replace(/\D/g, '')) || 0;
+
+        payload.provider = provider;
+        payload.providerPhone = phone;
+        payload.sendDate = outDate;
+        payload.estimatedCost = estCost;
+        payload.note = document.getElementById('sendRepairOutNote')?.value.trimEnd() || "";
+        payload.warehouse = (p.locations && p.locations[0]) ? p.locations[0].warehouse : "Kho Đông Anh";
+      } 
+      else if (selectedRepairMethod === 'receive_in') {
+        const selectedSendTicketId = document.getElementById('selectSendRepairTicket')?.value;
+        if (!selectedSendTicketId) {
+          return alert("⚠️ VUI LÒNG CHỌN PHIẾU GỬI ĐI SỬA CẦN NGHIỆM THU!\nPhiếu nhận về chỉ được lập cho các đợt đã gửi thợ trước đó.");
+        }
+
+        const inDate = document.getElementById('receiveRepairInDate')?.value;
+        const resultVal = document.getElementById('receiveRepairResult')?.value || 'success';
+
+        if (!inDate) return alert("Vui lòng chọn Thời gian nhận đồ về!");
+        if (!repairReceiveInPhoto) return alert("⚠️ BẮT BUỘC CÓ ẢNH: Chụp ảnh nghiệm thu khi nhận đồ về!");
+
+        const cost = Number((document.getElementById('receiveRepairCost')?.value || '').replace(/\D/g, '')) || 0;
+
+        payload.refSendTicketId = selectedSendTicketId;
+        payload.provider = document.getElementById('infoSendProvider')?.innerText || '---';
+        payload.providerPhone = document.getElementById('infoSendPhone')?.innerText || '---';
+        payload.receiveDate = inDate;
+        payload.result = resultVal;
+        payload.cost = cost;
+        payload.targetWarehouse = document.getElementById('receiveRepairWarehouse')?.value || "Kho Đông Anh";
+        payload.warehouse = payload.targetWarehouse;
+        payload.targetShelf = document.getElementById('receiveRepairShelf')?.value.trimEnd() || "";
+        payload.targetTier = document.getElementById('receiveRepairTier')?.value.trimEnd() || "";
+        payload.note = document.getElementById('receiveRepairNote')?.value.trimEnd() || "";
+      }
+
+      const btn = document.getElementById('btnConfirmRepairProp');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh & lưu...';
+      }
+
+      showUploadStatus("Đang tải ảnh nghiệm thu lên máy chủ...");
+      try {
+        if (selectedRepairMethod === 'self') {
+          payload.photo = repairSelfPhoto.startsWith('data:image') 
+            ? await smartUploadImage(repairSelfPhoto, `repair_self_${p.code}`) 
+            : repairSelfPhoto;
+        } else if (selectedRepairMethod === 'send_out') {
+          payload.photo = repairSendOutPhoto.startsWith('data:image') 
+            ? await smartUploadImage(repairSendOutPhoto, `repair_out_${p.code}`) 
+            : repairSendOutPhoto;
+        } else if (selectedRepairMethod === 'receive_in') {
+          payload.photo = repairReceiveInPhoto.startsWith('data:image') 
+            ? await smartUploadImage(repairReceiveInPhoto, `repair_in_${p.code}`) 
+            : repairReceiveInPhoto;
+        }
+
+        showUploadStatus("Đang cập nhật phiếu sửa chữa vào Google Sheet...");
+        const res = await callBackend('saveRepairTicket', payload, 'POST');
+        hideUploadStatus();
+
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> XÁC NHẬN & CẬP NHẬT';
+        }
+
+        if (res && res.success) {
+          showSuccessPopup("LƯU PHIẾU THÀNH CÔNG", `Đã lưu chứng từ ${res.ticketId} cho món "${p.name}".`);
+          closeModal('repairPropModal');
+          await fetchInitialData();
+          renderRepairBrokenList();
+          switchTab('archive');
+        } else {
+          alert("Lỗi khi lưu phiếu: " + (res && res.error ? res.error : ""));
+        }
+      } catch(err) {
+        hideUploadStatus();
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-check"></i> XÁC NHẬN & CẬP NHẬT';
+        }
+        alert("Lỗi: " + err.message);
+      }
     }
   </script>
 </body>
