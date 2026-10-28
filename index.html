@@ -1388,6 +1388,27 @@
 
       <input type="hidden" id="editPropCode">
 
+      <!-- 1. TÊN ĐẠO CỤ (SỬA ĐƯỢC) -->
+      <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+        <label class="block font-bold text-slate-700 mb-1 text-xs">
+          Tên đạo cụ <span class="text-red-500">*</span>
+        </label>
+        <input type="text" id="editPropName" placeholder="Nhập tên đạo cụ mới..." class="w-full p-2 border border-slate-300 rounded-xl bg-white font-bold text-slate-800 text-xs focus:border-aba focus:ring-1 focus:ring-aba shadow-xs">
+      </div>
+
+      <!-- 2. SẮP XẾP VỊ TRÍ GIÁ KỆ & PHÂN BỔ SỐ LƯỢNG (KHO & TỔNG CỐ ĐỊNH) -->
+      <div class="bg-amber-50/50 p-3 rounded-2xl border border-amber-200 space-y-2.5">
+        <div class="border-b border-amber-200/60 pb-1.5">
+          <span class="font-bold text-amber-900 flex items-center gap-1.5 text-xs">
+            <i class="fa-solid fa-warehouse text-aba"></i> SẮP XẾP VỊ TRÍ GIÁ KỆ TẠI CÁC KHO
+          </span>
+          <p class="text-[10px] text-slate-500 mt-0.5">Tên kho và Tổng tồn kho được khóa cố định. Bạn có thể tự do thêm kệ và phân chia số lượng giữa các kệ miễn sao khớp tổng.</p>
+        </div>
+
+        <!-- Khung sinh tự động từng kho và các giá kệ con -->
+        <div id="editLocationsContainer" class="space-y-3"></div>
+      </div>
+
       <!-- 1. Danh mục & Sử dụng cho -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
         <div>
@@ -1655,37 +1676,79 @@
   </div>
 
   <!-- MODALS ĐĂNG NHẬP, TÀI KHOẢN, CAMERA, CONFIRM, LIGHTBOX -->
-  <div id="loginModal" class="fixed inset-0 bg-slate-900/80 z-50 flex items-center justify-center p-3 hidden">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+  <!-- ==================== MODAL: ĐĂNG NHẬP THEO TÀI KHOẢN ĐƯỢC CẤP ==================== -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-900/85 backdrop-blur-xs z-50 flex items-center justify-center p-3 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl text-xs border border-slate-100">
+      
+      <!-- HEADER -->
       <div class="text-center space-y-1">
-        <h3 class="text-base font-bold text-aba uppercase">Đăng Ký & Khóa Phiên Thiết Bị</h3>
-        <p class="text-xs text-slate-500">Định danh nhân sự chịu trách nhiệm đạo cụ ABA</p>
+        <div class="w-11 h-11 bg-aba/10 text-aba rounded-2xl flex items-center justify-center mx-auto text-xl shadow-inner">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h3 class="text-sm font-black text-slate-800 uppercase tracking-tight" id="loginModalStepTitle">
+          XÁC THỰC TÀI KHOẢN CỐ ĐỊNH
+        </h3>
+        <p class="text-[10px] text-slate-500" id="loginModalStepDesc">
+          Nhập số điện thoại đã được phòng nhân sự cấp phép
+        </p>
       </div>
 
-      <div class="space-y-2 text-xs">
+      <!-- BƯỚC 1: NHẬP SỐ ĐIỆN THOẠI ĐỐI SOÁT VỚI SHEET USERS -->
+      <div id="loginStep1Box" class="space-y-3">
         <div>
-          <label class="block font-semibold mb-0.5">Họ và tên của bạn <span class="text-red-500">*</span></label>
-          <input type="text" id="loginName" placeholder="Nguyễn Văn A" class="w-full p-2 border border-slate-300 rounded-lg uppercase">
-        </div>
-        <div>
-          <label class="block font-semibold mb-0.5">Số điện thoại <span class="text-red-500">*</span></label>
-          <input type="tel" id="loginPhone" placeholder="0987654321" class="w-full p-2 border border-slate-300 rounded-lg">
-        </div>
-        <div class="text-center pt-2">
-          <label class="block font-semibold mb-1">Chụp ảnh khuôn mặt nhận diện</label>
-          <div class="w-24 h-24 mx-auto rounded-full border-2 border-dashed border-aba flex items-center justify-center overflow-hidden bg-slate-50 relative">
-            <img id="loginAvatarPreview" src="" class="w-full h-full object-cover hidden">
-            <i id="loginCameraPlaceholder" class="fa-solid fa-camera text-2xl text-slate-400"></i>
+          <label class="block font-bold text-slate-700 mb-1 text-[11px]">
+            Số điện thoại của bạn <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <input type="tel" id="loginPhoneInput" placeholder="Ví dụ: 0389975487" 
+              class="w-full p-2.5 pl-8 border border-slate-300 rounded-xl font-bold text-slate-800 text-xs focus:border-aba focus:ring-1 focus:ring-aba bg-slate-50 focus:bg-white">
+            <i class="fa-solid fa-phone absolute left-2.5 top-3 text-slate-400 text-xs"></i>
           </div>
-          <button type="button" onclick="triggerCamera('loginFace')" class="mt-2 px-3 py-1 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded text-xs font-semibold">
-            Bật Camera Chụp Mặt
+          <p class="text-[10px] text-slate-400 mt-1 italic">* Hệ thống sẽ tự động quét danh sách nhân sự trên Google Sheet.</p>
+        </div>
+
+        <button type="button" id="btnCheckAccount" onclick="checkUserAccountStep1()" 
+          class="w-full py-2.5 bg-aba hover:bg-aba-dark text-white font-bold rounded-xl shadow-md transition text-xs flex items-center justify-center gap-1.5">
+          <span>TIẾP TỤC ĐỐI SOÁT</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- BƯỚC 2: CHỤP ẢNH BỔ SUNG NẾU CHƯA CÓ LINK ẢNH CỘT D -->
+      <div id="loginStep2Box" class="space-y-3 hidden">
+        <div class="bg-amber-50 p-2.5 rounded-xl border border-amber-200 space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-amber-900 text-[11px]">Tài khoản hợp lệ:</span>
+            <span id="step2UserIdBadge" class="font-mono text-[9px] font-bold bg-amber-200/80 text-amber-900 px-1.5 py-0.5 rounded">NV_...</span>
+          </div>
+          <div class="font-black text-slate-900 text-xs sm:text-sm" id="step2UserName">---</div>
+          <p class="text-[10px] text-amber-800 leading-tight">
+            ⚠️ Tài khoản chưa có ảnh nhận diện. Bạn cần chụp ảnh khuôn mặt để hoàn tất kích hoạt máy lần đầu.
+          </p>
+        </div>
+
+        <!-- KHUNG CHỤP ẢNH KHUÔN MẶT -->
+        <div class="text-center space-y-2">
+          <div class="w-28 h-28 mx-auto rounded-full border-2 border-dashed border-aba flex items-center justify-center overflow-hidden bg-slate-50 relative shadow-inner">
+            <img id="loginAvatarPreview" src="" class="w-full h-full object-cover hidden">
+            <i id="loginCameraPlaceholder" class="fa-solid fa-camera text-3xl text-slate-400"></i>
+          </div>
+          <button type="button" onclick="triggerCamera('loginFace')" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-slate-700 text-xs font-bold inline-flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-camera text-aba"></i> Bật Camera Chụp Mặt
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+          <button type="button" onclick="backToLoginStep1()" class="w-1/3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs">
+            Quay lại
+          </button>
+          <button type="button" id="btnSubmitPhoto" onclick="submitFirstTimePhotoStep2()" 
+            class="w-2/3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md text-xs flex items-center justify-center gap-1.5 transition">
+            <i class="fa-solid fa-circle-check"></i> XÁC NHẬN GỬI ẢNH
           </button>
         </div>
       </div>
 
-      <button onclick="confirmLogin()" class="w-full py-2.5 bg-aba hover:bg-aba-dark text-white font-bold rounded-xl shadow text-sm">
-        XÁC NHẬN ĐĂNG NHẬP
-      </button>
     </div>
   </div>
 
@@ -5028,12 +5091,16 @@
       ];
       buildLiquidationTableRows();
     }
-// ==================== CHỨC NĂNG SỬA THÔNG TIN ĐẠO CỤ ====================
+// =========================================================================
+    // CHỨC NĂNG SỬA THÔNG TIN ĐẠO CỤ & PHÂN BỔ LẠI GIÁ KỆ (BẢO TOÀN TỔNG KHO)
+    // =========================================================================
     let activeEditingProp = null;
     let editSelectedCategories = [];
     let editSelectedPurposes = [];
     let editImagesList = [];
     let editInvoicesList = [];
+    let editLocationsList = [];
+    let editWarehouseTotals = {}; // Lưu tổng số lượng cố định của từng kho
 
     function openEditPropModalFromDetail() {
       if (!activeEditingProp) {
@@ -5045,27 +5112,52 @@
     }
 
     function openEditPropModal(code) {
-      const p = rawProps.find(item => item.code === code);
+      const p = (rawProps || []).find(item => item.code === code);
       if (!p) return;
       activeEditingProp = p;
 
       closeModal('propDetailModal');
       document.getElementById('editPropCode').value = p.code;
       document.getElementById('editModalPropTitle').innerText = `${p.name} (${p.code})`;
-      
+
+      // 1. Nạp Tên đạo cụ vào ô nhập
+      const nameInput = document.getElementById('editPropName');
+      if (nameInput) nameInput.value = p.name || '';
+
+      // 2. Tính toán Tổng số lượng cố định theo từng kho
+      editWarehouseTotals = {};
+      editLocationsList = JSON.parse(JSON.stringify(p.locations || []));
+
+      if (editLocationsList.length > 0) {
+        editLocationsList.forEach(loc => {
+          const wh = loc.warehouse || ((warehouses && warehouses[0]) ? warehouses[0].name : 'Kho Đông Anh');
+          loc.warehouse = wh;
+          const q = Number(loc.qty) || 0;
+          editWarehouseTotals[wh] = (editWarehouseTotals[wh] || 0) + q;
+        });
+      } else {
+        // Trường hợp đạo cụ chưa có vị trí kệ nào trước đó
+        const defWh = (warehouses && warehouses[0]) ? warehouses[0].name : 'Kho Đông Anh';
+        const totalStock = Number(p.inStock !== undefined ? p.inStock : (p.total || 1));
+        editWarehouseTotals[defWh] = totalStock;
+        editLocationsList = [{ warehouse: defWh, shelf: '', tier: '', qty: totalStock }];
+      }
+
+      renderEditLocations();
+
+      // 3. Danh mục & Sử dụng cho
       editSelectedCategories = p.categories ? [...p.categories] : [];
       editSelectedPurposes = p.purposes ? [...p.purposes] : [];
       renderEditTags();
 
+      // 4. Thông số, thời gian, đơn giá
       document.getElementById('editPropSpecs').value = p.specs || '';
       document.getElementById('editPropPurchaseDate').value = p.purchaseDate || '';
       document.getElementById('editPropSupplier').value = p.supplier || '';
       document.getElementById('editPropPriceFormatted').value = p.purchasePrice ? Number(p.purchasePrice).toLocaleString('vi-VN') : '';
 
-      // Tải danh sách ảnh đạo cụ
+      // 5. Ảnh & Hóa đơn
       editImagesList = p.images && p.images.length ? [...p.images] : (p.image ? [p.image] : []);
-      
-      // Tải danh sách hóa đơn (hỗ trợ cả dạng mảng JSON hoặc 1 link chuỗi cũ)
       if (Array.isArray(p.invoice)) {
         editInvoicesList = [...p.invoice];
       } else if (typeof p.invoice === 'string' && p.invoice.startsWith('[')) {
@@ -5078,6 +5170,138 @@
 
       renderEditPropGalleries();
       openModal('editPropModal');
+    }
+
+    // VẼ KHU VỰC PHÂN BỔ KỆ THEO TỪNG KHO
+    function renderEditLocations() {
+      const box = document.getElementById('editLocationsContainer');
+      if (!box) return;
+      box.innerHTML = '';
+
+      const whNames = Object.keys(editWarehouseTotals);
+      if (!whNames.length) {
+        box.innerHTML = '<div class="text-xs text-slate-400 italic p-3 text-center bg-white rounded-xl">Chưa có vị trí kho</div>';
+        return;
+      }
+
+      whNames.forEach(whName => {
+        const targetTotal = editWarehouseTotals[whName];
+        const currentSum = editLocationsList
+          .filter(l => l.warehouse === whName)
+          .reduce((s, l) => s + (Number(l.qty) || 0), 0);
+        
+        const isMatch = (currentSum === targetTotal);
+        const diff = currentSum - targetTotal;
+        const cleanWhKey = whName.replace(/[^a-zA-Z0-9]/g, '_');
+
+        const whCard = document.createElement('div');
+        whCard.className = "bg-white p-3 rounded-2xl border border-amber-200 shadow-2xs space-y-2";
+        
+        whCard.innerHTML = `
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 flex-wrap gap-1.5">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-lg bg-aba text-white font-bold text-xs flex items-center gap-1 select-none" title="Tên kho cố định">
+                <i class="fa-solid fa-lock text-[10px]"></i> ${whName}
+              </span>
+              <span class="text-slate-600 font-bold text-xs">
+                Tổng tại kho: <b class="text-slate-900">${targetTotal}</b> ${activeEditingProp?.unit || 'món'}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="wh-badge-${cleanWhKey}" class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isMatch ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-red-100 text-red-700 border border-red-300 animate-pulse'}">
+                ${isMatch ? `✅ Khớp: ${currentSum}/${targetTotal}` : `⚠️ Lệch: ${currentSum}/${targetTotal} (${diff > 0 ? 'Thừa ' + diff : 'Thiếu ' + Math.abs(diff)})`}
+              </span>
+              <button type="button" onclick="addEditLocationRow('${whName}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-xs transition">
+                <i class="fa-solid fa-plus text-[10px]"></i> Thêm kệ
+              </button>
+            </div>
+          </div>
+          <div class="space-y-1.5" id="wh-rows-${cleanWhKey}"></div>
+        `;
+
+        box.appendChild(whCard);
+
+        const rowsBox = whCard.querySelector(`#wh-rows-${cleanWhKey}`);
+        
+        editLocationsList.forEach((loc, idx) => {
+          if (loc.warehouse !== whName) return;
+
+          const rowEl = document.createElement('div');
+          rowEl.className = "grid grid-cols-12 gap-1.5 items-center bg-slate-50 p-1.5 rounded-xl border border-slate-200 text-xs";
+          rowEl.innerHTML = `
+            <div class="col-span-5">
+              <input type="text" list="shelfDatalist" value="${loc.shelf || ''}" placeholder="Giá / Kệ..." 
+                oninput="editLocationsList[${idx}].shelf = this.value.trim()" 
+                class="w-full p-1.5 border border-slate-300 rounded-lg bg-white font-medium text-xs focus:border-aba">
+            </div>
+            <div class="col-span-3">
+              <input type="text" list="tierDatalist" value="${loc.tier || ''}" placeholder="Tầng..." 
+                oninput="editLocationsList[${idx}].tier = this.value.trim()" 
+                class="w-full p-1.5 border border-slate-300 rounded-lg bg-white text-center font-medium text-xs focus:border-aba">
+            </div>
+            <div class="col-span-3">
+              <input type="number" min="0" value="${loc.qty !== '' && loc.qty !== undefined ? loc.qty : ''}" placeholder="SL" 
+                oninput="handleEditLocationQtyInput(${idx}, '${whName}', this.value)" 
+                class="w-full p-1.5 border border-aba rounded-lg bg-white text-center font-bold text-aba text-xs focus:ring-1 focus:ring-aba">
+            </div>
+            <div class="col-span-1 text-center">
+              <button type="button" onclick="removeEditLocationRow(${idx})" class="text-slate-400 hover:text-red-500 p-1 transition" title="Xóa kệ này">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          `;
+          rowsBox.appendChild(rowEl);
+        });
+      });
+    }
+
+    // CẬP NHẬT TRẠNG THÁI KHỚP SỐ LƯỢNG TRỰC TIẾP KHI GÕ
+    function handleEditLocationQtyInput(idx, whName, val) {
+      if (!editLocationsList[idx]) return;
+      editLocationsList[idx].qty = val !== '' ? (Number(val) || 0) : '';
+
+      const targetTotal = editWarehouseTotals[whName] || 0;
+      const currentSum = editLocationsList
+        .filter(l => l.warehouse === whName)
+        .reduce((s, l) => s + (Number(l.qty) || 0), 0);
+      
+      const cleanWhKey = whName.replace(/[^a-zA-Z0-9]/g, '_');
+      const badge = document.getElementById(`wh-badge-${cleanWhKey}`);
+      if (badge) {
+        const isMatch = (currentSum === targetTotal);
+        const diff = currentSum - targetTotal;
+        badge.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${isMatch ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-red-100 text-red-700 border border-red-300 animate-pulse'}`;
+        badge.innerText = isMatch 
+          ? `✅ Khớp: ${currentSum}/${targetTotal}` 
+          : `⚠️ Lệch: ${currentSum}/${targetTotal} (${diff > 0 ? 'Thừa ' + diff : 'Thiếu ' + Math.abs(diff)})`;
+      }
+    }
+
+    // THÊM GIÁ KỆ MỚI CHO 1 KHO
+    function addEditLocationRow(whName) {
+      const targetTotal = editWarehouseTotals[whName] || 0;
+      const currentSum = editLocationsList.filter(l => l.warehouse === whName).reduce((s, l) => s + (Number(l.qty) || 0), 0);
+      const remain = Math.max(0, targetTotal - currentSum);
+
+      editLocationsList.push({
+        warehouse: whName,
+        shelf: '',
+        tier: '',
+        qty: remain > 0 ? remain : ''
+      });
+      renderEditLocations();
+    }
+
+    // XÓA BỚT 1 GIÁ KỆ
+    function removeEditLocationRow(idx) {
+      if (!editLocationsList[idx]) return;
+      const whName = editLocationsList[idx].warehouse;
+      const countInWh = editLocationsList.filter(l => l.warehouse === whName).length;
+      if (countInWh <= 1) {
+        return alert(`Kho [${whName}] phải có ít nhất 1 dòng vị trí!`);
+      }
+      editLocationsList.splice(idx, 1);
+      renderEditLocations();
     }
 
     function renderEditTags() {
@@ -5116,7 +5340,6 @@
     }
 
     function renderEditPropGalleries() {
-      // Gallery hóa đơn
       const invBox = document.getElementById('editPropInvoicesGallery');
       invBox.innerHTML = '';
       if (!editInvoicesList.length) {
@@ -5132,7 +5355,6 @@
         });
       }
 
-      // Gallery ảnh đạo cụ
       const imgBox = document.getElementById('editPropImagesGallery');
       imgBox.innerHTML = '';
       if (!editImagesList.length) {
@@ -5164,9 +5386,7 @@
         try {
           const compressed = await compressImageFile(f, 1200, 0.7);
           editInvoicesList.push(compressed);
-        } catch (err) {
-          console.error("Lỗi nén hóa đơn:", err);
-        }
+        } catch (err) {}
       }
       renderEditPropGalleries();
       e.target.value = '';
@@ -5178,50 +5398,39 @@
         try {
           const compressed = await compressImageFile(f, 1200, 0.7);
           editImagesList.push(compressed);
-        } catch (err) {
-          console.error("Lỗi nén ảnh đạo cụ:", err);
-        }
+        } catch (err) {}
       }
       renderEditPropGalleries();
       e.target.value = '';
     }
 
-    async function handleEditInvoiceFilesSelect(e) {
-      const files = Array.from(e.target.files);
-      for (const f of files) {
-        try {
-          const compressed = await compressImageFile(f, 1200, 0.7);
-          editInvoicesList.push(compressed);
-        } catch (err) {
-          console.error("Lỗi nén hóa đơn:", err);
-        }
-      }
-      renderEditPropGalleries();
-      e.target.value = '';
-    }
-
-    async function handleEditPropFilesSelect(e) {
-      const files = Array.from(e.target.files);
-      for (const f of files) {
-        try {
-          const compressed = await compressImageFile(f, 1200, 0.7);
-          editImagesList.push(compressed);
-        } catch (err) {
-          console.error("Lỗi nén ảnh đạo cụ:", err);
-        }
-      }
-      renderEditPropGalleries();
-      e.target.value = '';
-    }
-
+    // LƯU THAY ĐỔI: BẮT BUỘC KHỚP SỐ LƯỢNG MỚI ĐƯỢC LƯU
     async function submitEditPropInfo() {
       if (!activeEditingProp) return;
+
+      const newName = (document.getElementById('editPropName')?.value || '').trim();
+      if (!newName) return alert("⚠️ Tên đạo cụ không được để trống!");
+
+      // 1. Kiểm tra đối soát số lượng từng kho
+      const whNames = Object.keys(editWarehouseTotals);
+      for (const whName of whNames) {
+        const targetTotal = editWarehouseTotals[whName];
+        const currentSum = editLocationsList
+          .filter(l => l.warehouse === whName)
+          .reduce((s, l) => s + (Number(l.qty) || 0), 0);
+
+        if (currentSum !== targetTotal) {
+          const diff = currentSum - targetTotal;
+          alert(`⚠️ TỔNG SỐ LƯỢNG TẠI [${whName}] CHƯA KHỚP!\n\nTổng yêu cầu cố định: ${targetTotal}\nTổng các kệ hiện tại: ${currentSum} (${diff > 0 ? 'Thừa ' + diff : 'Thiếu ' + Math.abs(diff)} món)\n\nVui lòng cân đối lại số lượng ở các kệ cho khớp đúng ${targetTotal} trước khi lưu.`);
+          return;
+        }
+      }
+
       const btn = document.getElementById('btnSaveEditProp');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh & lưu...';
 
       try {
-        // Tải ảnh hóa đơn mới lên ImgBB nếu là base64
         const finalInvoices = [];
         for (let i = 0; i < editInvoicesList.length; i++) {
           const inv = editInvoicesList[i];
@@ -5234,7 +5443,6 @@
           }
         }
 
-        // Tải ảnh đạo cụ mới lên ImgBB nếu là base64
         const finalImages = [];
         for (let i = 0; i < editImagesList.length; i++) {
           const img = editImagesList[i];
@@ -5252,6 +5460,8 @@
 
         const payload = {
           code: activeEditingProp.code,
+          name: newName,
+          locations: editLocationsList.filter(l => (Number(l.qty) || 0) > 0 || l.shelf || l.tier),
           specs: document.getElementById('editPropSpecs').value.trimEnd(),
           categories: editSelectedCategories,
           purposes: editSelectedPurposes,
@@ -5268,7 +5478,7 @@
         btn.innerHTML = '<i class="fa-solid fa-check"></i> LƯU THAY ĐỔI';
 
         if (res && res.success) {
-          showSuccessPopup("CẬP NHẬT THÀNH CÔNG", `Đã lưu thay đổi cho đạo cụ "${activeEditingProp.name}"!`);
+          showSuccessPopup("CẬP NHẬT THÀNH CÔNG", `Đã lưu thay đổi cho đạo cụ "${newName}"!`);
           closeModal('editPropModal');
           fetchInitialData();
         } else {
@@ -5471,42 +5681,155 @@
       openModal('successPopup');
     }
 
-    async function confirmLogin() {
-      const name = document.getElementById('loginName').value.trimEnd();
-      const phone = document.getElementById('loginPhone').value.trimEnd();
-      const avatarSrc = document.getElementById('loginAvatarPreview').src;
+    // BIẾN LƯU TẠM THÔNG TIN ĐỐI SOÁT BƯỚC 1
+    let pendingAssignedUser = null;
+    let pendingFaceBase64 = '';
 
-      if (!name || !phone) return alert("Vui lòng điền Họ tên và Số điện thoại!");
-      if (!avatarSrc || avatarSrc.includes('placeholder') || document.getElementById('loginAvatarPreview').classList.contains('hidden')) {
-        return alert("Vui lòng chụp ảnh nhận diện!");
+    // BƯỚC 1: KIỂM TRA SỐ ĐIỆN THOẠI TRÊN SHEET USERS
+    async function checkUserAccountStep1() {
+      const phoneInput = document.getElementById('loginPhoneInput');
+      const phone = (phoneInput?.value || '').trim().replace(/[^0-9]/g, '');
+
+      if (!phone || phone.length < 9) {
+        return alert("Vui lòng nhập đúng số điện thoại của bạn!");
       }
 
-      showUploadStatus("Đang lưu ảnh nhận diện lên ImgBB...");
-      try {
-        const avatarUrl = await smartUploadImage(avatarSrc);
-        hideUploadStatus();
+      const btn = document.getElementById('btnCheckAccount');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang quét sheet Users...';
 
-        currentUser = { name: name, phone: phone, avatar: avatarUrl };
-        localStorage.setItem('ABA_USER', JSON.stringify(currentUser));
-        closeModal('loginModal');
-        checkAuthStatus();
+      try {
+        const res = await callBackend('checkAssignedUser', { phone: phone }, 'POST');
+        btn.disabled = false;
+        btn.innerHTML = '<span>TIẾP TỤC ĐỐI SOÁT</span> <i class="fa-solid fa-arrow-right"></i>';
+
+        if (!res || !res.success) {
+          return alert(res && res.error ? res.error : "Không tìm thấy số điện thoại trong danh sách cấp phép!");
+        }
+
+        const user = res.user;
+
+        // TRƯỜNG HỢP 1: TÀI KHOẢN ĐÃ CÓ ẢNH Ở CỘT D -> ĐĂNG NHẬP VÀO LUÔN
+        if (res.hasPhoto) {
+          currentUser = user;
+          localStorage.setItem('ABA_USER', JSON.stringify(currentUser));
+          checkAuthStatus();
+          closeModal('loginModal');
+          showSuccessPopup("ĐĂNG NHẬP THÀNH CÔNG", `Xin chào ${user.name}! Bạn đã được xác thực vào hệ thống.`);
+          return;
+        }
+
+        // TRƯỜNG HỢP 2: CHƯA CÓ ẢNH Ở CỘT D -> CHUYỂN SANG BƯỚC 2 BẮT BUỘC CHỤP ẢNH
+        pendingAssignedUser = user;
+        document.getElementById('loginStep1Box').classList.add('hidden');
+        document.getElementById('loginStep2Box').classList.remove('hidden');
+
+        document.getElementById('loginModalStepTitle').innerText = "BỔ SUNG ẢNH NHẬN DIỆN";
+        document.getElementById('loginModalStepDesc').innerText = "Chụp ảnh trực tiếp để hoàn tất kích hoạt máy lần đầu";
+        document.getElementById('step2UserName').innerText = user.name || "Nhân sự ABA";
+        document.getElementById('step2UserIdBadge').innerText = user.id || "ID Tự Động";
+
       } catch (err) {
-        hideUploadStatus();
-        alert("Lỗi tải ảnh đại diện lên ImgBB: " + err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<span>TIẾP TỤC ĐỐI SOÁT</span> <i class="fa-solid fa-arrow-right"></i>';
+        alert("Lỗi kết nối kiểm tra tài khoản: " + err.message);
       }
     }
 
+    function backToLoginStep1() {
+      document.getElementById('loginStep2Box').classList.add('hidden');
+      document.getElementById('loginStep1Box').classList.remove('hidden');
+      document.getElementById('loginModalStepTitle').innerText = "XÁC THỰC TÀI KHOẢN CỐ ĐỊNH";
+      document.getElementById('loginModalStepDesc').innerText = "Nhập số điện thoại đã được phòng nhân sự cấp phép";
+    }
+
+    // BƯỚC 2: TẢI ẢNH LÊN IMGBB & CẬP NHẬT CỘT D, E, F TRÊN SHEET USERS
+    async function submitFirstTimePhotoStep2() {
+      if (!pendingAssignedUser) return backToLoginStep1();
+
+      const preview = document.getElementById('loginAvatarPreview');
+      if (!preview || preview.classList.contains('hidden') || !pendingFaceBase64) {
+        return alert("⚠️ Bắt buộc bấm 'Bật Camera Chụp Mặt' để chụp ảnh nhận diện trước khi xác nhận!");
+      }
+
+      const btn = document.getElementById('btnSubmitPhoto');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang tải ảnh...';
+
+      showUploadStatus("Đang đồng bộ ảnh khuôn mặt lên máy chủ...");
+      try {
+        // Tải ảnh chân dung lên ImgBB để lấy link trực tuyến lưu vào Cột D
+        const avatarUrl = await smartUploadImage(pendingFaceBase64, `user_${pendingAssignedUser.phone}`);
+        
+        showUploadStatus("Đang cập nhật Cột D, E, F vào sheet USERS...");
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang ghi Sheet...';
+
+        const payload = {
+          phone: pendingAssignedUser.phone,
+          avatar: avatarUrl,
+          device: (typeof isMobileClient === 'function' && isMobileClient()) ? "Điện thoại cá nhân" : "Thiết bị di động"
+        };
+
+        const res = await callBackend('updateUserPhoto', payload, 'POST');
+        hideUploadStatus();
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> XÁC NHẬN GỬI ẢNH';
+
+        if (res && res.success) {
+          currentUser = res.user;
+          localStorage.setItem('ABA_USER', JSON.stringify(currentUser));
+          checkAuthStatus();
+          closeModal('loginModal');
+          showSuccessPopup("KÍCH HOẠT THÀNH CÔNG", `Đã lưu ảnh nhận diện và kích hoạt tài khoản cho ${currentUser.name}!`);
+        } else {
+          alert("Lỗi cập nhật ảnh: " + (res && res.error ? res.error : ""));
+        }
+      } catch (err) {
+        hideUploadStatus();
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> XÁC NHẬN GỬI ẢNH';
+        alert("Lỗi tải ảnh khuôn mặt: " + err.message);
+      }
+    }
+
+    // 1. HÀM MỞ BẢNG XÁC THỰC ADMIN ĐỂ THOÁT / ĐỔI TÀI KHOẢN
+    function openSwitchAccountModal() {
+      const pinInput = document.getElementById('adminPinForSwitch');
+      if (pinInput) pinInput.value = '';
+      openModal('switchAccountModal');
+    }
+
+    // 2. XÁC THỰC PIN ADMIN, XÓA DỮ LIỆU CŨ VÀ MỞ LẠI FORM ĐĂNG NHẬP
     async function verifySwitchAccount() {
-      const pin = document.getElementById('adminPinForSwitch').value.trimEnd();
-      if (!pin) return;
+      const pinInput = document.getElementById('adminPinForSwitch');
+      const pin = (pinInput ? pinInput.value : '').trim();
+      if (!pin) return alert("Vui lòng nhập mã PIN Admin!");
+
       const res = await callBackend('checkAdminPin', { pin }, 'POST');
       if (res && res.success) {
+        // Xóa sạch phiên đăng nhập trên thiết bị
         localStorage.removeItem('ABA_USER');
         currentUser = null;
+
+        // Reset lại Header
+        const nameEl = document.getElementById('userHeaderName');
+        const avatarEl = document.getElementById('userHeaderAvatar');
+        if (nameEl) nameEl.innerText = 'Chưa đăng nhập';
+        if (avatarEl) avatarEl.src = 'https://via.placeholder.com/32';
+
         closeModal('switchAccountModal');
+
+        // Đưa form đăng nhập về Bước 1 (Nhập số điện thoại)
+        if (typeof backToLoginStep1 === 'function') {
+          backToLoginStep1();
+        }
+        const phoneInput = document.getElementById('loginPhoneInput');
+        if (phoneInput) phoneInput.value = '';
+
         openModal('loginModal');
       } else {
-        alert("Mật mã Admin không chính xác!");
+        alert("Mã PIN Admin không chính xác!");
       }
     }
 
